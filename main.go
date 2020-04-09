@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"time"
+	"strconv"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
@@ -31,8 +33,15 @@ func main(){
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("---- commits ----")
+	i := 0
 	err = cIter.ForEach(func(c *object.Commit) error {
-		fmt.Println(c)
+		fmt.Printf("----- commit %v -----\n", strconv.Itoa(i))
+		fmt.Println(c.Hash)
+		fmt.Println(c.Author)
+		fmt.Println(c.Committer)
+		fmt.Println(c.Message)
+		i = i + 1
 
 		return nil
 	})
