@@ -1,14 +1,19 @@
 package main
 
 import (
+	"io"
+	"log"
 	"fmt"
 	"time"
 	"encoding/json"
 	"strconv"
 	"strings"
+	"crypto/sha1"
+	"encoding/base64"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
+//	fdiff "github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/go-git/go-git/v5/storage/memory"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,6 +21,11 @@ import (
 	"go-repo-downloader/models"
 )
 
+type FileStat struct {
+	Name		string
+	Addition	int
+	Deletion	int
+}
 
 func main(){
 	fmt.Println("go-repo-downloader")
@@ -35,20 +45,12 @@ func main(){
 		fmt.Println(err)
 	}
 	fmt.Println("git log")
-	ref, err := r.Head()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(ref)
+//	ref, err := r.Head()
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//	fmt.Println(ref)
 
-	since := time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)
-	until := time.Date(2020, 12, 31, 0, 0, 0, 0, time.UTC)
-	cIter, err := r.Log(&git.LogOptions{From: ref.Hash(), Since: &since, Until: &until})
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("---- commits ----")
-	i := 0
 
 	//https://github.com/go-git/go-git/blob/master/_examples/commit/main.go
 	//Author: &object.Signature{
@@ -58,7 +60,6 @@ func main(){
 	//},
 
 	db := models.GetDB()
-	fmt.Println(db)
 	platform, err := models.FindPlatformByName(db, "github") 
 	if err != nil {
 		fmt.Println("Create new record...")
@@ -66,9 +67,11 @@ func main(){
 		platform = &models.Platform{Name:"github"}
 		models.CreatePlatform(db, platform)
 	}
-	fmt.Println(platform)
 
-	//repository
+	//search representative repositories
+
+
+	//save repository in db
 	repository, err := models.FindRepositoryByName(db, repoName)
 	if err != nil{
 		fmt.Println("create new repo")
@@ -76,57 +79,143 @@ func main(){
 		repository = &models.Repository{PlatformFK: platform.ID, Name: repoName}
 		models.CreateRepository(db, repository)
 	}
-	fmt.Println(repository)
 
-	//commit
-	err = cIter.ForEach(func(c *object.Commit) error {
-		fmt.Printf("----- commIt %v -----\n", strconv.Itoa(i))
-		fmt.Println(c.Hash)
-		fmt.Println(c.Author.Email)
-		fmt.Println(c.Committer)
-		fmt.Println(c.Message)
-		//Author
-		author, err := models.FindAccountByEmail(db, c.Author.Email)
+	//branches
+	branchCounter := 0
+	branches, err :=  r.Branches()
+	for {
+		branch, err := branches.Next()
 		if err != nil {
-			fmt.Println("create new author...")
-			fmt.Println(err)
-			author = &models.Account{Email:c.Author.Email, Name: c.Author.Name}
-			models.CreateAccount(db, author)
-		}
-		//Committer
-		committer, err := models.FindAccountByEmail(db, c.Committer.Email)
-		if err != nil {
-			fmt.Println("create new committer...")
-			fmt.Println(err)
-			committer = &models.Account{Email:c.Committer.Email, Name: c.Committer.Name}
-			models.CreateAccount(db, committer)
-		}
-
-
-		commit, err := models.FindCommitByHash(db, c.Hash.String())
-		if err != nil {
-			fmt.Println("create new commit")
-			fmt.Println(err)
-			parent, errj := json.Marshal(c.ParentHashes)
-			if errj != nil {
-				fmt.Println(errj)
+			if err == io.EOF {
+				//Finished branch
+				break
+			} else {
+				log.Fatal(err)
 			}
-			commit = &models.Commit{CommitHash: c.Hash.String(),
-						RepositoryFK: repository.ID,
-						TreeHash:c.TreeHash.String(),
-						ParentHashes:parent,
-						Author:author.ID,
-						AuthorDate:c.Author.When,
-						Committer:committer.ID,
-						CommitterDate:c.Committer.When,
-						Subject:c.Message}
-			models.CreateCommit(db, commit)
 		}
-		i = i + 1
+		branchCounter++
+//		fmt.Println("branch -->: ", branch.Name())
 
-		return nil
-	})
-	if err != nil{
-		fmt.Println(err)
+
+		//commits
+		var prevCommit *object.Commit
+		prevCommit = nil
+		var prevTree *object.Tree
+		prevTree = nil
+
+		//filter by dates
+		since := time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)
+		until := time.Date(2020, 12, 31, 0, 0, 0, 0, time.UTC)
+
+		commits, err := r.Log(&git.LogOptions{From: branch.Hash(), Since: &since, Until: &until})
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer commits.Close()
+//		fmt.Println("---- commits ----")
+		i := 0
+
+		err = commits.ForEach(func(currCommit *object.Commit) error {
+
+			if prevCommit != nil {
+				fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
+				//fmt.Println(currCommit.Hash)
+				//fmt.Println(currCommit.Author.Email)
+				//fmt.Println(currCommit.Committer)
+				//fmt.Println(currCommit.Message)
+				//fmt.Printf("\nfile: %v\n", cs.Name)
+
+
+				currTree, err := currCommit.Tree()
+				if err != nil {
+					return err
+				}
+			        if prevTree != nil {
+					changes, err := currTree.Diff(prevTree)
+					if err != nil {
+						return err
+					}
+					//Author
+					author, err := models.FindAccountByEmail(db, currCommit.Author.Email)
+					if err != nil {
+						fmt.Println("create new author...")
+						fmt.Println(err)
+						author = &models.Account{Email:currCommit.Author.Email, Name: currCommit.Author.Name}
+						models.CreateAccount(db, author)
+					}
+					//Committer
+					committer, err := models.FindAccountByEmail(db, currCommit.Committer.Email)
+					if err != nil {
+						fmt.Println("create new committer...")
+						fmt.Println(err)
+						committer = &models.Account{Email:currCommit.Committer.Email, Name: currCommit.Committer.Name}
+						models.CreateAccount(db, committer)
+					}
+
+					//Commit
+					commit, err := models.FindCommitByHash(db, currCommit.Hash.String())
+					if err != nil {
+						fmt.Println("create new commit")
+						fmt.Println(err)
+						parent, errj := json.Marshal(currCommit.ParentHashes)
+						if errj != nil {
+							fmt.Println(errj)
+						}
+						commit = &models.Commit{CommitHash: currCommit.Hash.String(),
+								RepositoryFK: repository.ID,
+								TreeHash:currCommit.TreeHash.String(),
+								ParentHashes:parent,
+								Author:author.ID,
+								AuthorDate:currCommit.Author.When,
+								Committer:committer.ID,
+								CommitterDate:currCommit.Committer.When,
+								Subject:currCommit.Message,
+								Branch: fmt.Sprintf("%s", branch.Name())}
+						models.CreateCommit(db, commit)
+					}
+
+					// Changes
+					for _, change := range changes{
+						//fmt.Println(change.To.Name)
+						//fmt.Println(change.Action())
+						//fmt.Println(change.Files())
+						//fmt.Println(change.Patch())
+						hasher := sha1.New()
+						patch, err := change.Patch()
+						if err != nil {
+							return err
+						}
+						hasher.Write([]byte(patch.String()))
+						changeSha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+						//fmt.Println(changeSha)
+					//	id := fmt.Sprintf("%s",currCommit.ID)
+					//	fmt.Printf("*************  %s\n", id)
+						changeObj, err := models.FindChangeByHash(db, changeSha, commit.ID)
+						if err != nil{
+							fmt.Println("new change")
+							fmt.Println(err)
+							action, err := change.Action()
+							if err != nil{
+								return err
+							}
+							changeObj = &models.Change{CommitFK: commit.ID, ChangeHash: changeSha, FileFrom: change.From.Name, FileTo: change.To.Name, Action: action.String(), Patch: patch.String()}
+							models.CreateChange(db, changeObj)
+						}
+					}
+				}
+			}
+			prevCommit = currCommit
+			prevTree, _ = currCommit.Tree()
+
+
+
+			i = i + 1
+
+			return nil
+		})
+		if err != nil{
+			fmt.Println(err)
+		}
+
 	}
 }

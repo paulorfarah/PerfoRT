@@ -21,6 +21,8 @@ type Commit struct {
 	Committer uint  `gorm:"not null"`
 	CommitterDate time.Time `gorm:"not null"`
 	Subject string `gorm:"not_null"`
+	Branch string `gorm:"not_null"`
+	Changes []Change
 }
 
 func (r *Commit) TableName() string {
