@@ -19,6 +19,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"go-repo-downloader/models"
+	//"go-repo-downloader/codeanalysis"
 )
 
 type FileStat struct {
@@ -78,6 +79,22 @@ func main(){
 		fmt.Println(err)
 		repository = &models.Repository{PlatformFK: platform.ID, Name: repoName}
 		models.CreateRepository(db, repository)
+	}
+
+	//issues
+	//repository.Issues()
+	lastIssue, err := models.FindIssueByRepository(db, repository.ID)
+	fmt.Println("issue: ", lastIssue)
+	if err != nil {
+		fmt.Println("create new issues")
+		fmt.Println(err)
+		//issue = &models.Issue{Repository:repository.ID, Number: 1}
+		//models.CreateIssue(db, issue)
+	}
+	allIssues := models.GetIssues(lastIssue)
+	fmt.Println("issues...", allIssues)
+	for _, i := range allIssues {
+		fmt.Println("########################################", i.Title)
 	}
 
 	//branches
@@ -202,6 +219,7 @@ func main(){
 							models.CreateChange(db, changeObj)
 						}
 					}
+				//codeanalysis.Understand(cs.Name)
 				}
 			}
 			prevCommit = currCommit
