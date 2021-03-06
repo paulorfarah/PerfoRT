@@ -1,9 +1,10 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"time"
-	"context"
+
 	"github.com/jinzhu/gorm"
 	"github.com/shurcool/githubv4"
 )
@@ -11,22 +12,22 @@ import (
 type Issue struct {
 	Model
 	Repository uint `gorm:"not null;unique_index:idx_issue"`
-	Number int `gorm:"not null"`  //issue number
-	CreatedAt time.Time `"gorm:"not null"` 
-	CreatedViaEmail bool `gorm:"default:false"`
-	PublishedAt time.Time
-	Title string `gorm:"not null"`
-	Author uint `gorm:"not null"`
-	BodyText string `gorm:"not null"`
-	State string `gorm:"not null"`
-	Closed bool  `gorm:"default:false"`
-	ClosedAt  time.Time
-	Editor  uint
-	LastEditedAt time.Time
-	Locked bool `gorm:"default:false"`
+	Number     int  `gorm:"not null"` //issue number
+	// CreatedAt time.Time `"gorm:"not null"`
+	CreatedViaEmail  bool `gorm:"default:false"`
+	PublishedAt      time.Time
+	Title            string `gorm:"not null"`
+	Author           uint   `gorm:"not null"`
+	BodyText         string `gorm:"not null"`
+	State            string `gorm:"not null"`
+	Closed           bool   `gorm:"default:false"`
+	ClosedAt         time.Time
+	Editor           uint
+	LastEditedAt     time.Time
+	Locked           bool `gorm:"default:false"`
 	ActiveLockReason string
-	ResourcePath string `gorm:"not null"`
-	UpdatedAt time.Time
+	ResourcePath     string `gorm:"not null"`
+	// UpdatedAt        time.Time
 	Url string
 
 	//milestone
@@ -44,7 +45,7 @@ func (i *Issue) TableName() string {
 	return "issues"
 }
 
-func CreateIssue(db *gorm.DB, issue *Issue) (uint, error){
+func CreateIssue(db *gorm.DB, issue *Issue) (uint, error) {
 	err := db.Create(issue).Error
 	if err != nil {
 		return 0, err
@@ -52,7 +53,7 @@ func CreateIssue(db *gorm.DB, issue *Issue) (uint, error){
 	return issue.ID, nil
 }
 
-func FindIssueByRepository(db *gorm.DB, repository uint) (*Issue , error) {
+func FindIssueByRepository(db *gorm.DB, repository uint) (*Issue, error) {
 	var issue Issue
 	last := db.Last(&issue)
 	if last.Error != nil {
@@ -60,7 +61,6 @@ func FindIssueByRepository(db *gorm.DB, repository uint) (*Issue , error) {
 	}
 	return &issue, nil
 }
-
 
 //type IssueGH struct {
 //	Number uint
@@ -76,20 +76,20 @@ func GetIssues(lastIssue *Issue) []Issue {
 		var q struct {
 			Repository struct {
 				Issues struct {
-					Nodes []Issue
+					Nodes    []Issue
 					PageInfo struct {
-						EndCursor githubv4.String
+						EndCursor   githubv4.String
 						HasNextPage bool
 					}
 				} `graphql:"issues(first: 100, after:$issuesCursor, filterBy:{since: $since})"`
 			} `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
 		}
-	        variables := map[string]interface{}{
-        	      "repositoryOwner": githubv4.String(owner),
-	              "repositoryName": githubv4.String(name),
-		      "since": lastIssue.CreatedAt.String(),
-		      "issuesCursor":	(*githubv4.String)(nil),
-        	}
+		variables := map[string]interface{}{
+			"repositoryOwner": githubv4.String(owner),
+			"repositoryName":  githubv4.String(name),
+			"since":           lastIssue.CreatedAt.String(),
+			"issuesCursor":    (*githubv4.String)(nil),
+		}
 		client := GetClient()
 		var allIssues []Issue
 		for {
@@ -99,9 +99,9 @@ func GetIssues(lastIssue *Issue) []Issue {
 			}
 			allIssues = append(allIssues, q.Repository.Issues.Nodes...)
 			if !q.Repository.Issues.PageInfo.HasNextPage {
-			      break
+				break
 			}
-		      	variables["issuesCursor"] = githubv4.NewString(q.Repository.Issues.PageInfo.EndCursor)
+			variables["issuesCursor"] = githubv4.NewString(q.Repository.Issues.PageInfo.EndCursor)
 			fmt.Println(allIssues)
 		}
 		fmt.Println("Read", allIssues)
@@ -112,20 +112,20 @@ func GetIssues(lastIssue *Issue) []Issue {
 		var q struct {
 			Repository struct {
 				Issues struct {
-					Nodes []Issue
+					Nodes    []Issue
 					PageInfo struct {
-						EndCursor githubv4.String
+						EndCursor   githubv4.String
 						HasNextPage bool
 					}
 				} `graphql:"issues(first: 100, after:$issuesCursor)"`
 			} `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
 		}
 		fmt.Println("q")
-        	variables := map[string]interface{}{
-	              "repositoryOwner": githubv4.String(owner),
-        	      "repositoryName": githubv4.String(name),
-		      "issuesCursor":	(*githubv4.String)(nil),
-	        }
+		variables := map[string]interface{}{
+			"repositoryOwner": githubv4.String(owner),
+			"repositoryName":  githubv4.String(name),
+			"issuesCursor":    (*githubv4.String)(nil),
+		}
 		fmt.Println("variables")
 		client := GetClient()
 		var allIssues []Issue
@@ -138,10 +138,10 @@ func GetIssues(lastIssue *Issue) []Issue {
 			allIssues = append(allIssues, q.Repository.Issues.Nodes...)
 			fmt.Println("allIssues")
 			if !q.Repository.Issues.PageInfo.HasNextPage {
-		      		break
+				break
 			}
 			fmt.Println("break")
-		        variables["issuesCursor"] = githubv4.NewString(q.Repository.Issues.PageInfo.EndCursor)
+			variables["issuesCursor"] = githubv4.NewString(q.Repository.Issues.PageInfo.EndCursor)
 			fmt.Println("EndCursor")
 			fmt.Println(allIssues)
 		}
