@@ -34,15 +34,17 @@ type FileStat struct {
 func main() {
 	fmt.Println("go-repo-downloader")
 
-	url := "https://github.com/apache/pdfbox" //"https://github.com/paulorfarah/TestProject"
+	url := "https://github.com/eclipse/jgit" //"https://github.com/apache/pdfbox" (svn) //  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
 	//	fmt.Printf("%s -> %s\n", k, v)
 	//}
 	//username := urlSplit[3]
 	repoName := urlSplit[4]
+	repoDir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 
 	fmt.Println("git clone " + url)
+	cloneRepository(url, repoDir)
 	r, err := git.Clone(memory.NewStorage(), nil, &git.CloneOptions{
 		URL: url,
 	})
@@ -252,7 +254,7 @@ func main() {
 
 							//call randoop
 							if action.String() == "Modify" && strings.Contains(change.From.Name, ".java") && strings.Contains(change.To.Name, ".java") {
-								ExecuteRandoop(repoName, prevCommit.Hash.String(), change.From.Name, currCommit.Hash.String(), change.To.Name)
+								ExecuteRandoop(repoDir, repoName, prevCommit.Hash.String(), change.From.Name, currCommit.Hash.String(), change.To.Name)
 							}
 						}
 					}
