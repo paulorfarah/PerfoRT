@@ -34,7 +34,7 @@ type FileStat struct {
 func main() {
 	fmt.Println("go-repo-downloader")
 
-	url := "https://github.com/eclipse/jgit" //"https://github.com/apache/pdfbox" (svn) //  "https://github.com/paulorfarah/TestProject"
+	url := "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svn) //  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
 	//	fmt.Printf("%s -> %s\n", k, v)

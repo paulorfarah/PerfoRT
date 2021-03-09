@@ -30,7 +30,7 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 			classpath += GetMavenDependenciesClasspath(repoDir)
 			className := strings.ReplaceAll(path, "/", ".")
 
-			cmd := exec.Command("java", "-classpath", classpath+";D:\\Download\\randoop-4.2.5\\randoop-all-4.2.5.jar", "randoop.main.Main", "gentests", "--testclass="+className)
+			cmd := exec.Command("java", "-classpath", classpath+";$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass="+className)
 			// dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 			// cmd.Dicdr = dir
 			err := cmd.Start()
