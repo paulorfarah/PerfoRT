@@ -32,18 +32,18 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 
 			cmd := exec.Command("java", "-classpath", classpath+";D:\\Download\\randoop-4.2.5\\randoop-all-4.2.5.jar", "randoop.main.Main", "gentests", "--testclass="+className)
 			// dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
-			// cmd.Dir = dir
+			// cmd.Dicdr = dir
 			err := cmd.Start()
 			if err != nil {
 				path, _ := os.Getwd()
 				fmt.Println("currentdir: " + path)
-				fmt.Println("START dir: " + dir)
+				// fmt.Println("START dir: " + dir)
 				fmt.Printf("java -classpath " + classpath + ";D:\\Download\\randoop-4.2.5\\randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=" + className)
 				fmt.Println("\nCannot run randoop gentests: ", err)
 			}
 			err = cmd.Wait()
 			if err != nil {
-				fmt.Println("START dir:" + dir)
+				// fmt.Println("START dir:" + dir)
 				fmt.Printf("java -classpath " + classpath + ";D:\\Download\\randoop-4.2.5\\randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=" + className)
 				fmt.Println("\nCannot run randoop gentests: ", err)
 			}
