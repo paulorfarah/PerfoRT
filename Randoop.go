@@ -9,7 +9,7 @@ import (
 
 func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo string) {
 	//checkout previous commit
-	// fmt.Println("prevCommit: " + prevCommit + "fileFrom: " + fileFrom)
+	fmt.Println("prevCommit: " + prevCommit + "fileFrom: " + fileFrom)
 	err := checkout(repoName, prevCommit)
 
 	if err == nil {
@@ -28,11 +28,11 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 				//commons-io
 				pack = strings.TrimLeft(fileFrom, "/src/main/java")
 			} else {
+				fmt.Println("**************************** filefrom: " + fileFrom)
 				paths = strings.Split(fileFrom, "/src/")
 				dir = paths[0]
 				pack = paths[1]
 			}
-
 		}
 
 		path := strings.Split(pack, ".java")[0]

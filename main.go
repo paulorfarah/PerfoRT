@@ -253,7 +253,11 @@ func main() {
 							models.CreateChange(db, changeObj)
 
 							//call randoop
-							if action.String() == "Modify" && strings.Contains(change.From.Name, ".java") && strings.Contains(change.To.Name, ".java") {
+							if action.String() == "Modify" &&
+								strings.Contains(change.From.Name, ".java") &&
+								strings.Contains(change.To.Name, ".java") &&
+								!strings.HasPrefix(change.From.Name, "src/test") &&
+								!strings.HasPrefix(change.From.Name, "src/test") {
 								ExecuteRandoop(repoDir, repoName, prevCommit.Hash.String(), change.From.Name, currCommit.Hash.String(), change.To.Name)
 							}
 						}
