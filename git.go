@@ -19,7 +19,7 @@ func cloneRepository(url, directory string) error {
 }
 
 func checkout(repoName, hash string) error {
-	fmt.Println("------------------------------------------------ checkout")
+	// fmt.Println("------------------------------------------------ checkout")
 	// path, err := os.Getwd()
 	// if err != nil {
 	// 	fmt.Println(err)

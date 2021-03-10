@@ -13,51 +13,56 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 	err := checkout(repoName, prevCommit)
 
 	if err == nil {
-		fmt.Println("randoop")
+		fmt.Println("randoop fileFrom: " + fileFrom)
 		//fmt.Printf("java -classpath .;%RANDOOP_JAR% randoop.main.Main gentests --classlist=myclasses.txt")
 
+		dir := ""
+		pack := ""
+
 		paths := strings.Split(fileFrom, "/src/main/java/")
-		if len(paths) == 1 {
-			paths = strings.Split(fileFrom, "/src/")
-		}
 		if len(paths) > 1 {
-			// fmt.Println(paths)
-			path := strings.Split(paths[1], ".java")[0]
-
-			// classpath := "D:" + string(os.PathSeparator) + "eclipse-workspace2" + string(os.PathSeparator) + "randoop" + string(os.PathSeparator) + "pdfbox" + string(os.PathSeparator) + paths[0] + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes" + string(os.PathSeparator)
-			classpath := repoDir + string(os.PathSeparator) + paths[0] + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes;" // + string(os.PathSeparator)
-			// fmt.Println("classpath: " + classpath)
-			classpath += GetMavenDependenciesClasspath(repoDir)
-			className := strings.ReplaceAll(path, "/", ".")
-
-			cmd := exec.Command("java", "-classpath", classpath+";$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass="+className)
-			// dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
-			// cmd.Dicdr = dir
-			fmt.Printf("java -classpath " + classpath + ";D:\\Download\\randoop-4.2.5\\randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=" + className)
-			err := cmd.Start()
-			if err != nil {
-				// path, _ := os.Getwd()
-				// fmt.Println("currentdir: " + path)
-				// fmt.Println("START dir: " + dir)
-				fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
-			}
-			err = cmd.Wait()
-			if err != nil {
-				// fmt.Println("START dir:" + dir)
-				// fmt.Printf("java -classpath " + classpath + ";D:\\Download\\randoop-4.2.5\\randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=" + className)
-				fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
+			dir = paths[0]
+			pack = paths[1]
+		} else if len(paths) == 1 {
+			if strings.HasPrefix(fileFrom, "src/main/java/") {
+				//commons-io
+				pack = strings.TrimLeft(fileFrom, "/src/main/java")
 			} else {
-				fmt.Println("\n [>>SUCCESS]: Randoop executed successully!")
+				paths = strings.Split(fileFrom, "/src/")
+				dir = paths[0]
+				pack = paths[1]
 			}
 
-			// //checkout current commit
-			// fmt.Println(currCommit, fileTo)
-			// fmt.Printf("git --git-dir=repos"+string(os.PathSeparator)+"%v"+string(os.PathSeparator)+".git --work-tree=repos"+string(os.PathSeparator)+"%v checkout %s\n", repoName, repoName, currCommit)
-			// _, err = exec.Command("git", "--git-dir=repos"+string(os.PathSeparator)+repoName+string(os.PathSeparator)+".git", "--work-tree=repos"+string(os.PathSeparator)+repoName, "checkout", currCommit).Output()
-			// if err != nil {
-			// 	fmt.Println("\nCannot run git checkout: ", err)
-			// }
-			// fmt.Printf("java -classpath .;%RANDOOP_JAR% randoop.main.Main gentests --classlist=myclasses.txt")
 		}
+
+		path := strings.Split(pack, ".java")[0]
+		if dir != "" {
+			dir += string(os.PathSeparator)
+		}
+		classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes;" // + string(os.PathSeparator)
+		classpath += GetMavenDependenciesClasspath(repoDir)
+		className := strings.ReplaceAll(path, "/", ".")
+		cmd := exec.Command("java", "-classpath", classpath+";$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass="+className)
+		fmt.Printf("java -classpath " + classpath + ";$RANDOOP_JAR randoop.main.Main gentests --testclass=" + className)
+		err := cmd.Start()
+		if err != nil {
+			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
+		}
+		err = cmd.Wait()
+		if err != nil {
+			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
+		} else {
+			fmt.Println("\n [>>SUCCESS]: Randoop executed successully!")
+		}
+
+		// //checkout current commit
+		// fmt.Println(currCommit, fileTo)
+		// fmt.Printf("git --git-dir=repos"+string(os.PathSeparator)+"%v"+string(os.PathSeparator)+".git --work-tree=repos"+string(os.PathSeparator)+"%v checkout %s\n", repoName, repoName, currCommit)
+		// _, err = exec.Command("git", "--git-dir=repos"+string(os.PathSeparator)+repoName+string(os.PathSeparator)+".git", "--work-tree=repos"+string(os.PathSeparator)+repoName, "checkout", currCommit).Output()
+		// if err != nil {
+		// 	fmt.Println("\nCannot run git checkout: ", err)
+		// }
+		// fmt.Printf("java -classpath .;%RANDOOP_JAR% randoop.main.Main gentests --classlist=myclasses.txt")
+		// }
 	}
 }
