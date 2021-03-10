@@ -26,9 +26,15 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 		} else if len(paths) == 1 {
 			if strings.HasPrefix(fileFrom, "src/main/java/") {
 				//commons-io
-				pack = strings.TrimLeft(fileFrom, "/src/main/java")
+				pack = strings.TrimLeft(fileFrom, "/src/main/java/")
+			} else if strings.HasPrefix(fileFrom, "src/conf/") {
+				pack = strings.TrimLeft(fileFrom, "/src/conf/")
+			} else if strings.HasPrefix(fileFrom, "src/examples/") {
+				pack = strings.TrimLeft(fileFrom, "/src/examples/")
 			} else if strings.HasPrefix(fileFrom, "src/java/") {
-				pack = strings.TrimLeft(fileFrom, "/src/main/java")
+				pack = strings.TrimLeft(fileFrom, "/src/java/")
+			} else if strings.HasPrefix(fileFrom, "src/test/") {
+				pack = strings.TrimLeft(fileFrom, "/src/test/")
 			} else {
 				fmt.Println("**************************** filefrom: " + fileFrom)
 				paths = strings.Split(fileFrom, "/src/")
