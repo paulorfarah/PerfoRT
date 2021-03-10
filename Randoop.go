@@ -27,15 +27,15 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 			if strings.HasPrefix(fileFrom, "src/main/java/") {
 				//commons-io
 				pack = strings.TrimLeft(fileFrom, "/src/main/java")
-			} else if  strings.HasPrefix(fileFrom, "src/java/") {
-					pack = strings.TrimLeft(fileFrom, "/src/main/java")
-				} else {
-					fmt.Println("**************************** filefrom: " + fileFrom)
-					paths = strings.Split(fileFrom, "/src/")
-					dir = paths[0]
-					pack = paths[1]
-				}
+			} else if strings.HasPrefix(fileFrom, "src/java/") {
+				pack = strings.TrimLeft(fileFrom, "/src/main/java")
+			} else {
+				fmt.Println("**************************** filefrom: " + fileFrom)
+				paths = strings.Split(fileFrom, "/src/")
+				dir = paths[0]
+				pack = paths[1]
 			}
+
 		}
 
 		path := strings.Split(pack, ".java")[0]
@@ -47,7 +47,7 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 		className := strings.ReplaceAll(path, "/", ".")
 		cmd := exec.Command("java", "-classpath", classpath+";$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass="+className)
 		fmt.Printf("java -classpath " + classpath + ";$RANDOOP_JAR randoop.main.Main gentests --testclass=" + className)
-		err := cmd.Start()
+		err = cmd.Start()
 		if err != nil {
 			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
 		}
