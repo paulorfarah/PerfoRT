@@ -41,7 +41,6 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 				dir = paths[0]
 				pack = paths[1]
 			}
-
 		}
 
 		path := strings.Split(pack, ".java")[0]
@@ -53,15 +52,13 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 		className := strings.ReplaceAll(path, "/", ".")
 		cmd := exec.Command("java", "-classpath", classpath+";$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass="+className)
 		fmt.Printf("java -classpath " + classpath + ";$RANDOOP_JAR randoop.main.Main gentests --testclass=" + className)
-		err = cmd.Start()
-		if err != nil {
-			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
-		}
-		err = cmd.Wait()
+		out, err := cmd.Output()
 		if err != nil {
 			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
 		} else {
-			fmt.Println("\n [>>SUCCESS]: Randoop executed successully!")
+			fmt.Println("\n [>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>SUCCESS]: Randoop executed successully!")
+			fmt.Println(out)
+
 		}
 
 		// //checkout current commit
