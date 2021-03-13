@@ -31,7 +31,7 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR]: Cannot clone repository: ", err, out)
-		return nil, err
+		// return nil, err
 	} else {
 		fmt.Println("\n [>>SUCCESS]: repository cloned successully!")
 		fmt.Println(out)
