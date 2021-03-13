@@ -4,18 +4,27 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/go-git/go-git/v5"
 )
 
-func cloneRepository(url, directory string) error {
+func cloneRepository(url, directory string) (*git.Repository, error) {
 	// Clone the given repository to the given directory
-	_, err := git.PlainClone(directory, false, &git.CloneOptions{
+	removeContents(directory)
+	r, err := git.PlainClone(directory, false, &git.CloneOptions{
 		URL:      url,
 		Progress: os.Stdout,
 	})
+
+	// r, err := git.Clone(memory.NewStorage(), nil, &git.CloneOptions{
+	// 	URL: url,
+	// })
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println("Repository cloned to: " + directory)
-	return err
+	return r, err
 }
 
 func checkout(repoName, hash string) error {
@@ -51,4 +60,23 @@ func checkout(repoName, hash string) error {
 	// 	fmt.Println("\nCannot run git checkout: ", err)
 	// }
 	return err
+}
+
+func removeContents(dir string) error {
+	d, err := os.Open(dir)
+	if err != nil {
+		return err
+	}
+	defer d.Close()
+	names, err := d.Readdirnames(-1)
+	if err != nil {
+		return err
+	}
+	for _, name := range names {
+		err = os.RemoveAll(filepath.Join(dir, name))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

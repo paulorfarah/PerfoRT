@@ -15,5 +15,6 @@ require (
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200409092240-59c9f1ba88fa // indirect
+	gopkg.in/src-d/go-git.v4 v4.13.1 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.5 // indirect
 )
