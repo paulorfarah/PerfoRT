@@ -45,6 +45,7 @@ func main() {
 
 	// fmt.Println("git clone " + url)
 	r, err := cloneRepository(url, repoDir)
+
 	if err == nil {
 
 		//	ref, err := r.Head()
