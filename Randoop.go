@@ -59,7 +59,7 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 		classpath += GetMavenDependenciesClasspath(repoDir)
 		className := strings.ReplaceAll(path, "/", ".")
 		cmd := exec.Command("java", "-classpath", classpath+cpSep+randoopJar, " randoop.main.Main", "gentests", "--testclass="+className)
-		fmt.Printf("java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className)
+		fmt.Printf("java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + "\n")
 		out, err := cmd.Output()
 		if err != nil {
 			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)

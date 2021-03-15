@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -41,7 +42,9 @@ func main() {
 	//}
 	//username := urlSplit[3]
 	repoName := urlSplit[4]
-	repoDir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
+	// repoDir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
+	repoDir := getParentDirectory()
+	fmt.Println("repoDir: " + repoDir)
 
 	// fmt.Println("git clone " + url)
 	r, err := cloneRepository(url, repoDir)
@@ -280,4 +283,23 @@ func main() {
 	} else {
 		fmt.Println("Cannot get repository")
 	}
+}
+
+func substr(s string, pos, length int) string {
+	runes := []rune(s)
+	l := pos + length
+	if l > len(runes) {
+		l = len(runes)
+	}
+	return string(runes[pos:l])
+}
+
+func getParentDirectory() string {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	dir = strings.Replace(dir, "\\", "/", -1)
+
+	return substr(dir, 0, strings.LastIndex(dir, "/"))
 }
