@@ -49,7 +49,7 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 			dir += string(os.PathSeparator)
 		}
 
-		randoopJar := "$RANDOOP_JAR"
+		randoopJar := "/mnt/sda4/downloads/randoop-4.2.5/randoop-all-4.2.5.jar" //"$RANDOOP_JAR"
 		cpSep := ":"
 		if runtime.GOOS == "windows" {
 			randoopJar = "%RANDOOP_JAR%"
