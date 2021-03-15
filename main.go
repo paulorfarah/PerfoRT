@@ -43,7 +43,7 @@ func main() {
 	//username := urlSplit[3]
 	repoName := urlSplit[4]
 	// repoDir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
-	repoDir := getParentDirectory()
+	repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator)
 	fmt.Println("repoDir: " + repoDir)
 
 	// fmt.Println("git clone " + url)
