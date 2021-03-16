@@ -14,7 +14,7 @@ func main() {
 	// cmd := exec.Command("java", "-classpath", "/mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass=testproject.Test")
 	// script := CreateRandoopScript("testproject.Test")
 	// cmd := exec.Command("bash " + script)
-	c := "java -classpath /mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR randoop.main.Main gentests --testclass=testproject.Test"
+	c := "java -classpath /mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR randoop.main.Main gentests --testclass=testproject.Test > testproject.Test.txt"
 	cmd := exec.Command("bash", "-c", c)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
