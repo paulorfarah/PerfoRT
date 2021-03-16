@@ -51,7 +51,7 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 			dir += string(os.PathSeparator)
 		}
 
-		randoopJar := "/mnt/sda4/downloads/randoop-4.2.5/randoop-all-4.2.5.jar" //"$RANDOOP_JAR"
+		randoopJar := "$RANDOOP_JAR"
 		cpSep := ":"
 		if runtime.GOOS == "windows" {
 			randoopJar = "%RANDOOP_JAR%"
@@ -60,14 +60,23 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 		classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" // + string(os.PathSeparator)
 		classpath += GetMavenDependenciesClasspath(repoDir)
 		className := strings.ReplaceAll(path, "/", ".")
-		cmd := exec.Command("java", "-classpath", classpath+cpSep+randoopJar, " randoop.main.Main", "gentests", "--testclass="+className)
-		fmt.Printf("java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + "\n")
-		out, err := cmd.Output()
+
+		// fmt.Printf("java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + "\n")
+		// cmd := exec.Command("java", "-classpath", classpath+cpSep+randoopJar, " randoop.main.Main", "gentests", "--testclass="+className)
+		c := "java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
+		cmd := exec.Command("bash", "-c", c)
+		var out bytes.Buffer
+		var stderr bytes.Buffer
+		cmd.Stdout = &out
+		cmd.Stderr = &stderr
+		err := cmd.Run()
 		if err != nil {
-			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests: ", err)
+			fmt.Println("\n[>>ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err) + "): " + stderr.String())
+			fmt.Println(out)
 		} else {
 			fmt.Println("\n [>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>SUCCESS]: Randoop executed successully!")
-			fmt.Println(out)
+			fmt.Println(out.String())
+			fmt.Println(ReadRandoopResults("testproject.Test.txt"))
 
 		}
 
