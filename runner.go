@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func main() {
+func main2() {
 	fmt.Println("teste")
 	// cmd := exec.Command("java", "-classpath", "/mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass=testproject.Test")
 	// script := CreateRandoopScript("testproject.Test")

@@ -31,7 +31,7 @@ import (
 // 	Deletion int
 // }
 
-func main2() {
+func main() {
 	fmt.Println("go-repo-downloader")
 
 	url := "https://github.com/paulorfarah/TestProject" // "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
