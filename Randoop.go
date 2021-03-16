@@ -26,7 +26,7 @@ func CollectRandoopMetrics(repoDir, repoName, prevCommit, fileFrom, currCommit, 
 	}
 
 	//checkout current commit
-	fmt.Println("prevCommit: " + currCommit + "fileFrom: " + fileTo)
+	fmt.Println("current Commit: " + currCommit + "fileTo: " + fileTo)
 	err = checkout(repoName, prevCommit)
 	if err == nil {
 		okA, metricsA = runRandoop(repoDir, fileTo)
