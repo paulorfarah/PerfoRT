@@ -31,28 +31,25 @@ func main() {
 }
 
 func CreateRandoopScript(class string) string {
-	f := strings.ReplaceAll(class, ".", "_") + ".sh"
+	fn := strings.ReplaceAll(class, ".", "_") + ".sh"
 	// Create new file
-	new, err := os.Create(f)
+	f, err := os.Create(fn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer new.Close()
+	defer f.Close()
 
-	stats, err := os.Stat(f)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Permission File Before: %s\n", stats.Mode())
-	err = os.Chmod(f, 0700)
+	err = os.Chmod(fn, 0700)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	stats, err = os.Stat(f)
-	if err != nil {
-		log.Fatal(err)
+	c := "java -classpath /mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR randoop.main.Main gentests --testclass=" + class + " > " + class + ".txt"
+	_, err2 := f.WriteString(c)
+
+	if err2 != nil {
+		log.Fatal(err2)
 	}
-	fmt.Printf("Permission File After: %s\n", stats.Mode())
-	return f
+
+	return fn
 }
