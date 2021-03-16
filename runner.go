@@ -12,9 +12,10 @@ import (
 func main() {
 	fmt.Println("teste")
 	// cmd := exec.Command("java", "-classpath", "/mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass=testproject.Test")
-	script := CreateRandoopScript("testproject.Test")
-
-	cmd := exec.Command("bash " + script)
+	// script := CreateRandoopScript("testproject.Test")
+	// cmd := exec.Command("bash " + script)
+	c := "java -classpath /mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR randoop.main.Main gentests --testclass=testproject.Test"
+	cmd := exec.Command("bash", "-c", c)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &out
