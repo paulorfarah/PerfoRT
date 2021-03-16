@@ -195,11 +195,11 @@ func main() {
 
 						// Changes
 						for _, change := range changes {
-							fmt.Println(change.From.Name)
-							fmt.Println(change.To.Name)
-							fmt.Println(change.Action())
-							fmt.Println(change.Files())
-							fmt.Println("------------------- start")
+							// fmt.Println(change.From.Name)
+							// fmt.Println(change.To.Name)
+							// fmt.Println(change.Action())
+							// fmt.Println(change.Files())
+							// fmt.Println("------------------- start")
 							// fmt.Println(change.Patch())
 
 							patch, _ := change.Patch()
@@ -208,7 +208,7 @@ func main() {
 							//files
 							count := 0
 							for _, file := range diff.Files {
-								fmt.Println("************************** file: ", file)
+								// fmt.Println("************************** file: ", file)
 
 								sc := fmt.Sprintf("%d", count)
 
@@ -259,7 +259,7 @@ func main() {
 									strings.Contains(change.To.Name, ".java") &&
 									!strings.HasPrefix(change.From.Name, "src/test/") &&
 									!strings.HasPrefix(change.From.Name, "src/test/") {
-									ExecuteRandoop(repoDir, repoName, prevCommit.Hash.String(), change.From.Name, currCommit.Hash.String(), change.To.Name)
+									CollectRandoopMetrics(repoDir, repoName, prevCommit.Hash.String(), change.From.Name, currCommit.Hash.String(), change.To.Name, changeObj.ID)
 								}
 							} else {
 								fmt.Println("change already exists in database...")
