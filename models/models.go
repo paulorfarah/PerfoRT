@@ -63,7 +63,7 @@ func init() {
 	db.Model(&Issue{}).AddForeignKey("repository", "repositories(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("editor", "accounts(id)", "RESTRICT", "RESTRICT")
-	db.Model(&RandoopMetrics{}).AddForeignKey("change_fk", "randoopmetrics(id)", "RESTRICT", "RESTRICT")
+	db.Model(&RandoopMetrics{}).AddForeignKey("change_fk", "changes(id)", "RESTRICT", "RESTRICT")
 
 }
 
