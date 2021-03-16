@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -79,4 +81,50 @@ func ExecuteRandoop(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo 
 		// fmt.Printf("java -classpath .;%RANDOOP_JAR% randoop.main.Main gentests --classlist=myclasses.txt")
 		// }
 	}
+}
+
+func ReadRandoopResults(fn string) [5]string {
+	var res, nme, eme, aetn, aete, amu string
+	f, err := os.Open(fn)
+	if err != nil {
+		fmt.Print("There has been an error!: ", err)
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Bytes()
+		res = parseResult(line, "Normal method executions:")
+		if res != "" {
+			nme = res
+		}
+		res = parseResult(line, "Exceptional method executions:")
+		if res != "" {
+			eme = res
+		}
+		res = parseResult(line, "Average method execution time (normal termination):")
+		if res != "" {
+			aetn = res
+		}
+		res = parseResult(line, "Average method execution time (exceptional termination):")
+		if res != "" {
+			aete = res
+		}
+		res = parseResult(line, "Approximate memory usage")
+		if res != "" {
+			amu = res
+		}
+	}
+	return [5]string{nme, eme, aetn, aete, amu}
+}
+
+func parseResult(line []byte, metric string) string {
+	size := len(metric)
+	res := ""
+	if len(line) > len(metric) {
+		if bytes.Equal(line[:size], []byte(metric)) {
+			res = strings.Trim(string(line[size:]), " ")
+		}
+	}
+	return res
 }

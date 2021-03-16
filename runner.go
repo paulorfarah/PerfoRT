@@ -27,6 +27,7 @@ func main() {
 	} else {
 		fmt.Println("\n [>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>SUCCESS]: Randoop executed successully!")
 		fmt.Println(out.String())
+		fmt.Println(ReadRandoopResults("testproject.Test.txt"))
 
 	}
 }
