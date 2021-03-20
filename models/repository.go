@@ -1,19 +1,20 @@
 package models
 
 import (
-//	"fmt"
-//	"context"
+	//	"fmt"
+	//	"context"
 	"github.com/jinzhu/gorm"
-//	"github.com/shurcool/githubv4"
+	//	"github.com/shurcool/githubv4"
 	//"golang.org/x/oauth2"
 )
 
 type Repository struct {
 	Model
-	PlatformFK uint `gorm:"unique_index:idx_repository"`
-	Name string `gorm:"not null;unique_index:idx_repository"`
+	PlatformID  uint // `gorm:"unique_index:idx_repository"`
+	Platform    Platform
+	Name        string `gorm:"not null;unique_index:idx_repository"`
 	Description string
-	IsPrivate bool `gorm:"not null" sql:"DEFAULT:false"`
+	IsPrivate   bool `gorm:"not null" sql:"DEFAULT:false"`
 }
 
 func (r *Repository) TableName() string {
@@ -37,7 +38,6 @@ func FindRepositoryByName(db *gorm.DB, name string) (*Repository, error) {
 //func (r *Repository) UpdateCommits(db *gorm.DB, branchHash xxx, since time, until time)  {
 //	fmt.Println("TODO")
 //}
-
 
 /*
 func (r *Repository)  Issues() error {

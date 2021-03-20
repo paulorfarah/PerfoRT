@@ -11,9 +11,9 @@ import (
 
 type Issue struct {
 	Model
-	Repository uint `gorm:"not null;unique_index:idx_issue"`
-	Number     int  `gorm:"not null"` //issue number
-	// CreatedAt time.Time `"gorm:"not null"`
+	RepositoryID     int // uint `gorm:"not null;unique_index:idx_issue"`
+	Repository       Repository
+	Number           int  `gorm:"not null"` //issue number
 	CreatedViaEmail  bool `gorm:"default:false"`
 	PublishedAt      time.Time
 	Title            string `gorm:"not null"`

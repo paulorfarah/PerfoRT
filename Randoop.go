@@ -4,12 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"go-repo-downloader/models"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
-
-	"go-repo-downloader/models"
 )
 
 func CollectRandoopMetrics(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo string, changeID uint) {
@@ -34,7 +33,7 @@ func CollectRandoopMetrics(repoDir, repoName, prevCommit, fileFrom, currCommit, 
 
 	if okB == true && okA == true {
 		db := models.GetDB()
-		rm := &models.RandoopMetrics{ChangeFK: changeID,
+		rm := &models.RandoopMetrics{ChangeID: changeID,
 			NMEBefore:  metricsB[0],
 			EMEBefore:  metricsB[1],
 			AETNBefore: metricsB[2],
@@ -81,6 +80,7 @@ func runRandoop(repoDir, file string) (bool, [5]string) {
 
 	// fmt.Printf("java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + "\n")
 	c := "java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
+	fmt.Println(c)
 	cmd := exec.Command("bash", "-c", c)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
@@ -88,11 +88,11 @@ func runRandoop(repoDir, file string) (bool, [5]string) {
 	cmd.Stderr = &stderr
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println("\n[>>ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err) + "): " + stderr.String())
+		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err) + "): " + stderr.String())
 		fmt.Println(out)
 		return false, [5]string{}
 	}
-	return true, readRandoopResults("testproject.Test.txt")
+	return true, readRandoopResults(className + ".txt")
 }
 
 func parseProjectPath(file string) (string, string) {

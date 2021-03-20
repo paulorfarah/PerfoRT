@@ -2,13 +2,14 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
 type Platform struct {
 	Model
 	Repositories []Repository `gorm:"foreignkey:PlatformFK"`
-	Name string `gorm:"unique_index;not null"`
+	Name         string       `gorm:"unique_index;not null"`
 }
 
 func (p *Platform) TableName() string {

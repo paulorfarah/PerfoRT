@@ -3,13 +3,23 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"go-repo-downloader/models"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
+	// "github.com/wcharczuk/go-chart/v2"
+	// "github.com/wcharczuk/go-chart/v2/drawing"
 )
 
-func main2() {
+func main() {
+	// plotRandoopResults()
+
+	// db := models.GetDB()
+	models.GetRandoopMetrics()
+}
+
+func randoop() {
 	fmt.Println("teste")
 	// cmd := exec.Command("java", "-classpath", "/mnt/sda4/go-work/src/github.com/paulorfarah/repos/TestProject/target/classes:$RANDOOP_JAR", "randoop.main.Main", "gentests", "--testclass=testproject.Test")
 	// script := CreateRandoopScript("testproject.Test")

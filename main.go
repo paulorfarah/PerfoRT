@@ -31,7 +31,7 @@ import (
 // 	Deletion int
 // }
 
-func main() {
+func main2() {
 	fmt.Println("go-repo-downloader")
 
 	url := "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
@@ -80,7 +80,7 @@ func main() {
 		if err != nil {
 			fmt.Println("create new repo")
 			fmt.Println(err)
-			repository = &models.Repository{PlatformFK: platform.ID, Name: repoName}
+			repository = &models.Repository{PlatformID: platform.ID, Name: repoName}
 			models.CreateRepository(db, repository)
 		}
 
@@ -181,7 +181,7 @@ func main() {
 							}
 							commit = &models.Commit{CommitHash: currCommit.Hash.String(),
 								PreviousCommitHash: prevCommit.Hash.String(),
-								RepositoryFK:       repository.ID,
+								RepositoryID:       repository.ID,
 								TreeHash:           currCommit.TreeHash.String(),
 								ParentHashes:       parent,
 								Author:             author.ID,
@@ -249,7 +249,7 @@ func main() {
 								if err != nil {
 									return err
 								}
-								changeObj = &models.Change{CommitFK: commit.ID, ChangeHash: changeSha, FileFrom: change.From.Name, FileTo: change.To.Name, Action: action.String(), Patch: patch.String()}
+								changeObj = &models.Change{CommitID: commit.ID, ChangeHash: changeSha, FileFrom: change.From.Name, FileTo: change.To.Name, Action: action.String(), Patch: patch.String()}
 								models.CreateChange(db, changeObj)
 
 								//call randoop
