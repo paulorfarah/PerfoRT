@@ -15,23 +15,14 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 
-	//	fdiff "github.com/go-git/go-git/v5/plumbing/format/diff"
-
 	_ "github.com/go-sql-driver/mysql"
 
 	"go-repo-downloader/models"
-	//"go-repo-downloader/codeanalysis"
 
 	"github.com/waigani/diffparser"
 )
 
-// type FileStat struct {
-// 	Name     string
-// 	Addition int
-// 	Deletion int
-// }
-
-func main2() {
+func main() {
 	fmt.Println("go-repo-downloader")
 
 	url := "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
@@ -280,6 +271,7 @@ func main2() {
 			}
 
 		}
+		models.GetRandoopMetrics()
 	} else {
 		fmt.Println("Cannot get repository")
 	}
