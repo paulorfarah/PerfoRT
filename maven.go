@@ -17,12 +17,12 @@ func GetMavenDependenciesClasspath(path string) string {
 	cmd.Dir = path
 	_, err := cmd.Output()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
 	}
 
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	if err != nil {
-		fmt.Print("There has been an error!: ", err)
+		fmt.Println("[>>ERROR]: There has been an error getting maven dependencies classpath!: ", err.Error())
 	}
 	defer f.Close()
 

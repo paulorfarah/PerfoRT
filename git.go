@@ -71,13 +71,13 @@ func checkout(repoName, hash string) error {
 	cmd.Dir = dir
 	err := cmd.Start()
 	if err != nil {
-		fmt.Println("START dir: " + dir)
+		fmt.Println("[>>ERROR]: START dir: " + dir)
 		fmt.Printf("git checkout -f %s\n", hash)
 		fmt.Println("\nCannot run git checkout: ", hash, err)
 	}
 	err = cmd.Wait()
 	if err != nil {
-		fmt.Println("WAIT dir: " + dir)
+		fmt.Println("[>>ERROR]: WAIT dir: " + dir)
 		fmt.Printf("git checkout -f %s\n", hash)
 		fmt.Println("\nCannot run git checkout: ", hash, err)
 	}

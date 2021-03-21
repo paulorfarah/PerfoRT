@@ -27,16 +27,16 @@ type RandoopMetrics struct {
 	AETNAfter  string
 	AETEAfter  string
 	AMUAfter   string
-	NMEDiff    string
-	EMEDiff    string
-	AETNDiff   string
-	AETEDiff   string
-	AMUDiff    string
-	NMEPerc    string
-	EMEPerc    string
-	AETNPerc   string
-	AETEPerc   string
-	AMUPerc    string
+	NMEDiff    int
+	EMEDiff    int
+	AETNDiff   float64
+	AETEDiff   float64
+	AMUDiff    float64
+	NMEPerc    float64
+	EMEPerc    float64
+	AETNPerc   float64
+	AETEPerc   float64
+	AMUPerc    float64
 }
 
 func (p *RandoopMetrics) TableName() string {
