@@ -74,7 +74,7 @@ func runRandoop(repoDir, file string) (bool, [5]string) {
 		randoopJar = "%RANDOOP_JAR%"
 		cpSep = ";"
 	}
-	classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" // + string(os.PathSeparator)
+	classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath += GetMavenDependenciesClasspath(repoDir)
 	className := strings.ReplaceAll(path, "/", ".")
 
