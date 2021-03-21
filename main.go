@@ -22,10 +22,10 @@ import (
 	"github.com/waigani/diffparser"
 )
 
-func main2() {
+func main() {
 	fmt.Println("go-repo-downloader")
 
-	url := "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
+	url := "https://github.com/junit-team/junit4" // "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
 	//  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {

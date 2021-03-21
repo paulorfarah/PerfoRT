@@ -12,7 +12,7 @@ import (
 	// "github.com/wcharczuk/go-chart/v2/drawing"
 )
 
-func main() {
+func main2() {
 	// plotRandoopResults()
 
 	// db := models.GetDB()

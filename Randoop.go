@@ -44,16 +44,16 @@ func CollectRandoopMetrics(repoDir, repoName, prevCommit, fileFrom, currCommit, 
 			AETNAfter:  metricsA[2],
 			AETEAfter:  metricsA[3],
 			AMUAfter:   metricsA[4],
-			NMEDiff:    "",
-			EMEDiff:    "",
-			AETNDiff:   "",
-			AETEDiff:   "",
-			AMUDiff:    "",
-			NMEPerc:    "",
-			EMEPerc:    "",
-			AETNPerc:   "",
-			AETEPerc:   "",
-			AMUPerc:    ""}
+			NMEDiff:    0,
+			EMEDiff:    0,
+			AETNDiff:   0,
+			AETEDiff:   0,
+			AMUDiff:    0,
+			NMEPerc:    0,
+			EMEPerc:    0,
+			AETNPerc:   0,
+			AETEPerc:   0,
+			AMUPerc:    0}
 		models.CreateRandoopMetrics(db, rm)
 		// if s, err := strconv.ParseFloat(metricsB[0], 64); err == nil {
 		// 	fmt.Printf("%T, %v\n", s, s)

@@ -43,7 +43,7 @@ func init() {
 		fmt.Println(err)
 	}
 
-	db.LogMode(true)
+	db.LogMode(false)
 
 	db.Debug().Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
 		&Account{},
