@@ -75,72 +75,67 @@ func GetRandoopMetrics() {
 	// executing
 	defer db.Close()
 
-	rows, err := db.Query("SELECT rm.aetn_before, rm.aetn_after FROM randoopmetrics as rm INNER JOIN changes as c ON rm.change_id=c.id INNER JOIN commits as com ON c.commit_id = com.id ORDER BY committer_date;")
+	rows, err := db.Query("SELECT rm.nme_before, rm.nme_after, rm.eme_before, rm.eme_after, rm.aetn_before, rm.aetn_after, rm.aete_before, rm.aete_after, rm.amu_before, rm.amu_after FROM randoopmetrics as rm INNER JOIN changes as c ON rm.change_id=c.id INNER JOIN commits as com ON c.commit_id = com.id ORDER BY committer_date;")
 	defer rows.Close()
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
-	var nmeBefore []float64
-	var nmeAfter []float64
-	var yValues []float64
+
+	var nmeBefore, nmeAfter, emeBefore, emeAfter []float64
+	// var nmeAfter []float64
+	var xValues []float64
 	var count float64
 	for rows.Next() {
-		var i string
-		var j string
-		err = rows.Scan(&i, &j)
+		//read values
+		var nmeBs, nmeAs, emeBs, emeAs, aetnBs, aetnAs, aeteBs, aeteAs, amuBs, amuAs string
+		err = rows.Scan(&nmeBs, &nmeAs, &emeBs, &emeAs, &aetnBs, &aetnAs, &aeteBs, &aeteAs, &amuBs, &amuAs)
 		if err != nil {
-			fmt.Println(err.Error()) // proper error handling instead of panic in your app
+			fmt.Println(err.Error())
 		}
-		fi, err := strconv.ParseFloat(i, 64)
-		if err != nil {
-			fi = float64(0.0)
-		}
-		nmeBefore = append(nmeBefore, fi)
-		fj, err := strconv.ParseFloat(j, 64)
-		if err != nil {
-			fj = float64(0.0)
-		}
-		nmeAfter = append(nmeAfter, fj)
-		yValues = append(yValues, count)
+
+		// x axis
+		xValues = append(xValues, count)
 		count++
 
+		// nme
+		nmeB, err := strconv.ParseFloat(nmeBs, 64)
+		if err != nil {
+			nmeB = 0
+		}
+		nmeBefore = append(nmeBefore, nmeB)
+		nmeA, err := strconv.ParseFloat(nmeAs, 64)
+		if err != nil {
+			nmeA = 0
+		}
+		nmeAfter = append(nmeAfter, nmeA)
+
+		// eme
+		emeB, err := strconv.ParseFloat(emeBs, 64)
+		if err != nil {
+			emeB = 0
+		}
+		emeBefore = append(nmeBefore, emeB)
+		emeA, err := strconv.ParseFloat(emeAs, 64)
+		if err != nil {
+			emeA = 0
+		}
+		emeAfter = append(nmeAfter, emeA)
+
 	}
-	fmt.Println(nmeBefore)
-	fmt.Println(nmeAfter)
-	fmt.Println(yValues)
-	// PlotRandoopResults(nmeBefore, nmeAfter, yValues)
-	plot([]float64{1.0, 2.0, 3.0, 4.0}, []float64{0.0581, 0.0581, 0.0581, 0.0581})
+
+	PlotRandoopResults("nme", xValues, nmeBefore, nmeAfter)
+	PlotRandoopResults("eme", xValues, emeBefore, emeAfter)
+	// plot([]float64{1.0, 2.0, 3.0, 4.0}, []float64{0.0581, 0.0581, 0.0581, 0.0581})
 }
 
-func plot(yValuesBef, xValues []float64) {
+func PlotRandoopResults(filename string, xValues, yValuesBef, yValuesAft []float64) {
 	graph := chart.Chart{
 		YAxis: chart.YAxis{
 			Range: &chart.ContinuousRange{
 				Min: 0.0,
-				Max: 0.1,
+				Max: 1,
 			},
 		},
-		Series: []chart.Series{
-			chart.ContinuousSeries{
-				XValues: xValues,    //[]float64{1.0, 2.0, 3.0, 4.0},
-				YValues: yValuesBef, //[]float64{1.0, 2.0, 3.0, 4.0},
-			},
-		},
-	}
-
-	// buffer := bytes.NewBuffer([]byte{})
-	// err := graph.Render(chart.PNG, buffer)
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
-
-	f, _ := os.Create("output2.png")
-	defer f.Close()
-	graph.Render(chart.PNG, f)
-}
-
-func PlotRandoopResults(yValuesBef, yValuesAft, xValues []float64) {
-	graph := chart.Chart{
 		XAxis: chart.XAxis{
 			TickPosition: chart.TickPositionBetweenTicks,
 			ValueFormatter: func(v interface{}) string {
@@ -166,8 +161,35 @@ func PlotRandoopResults(yValuesBef, yValuesAft, xValues []float64) {
 		},
 	}
 
-	f, _ := os.Create("output.png")
+	f, _ := os.Create(filename + ".png")
 	defer f.Close()
 	graph.Render(chart.PNG, f)
 
 }
+
+// func plot(xValues, yValuesBef []float64) {
+// 	graph := chart.Chart{
+// 		YAxis: chart.YAxis{
+// 			Range: &chart.ContinuousRange{
+// 				Min: 0.0,
+// 				Max: 4,
+// 			},
+// 		},
+// 		Series: []chart.Series{
+// 			chart.ContinuousSeries{
+// 				XValues: xValues,    //[]float64{1.0, 2.0, 3.0, 4.0},
+// 				YValues: yValuesBef, //[]float64{1.0, 2.0, 3.0, 4.0},
+// 			},
+// 		},
+// 	}
+
+// 	// buffer := bytes.NewBuffer([]byte{})
+// 	// err := graph.Render(chart.PNG, buffer)
+// 	// if err != nil {
+// 	// 	fmt.Println(err.Error())
+// 	// }
+
+// 	f, _ := os.Create("output2.png")
+// 	defer f.Close()
+// 	graph.Render(chart.PNG, f)
+// }
