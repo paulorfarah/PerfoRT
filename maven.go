@@ -23,22 +23,26 @@ func GetMavenDependenciesClasspath(path string) string {
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 
-	err := ioutil.WriteFile(path+string(os.PathSeparator)+logfile, out.Bytes(), 0644)
+	err := cmd.Run()
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("cmd.Run() failed with %s\n", err)
+	}
+	fmt.Printf("combined out:\n%s\n", string(output))
+	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		panic(err)
 	}
-
-	err = cmd.Run()
-	if err != nil {
-		fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
-		fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
-	} else {
-		fmt.Println("executed successfully")
-	}
-	fmt.Println("------")
-	fmt.Printf("%s\n", out.String())
-	fmt.Println("^^^ out ^^^ - vvv error vvv")
-	fmt.Printf("%s\n", stderr.String())
+	// if err != nil {
+	// 	fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
+	// 	fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
+	// } else {
+	// 	fmt.Println("executed successfully")
+	// }
+	// fmt.Println("------")
+	// fmt.Printf("%s\n", out.String())
+	// fmt.Println("^^^ out ^^^ - vvv error vvv")
+	// fmt.Printf("%s\n", stderr.String())
 
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	if err != nil {
