@@ -78,7 +78,10 @@ func runRandoop(repoDir, file string) (bool, [5]string) {
 	classpath += GetMavenDependenciesClasspath(repoDir)
 	className := strings.ReplaceAll(path, "/", ".")
 
-	// fmt.Printf("java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + "\n")
+	// clean temporary files to avoid Too many links error
+	cmdClean := exec.Command("bash", ".", "-name", "*", "-print0|", "xargs", "-0", "rm", "-rf")
+	cmdClean.Run()
+
 	c := "java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
 	fmt.Println(c)
 	cmd := exec.Command("bash", "-c", c)
