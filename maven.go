@@ -18,9 +18,9 @@ func GetMavenDependenciesClasspath(path string) string {
 	fmt.Println("mvn dependency:build-classpath")
 	cmd := exec.Command("mvn", "dependency:build-classpath") //, " > "+logfile)
 	cmd.Dir = path
-	var out bytes.Buffer
+	// var out bytes.Buffer
 	var stderr bytes.Buffer
-	cmd.Stdout = &out
+	// cmd.Stdout = &out
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
