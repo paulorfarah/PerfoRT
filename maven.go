@@ -23,8 +23,8 @@ func GetMavenDependenciesClasspath(path string) string {
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
-		fmt.Println("Dir: " + path + ", Command: " + "mvn dependency:build-classpath > " + logfile)
-		fmt.Println(out)
+		fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
+		fmt.Printf("%s\n", out.String())
 	}
 
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
