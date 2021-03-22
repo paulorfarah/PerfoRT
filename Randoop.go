@@ -79,7 +79,7 @@ func runRandoop(repoDir, file string) (bool, [5]string) {
 	className := strings.ReplaceAll(path, "/", ".")
 
 	// clean temporary files to avoid Too many links error
-	cmdClean := exec.Command("bash", ".", "-name", "*", "-print0|", "xargs", "-0", "rm", "-rf")
+	cmdClean := exec.Command("bash", "find", ".", "-name", "*", "-print0|", "xargs", "-0", "rm", "-rf")
 	cmdClean.Run()
 
 	c := "java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
