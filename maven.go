@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -14,13 +15,27 @@ func GetMavenDependenciesClasspath(path string) string {
 	classpath := ""
 	logfile := "maven-classpath.log"
 
-	cmd := exec.Command("mvn", "dependency:build-classpath", " > "+logfile)
+	cmd := exec.Command("mvn", "dependency:build-classpath") //, " > "+logfile)
 	cmd.Dir = path
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
-	err := cmd.Run()
+	stdoutPipe, err := cmd.StdoutPipe()
+	if err != nil {
+		panic(err)
+	}
+	// open the out file for writing
+	outfile, err := os.Create(path + string(os.PathSeparator) + logfile)
+	if err != nil {
+		panic(err)
+	}
+	defer outfile.Close()
+	writer := bufio.NewWriter(outfile)
+	defer writer.Flush()
+	io.Copy(writer, stdoutPipe)
+
+	err = cmd.Run()
 	if err != nil {
 		fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
 		fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
