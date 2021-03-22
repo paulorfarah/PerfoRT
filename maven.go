@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,32 +14,37 @@ func GetMavenDependenciesClasspath(path string) string {
 	classpath := ""
 	logfile := "maven-classpath.log"
 
+	fmt.Println("mvn dependency:build-classpath")
 	cmd := exec.Command("mvn", "dependency:build-classpath") //, " > "+logfile)
 	cmd.Dir = path
-	// var out bytes.Buffer
+	var out bytes.Buffer
 	var stderr bytes.Buffer
-	// cmd.Stdout = &out
+	cmd.Stdout = &out
 	cmd.Stderr = &stderr
-	stdoutPipe, err := cmd.StdoutPipe()
-	if err != nil {
-		panic(err)
-	}
-	// open the out file for writing
-	outfile, err := os.Create(path + string(os.PathSeparator) + logfile)
-	if err != nil {
-		panic(err)
-	}
-	defer outfile.Close()
-	writer := bufio.NewWriter(outfile)
-	defer writer.Flush()
-	io.Copy(writer, stdoutPipe)
+	// stdoutPipe, err := cmd.StdoutPipe()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// // open the out file for writing
+	// outfile, err := os.Create(path + string(os.PathSeparator) + logfile)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer outfile.Close()
+	// writer := bufio.NewWriter(outfile)
+	// defer writer.Flush()
+	// io.Copy(writer, stdoutPipe)
 
-	err = cmd.Run()
+	err := cmd.Run()
 	if err != nil {
 		fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
 		fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
-		fmt.Printf("%s\n", stderr.String())
+	} else {
+		fmt.Println("executed successfully")
 	}
+	fmt.Printf("%s\n", out.String())
+	fmt.Println("^^^ out ^^^ - vvv error vvv")
+	fmt.Printf("%s\n", stderr.String())
 
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	if err != nil {
