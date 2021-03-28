@@ -64,7 +64,7 @@ func GetMavenDependenciesClasspath(path string) string {
 	return classpath
 }
 
-func Compile(path string) bool {
+func MvnCompile(path string) bool {
 	logfile := "maven-compiler.log"
 
 	fmt.Println("mvn dependency:build-classpath")
@@ -92,7 +92,7 @@ func Compile(path string) bool {
 	return true
 }
 
-func Test(path string) bool {
+func MvnTest(path string) bool {
 	logfile := "maven-test.log"
 
 	fmt.Println("mvn dependency:build-classpath")
