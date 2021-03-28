@@ -1,22 +1,54 @@
 package main
 
 import (
+	// "bytes"
+	// "fmt"
+	// "go-repo-downloader/models"
+	// "log"
+	// "os"
+	// "os/exec"
+	// "strings"
+	// "github.com/wcharczuk/go-chart/v2"
+	// "github.com/wcharczuk/go-chart/v2/drawing"
 	"bytes"
+	"context"
 	"fmt"
-	"go-repo-downloader/models"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
-	// "github.com/wcharczuk/go-chart/v2"
-	// "github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/google/go-github/github"
 )
 
-func main2() {
+func main() {
 	// plotRandoopResults()
 
 	// db := models.GetDB()
-	models.GetRandoopMetrics()
+	// models.GetRandoopMetrics()
+	// getReleaseList("junit-team", "junit4")
+	MvnCompile("/mnt/sda4/go-work/src/github.com/paulorfarah/junit4")
+}
+
+func getReleaseList(owner, repo string) {
+	client := github.NewClient(nil)
+	ctx := context.Background()
+	opt := &github.ListOptions{Page: 2, PerPage: 10}
+	releases, rsp, err := client.Repositories.ListReleases(ctx, owner, repo, opt)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("\n%+v\n", releases)
+	// for _, r := range releases {
+	// 	fmt.Println("--------------------------")
+	// 	fmt.Println(*r.Name)
+	// 	fmt.Println(r.PublishedAt.String())
+	// 	fmt.Println(*r.URL)
+
+	// }
+	fmt.Printf("\n%+v\n", rsp)
 }
 
 func randoop() {

@@ -55,17 +55,8 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 	return r, err
 }
 
-func checkout(repoName, hash string) error {
+func Checkout(repoName, hash string) error {
 	// fmt.Println("------------------------------------------------ checkout")
-	// path, err := os.Getwd()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println("path: " + path)
-
-	// fmt.Printf("git --git-dir=repos"+string(os.PathSeparator)+"%v"+string(os.PathSeparator)+".git --work-tree=repos"+string(os.PathSeparator)+"%v checkout %s\n", repoName, repoName, commit)
-	// cmd := exec.Command("git", "--git-dir=repos"+string(os.PathSeparator)+repoName+string(os.PathSeparator)+".git", "--work-tree=repos"+string(os.PathSeparator)+repoName, "checkout", commit)
-
 	dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	cmd := exec.Command("git", "checkout", "-f", hash)
 	cmd.Dir = dir
