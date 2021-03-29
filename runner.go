@@ -101,6 +101,9 @@ func Measure() {
 				fmt.Println("********************** CRITICAL ERROR ***************")
 				fmt.Println("size of tests before and after are different, not considering these results")
 			}
+		} else {
+			fmt.Println("********************** CRITICAL ERROR ***************")
+			fmt.Println("size of tests before and after are different, not considering these results")
 		}
 	}
 }
