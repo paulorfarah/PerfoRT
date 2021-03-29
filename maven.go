@@ -152,7 +152,9 @@ func getTests(path string) []MvnTestResult {
 	for scanner.Scan() {
 		row := scanner.Bytes()
 		fmt.Printf("\n%s\n", row)
-		if len(row) > 10 {
+		elements := strings.Split(string(row), " ")
+		fmt.Printf("elements: %d", len(elements))
+		if len(elements) > 9 {
 			fmt.Printf(">>>>>>>>>>>>> %s\n", row[10:])
 			if bytes.Equal(row[:10], []byte("Tests run:")) {
 				cls := strings.Split(string(row), " ")
