@@ -53,17 +53,21 @@ func init() {
 		&Change{},
 		&Issue{},
 		&RandoopMetrics{},
+		&Measurement{},
+		&MeasurementResults{},
 	)
 
-	db.Model(&Repository{}).AddForeignKey("platform_fk", "platform(id)", "RESTRICT", "RESTRICT")
-	db.Model(&Commit{}).AddForeignKey("repository_fk", "repositories(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Repository{}).AddForeignKey("platform_id", "platform(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Commit{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("committer", "accounts(id)", "RESTRICT", "RESTRICT")
-	db.Model(&Change{}).AddForeignKey("commit_fk", "commits(id)", "RESTRICT", "RESTRICT")
-	db.Model(&Issue{}).AddForeignKey("repository", "repositories(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Change{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Issue{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("editor", "accounts(id)", "RESTRICT", "RESTRICT")
-	db.Model(&RandoopMetrics{}).AddForeignKey("change_fk", "changes(id)", "RESTRICT", "RESTRICT")
+	db.Model(&RandoopMetrics{}).AddForeignKey("change_id", "changes(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Measurement{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
+	db.Model(&MeasurementResults{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 
 }
 
