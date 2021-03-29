@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -29,6 +31,7 @@ func (r *MeasurementResults) TableName() string {
 }
 
 func CreateMeasurementResults(db *gorm.DB, measurementResults *MeasurementResults) (uint, error) {
+	fmt.Println("CreateMeasurementResults")
 	err := db.Create(measurementResults).Error
 	if err != nil {
 		return 0, err
