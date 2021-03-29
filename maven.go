@@ -151,7 +151,9 @@ func getTests(path string) []MvnTestResult {
 	var tests []MvnTestResult
 	for scanner.Scan() {
 		row := scanner.Bytes()
+		fmt.Printf("%s", row)
 		if len(row) > 10 {
+			fmt.Printf(">>>>>>>>>>>>> %s\n", row[10:])
 			if bytes.Equal(row[10:], []byte("Tests run:")) {
 				cls := strings.Split(string(row), " ")
 				cl := cls[len(cls)-1]
