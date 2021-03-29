@@ -151,10 +151,10 @@ func getTests(path string) []MvnTestResult {
 	var tests []MvnTestResult
 	for scanner.Scan() {
 		row := scanner.Bytes()
-		fmt.Printf("%s", row)
+		fmt.Printf("\n%s\n", row)
 		if len(row) > 10 {
 			fmt.Printf(">>>>>>>>>>>>> %s\n", row[10:])
-			if bytes.Equal(row[10:], []byte("Tests run:")) {
+			if bytes.Equal(row[:10], []byte("Tests run:")) {
 				cls := strings.Split(string(row), " ")
 				cl := cls[len(cls)-1]
 				re := regexp.MustCompile("[0-9]+(.[0-9]+)*")
