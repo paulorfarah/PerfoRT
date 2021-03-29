@@ -74,9 +74,13 @@ func Measure() {
 
 		MvnCompile(repoPath)
 		successAfter, testResultsAfter := MvnTest(repoPath)
+
+		fmt.Println(successBefore, successAfter)
+		fmt.Println("len: ", len(testResultsBefore), len(testResultsAfter))
 		if successBefore && successAfter == true {
 			if len(testResultsBefore) == len(testResultsAfter) {
 				for ind := range testResultsBefore {
+					fmt.Println(testResultsBefore[ind].ClassName, testResultsAfter[ind].ClassName)
 					if testResultsBefore[ind].ClassName == testResultsAfter[ind].ClassName {
 						mr := &models.MeasurementResults{MeasurementID: measurement.ID,
 							Type:              byte('R'),
