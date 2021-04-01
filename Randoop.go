@@ -138,6 +138,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 		fmt.Println(out)
 		return []string{}, false
 	}
+	fmt.Println("readRandoopGentestResults 1")
 	return readRandoopGentestResults(className + ".txt"), true
 }
 
@@ -219,7 +220,7 @@ func parseProjectPath(file string) (string, string) {
 	return dir, pack
 }
 func readRandoopGentestResults(path string) []string {
-	fmt.Println("readRandoopGentestResults: " + path)
+	fmt.Println("readRandoopGentestResults 2: " + path)
 	// logfile := "randoop-gentest.log"
 	// f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	f, err := os.Open(path)
