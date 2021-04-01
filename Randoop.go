@@ -241,8 +241,7 @@ func readRandoopGentestResults(path string) []string {
 	var files []string
 	for scanner.Scan() {
 		row := scanner.Bytes()
-		elements := strings.Split(string(row), " ")
-		if len(elements) > 12 {
+		if len(string(row)) > 12 {
 			fmt.Printf("%s\n", row[:12])
 			if bytes.Equal(row[:12], []byte("Created file")) {
 				aux := strings.Split(string(row), " ")
