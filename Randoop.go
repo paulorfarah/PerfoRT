@@ -105,7 +105,7 @@ import (
 // }
 
 func generateRandoopTests(repoDir, file string) ([]string, bool) {
-
+	fmt.Println("Generating Randoop tests for " + file + "...")
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
 		dir += string(os.PathSeparator)
@@ -219,11 +219,12 @@ func parseProjectPath(file string) (string, string) {
 	return dir, pack
 }
 func readRandoopGentestResults(path string) []string {
-	logfile := "randoop-gentest.log"
-	f, err := os.Open(path + string(os.PathSeparator) + logfile)
+	// logfile := "randoop-gentest.log"
+	// f, err := os.Open(path + string(os.PathSeparator) + logfile)
+	f, err := os.Open(path)
 	if err != nil {
 		fmt.Println("[>>ERROR]: There has been an error openning randoop-gentest log file: ", err.Error())
-		fmt.Println("log file: " + path + string(os.PathSeparator) + logfile)
+		fmt.Println("log file: " + path)
 	}
 	defer f.Close()
 
