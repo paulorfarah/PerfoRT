@@ -128,14 +128,23 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmdRandoop.Stdout = &out
-	cmdRandoop.Stderr = &stderr
-	err := cmdRandoop.Run()
+	cmd.Dir = path
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("cmd.Run() failed with %s\n", err)
+	}
+	fmt.Printf("combined out:\n%s\n", string(output))
+
+	// cmdRandoop := exec.Command("bash", "-c", randoopStr)
+	// var out bytes.Buffer
+	// var stderr bytes.Buffer
+	// cmdRandoop.Stdout = &out
+	// cmdRandoop.Stderr = &stderr
+	// err := cmdRandoop.Run()
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err) + "): " + stderr.String())
-		fmt.Println(out)
+		fmt.Println(output)
 		return []string{}, false
 	}
 	fmt.Println("readRandoopGentestResults 1")
