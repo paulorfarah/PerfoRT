@@ -232,6 +232,7 @@ func readRandoopGentestResults(path string) []string {
 	var files []string
 	for scanner.Scan() {
 		row := scanner.Bytes()
+		fmt.Println(string(row))
 		elements := strings.Split(string(row), " ")
 		if len(elements) > 9 {
 			if bytes.Equal(row[:12], []byte("Created file")) {
@@ -244,41 +245,6 @@ func readRandoopGentestResults(path string) []string {
 		}
 	}
 	return files
-}
-
-func readRandoopResults(fn string) [5]string {
-	var res, nme, eme, aetn, aete, amu string
-	f, err := os.Open(fn)
-	if err != nil {
-		fmt.Print("There has been an error!: ", err)
-	}
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		line := scanner.Bytes()
-		res = parseResult(line, "Normal method executions:")
-		if res != "" {
-			nme = res
-		}
-		res = parseResult(line, "Exceptional method executions:")
-		if res != "" {
-			eme = res
-		}
-		res = parseResult(line, "Average method execution time (normal termination):")
-		if res != "" {
-			aetn = res
-		}
-		res = parseResult(line, "Average method execution time (exceptional termination):")
-		if res != "" {
-			aete = res
-		}
-		res = parseResult(line, "Approximate memory usage")
-		if res != "" {
-			amu = res
-		}
-	}
-	return [5]string{nme, eme, aetn, aete, amu}
 }
 
 func parseResult(line []byte, metric string) string {
