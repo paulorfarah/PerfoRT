@@ -176,7 +176,7 @@ func compileRandoopTests(repoDir string, testfiles []string) bool {
 
 		randoopStr := "javac -cp " + classpath + cpSep + junitJar + className + " > " + className + "_comp.txt"
 		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> javac")
-		fmt.Println(randoop)
+		fmt.Println(randoopStr)
 		cmdRandoop := exec.Command("bash", "-c", randoopStr)
 		var out bytes.Buffer
 		var stderr bytes.Buffer
