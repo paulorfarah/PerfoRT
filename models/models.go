@@ -68,6 +68,7 @@ func init() {
 	db.Model(&RandoopMetrics{}).AddForeignKey("change_id", "changes(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Measurement{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	db.Model(&MeasurementResults{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
+	db.Model(&MeasurementResults{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
 
 }
 

@@ -15,8 +15,10 @@ import (
 
 type RandoopMetrics struct {
 	Model
-	ChangeID   uint
-	Change     Change
+	CommitID uint
+	Commit   Commit
+	// ChangeID   uint
+	// Change     Change
 	NMEBefore  string
 	EMEBefore  string
 	AETNBefore string

@@ -1,18 +1,17 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type MeasurementResults struct {
 	Model
-	MeasurementID uint //   `gorm:"not null"`
-	Measurement   Measurement
-	Type          byte `gorm:"not null"`
-	//Commit
+	MeasurementID     uint //   `gorm:"not null"`
+	Measurement       Measurement
+	Type              byte `gorm:"not null"`
+	CommitID          uint
+	COmmit            Commit
 	ClassName         string
 	TestsRunBefore    int
 	FailuresBefore    int
@@ -31,7 +30,6 @@ func (r *MeasurementResults) TableName() string {
 }
 
 func CreateMeasurementResults(db *gorm.DB, measurementResults *MeasurementResults) (uint, error) {
-	fmt.Println("CreateMeasurementResults")
 	err := db.Create(measurementResults).Error
 	if err != nil {
 		return 0, err

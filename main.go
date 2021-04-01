@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/sha1"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -18,11 +16,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"go-repo-downloader/models"
-
-	"github.com/waigani/diffparser"
 )
 
-func main2() {
+func main() {
 	fmt.Println("go-repo-downloader")
 
 	url := "https://github.com/junit-team/junit4" // "https://github.com/apache/commons-io" //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
@@ -33,12 +29,11 @@ func main2() {
 	//}
 	//username := urlSplit[3]
 	repoName := urlSplit[4]
-	// repoDir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	fmt.Println("repoDir: " + repoDir)
 
 	// fmt.Println("git clone " + url)
-	r, err := cloneRepository(url, repoDir)
+	repo, err := cloneRepository(url, repoDir)
 
 	if err == nil {
 
@@ -93,7 +88,7 @@ func main2() {
 
 		//branches
 		branchCounter := 0
-		branches, _ := r.Branches()
+		branches, _ := repo.Branches()
 		for {
 			branch, err := branches.Next()
 			if err != nil {
@@ -117,7 +112,7 @@ func main2() {
 			// since := time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)
 			// until := time.Date(2020, 12, 31, 0, 0, 0, 0, time.UTC)
 
-			commits, err := r.Log(&git.LogOptions{From: branch.Hash()}) //, Since: &since, Until: &until})
+			commits, err := repo.Log(&git.LogOptions{From: branch.Hash()}) //, Since: &since, Until: &until})
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -180,82 +175,12 @@ func main2() {
 								Committer:          committer.ID,
 								CommitterDate:      currCommit.Committer.When,
 								Subject:            currCommit.Message,
-								Branch:             fmt.Sprintf("%s", branch.Name())}
+								Branch:             branch.Name().String()}
 							models.CreateCommit(db, commit)
 						}
 
-						// Changes
-						for _, change := range changes {
-							// fmt.Println(change.From.Name)
-							// fmt.Println(change.To.Name)
-							// fmt.Println(change.Action())
-							// fmt.Println(change.Files())
-							// fmt.Println("------------------- start")
-							// fmt.Println(change.Patch())
+						Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
 
-							patch, _ := change.Patch()
-							diff, _ := diffparser.Parse(patch.String())
-
-							//files
-							count := 0
-							for _, file := range diff.Files {
-								// fmt.Println("************************** file: ", file)
-
-								sc := fmt.Sprintf("%d", count)
-
-								fNew, _ := os.Create("results/" + currCommit.Hash.String() + "f" + sc + "_new.java")
-								defer fNew.Close()
-
-								fOld, _ := os.Create("results/" + currCommit.Hash.String() + "f" + sc + "_old.java")
-								defer fOld.Close()
-
-								// //hunks
-								for _, hunk := range file.Hunks {
-									for _, l := range hunk.NewRange.Lines {
-										fNew.WriteString(l.Content + "\n")
-									}
-									for _, l := range hunk.OrigRange.Lines {
-										fOld.WriteString(l.Content + "\n")
-									}
-								}
-								count++
-
-							}
-
-							hasher := sha1.New()
-							patch, err := change.Patch()
-							if err != nil {
-								return err
-							}
-							hasher.Write([]byte(patch.String()))
-							changeSha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-							//fmt.Println(changeSha)
-							//	id := fmt.Sprintf("%s",currCommit.ID)
-							//	fmt.Printf("*************  %s\n", id)
-							changeObj, err := models.FindChangeByHash(db, changeSha, commit.ID)
-							if err != nil {
-								fmt.Println("new change")
-								fmt.Println(err)
-								action, err := change.Action()
-								if err != nil {
-									return err
-								}
-								changeObj = &models.Change{CommitID: commit.ID, ChangeHash: changeSha, FileFrom: change.From.Name, FileTo: change.To.Name, Action: action.String(), Patch: patch.String()}
-								models.CreateChange(db, changeObj)
-
-								//call randoop
-								fmt.Println(change.From.Name)
-								if action.String() == "Modify" &&
-									strings.Contains(change.From.Name, ".java") &&
-									strings.Contains(change.To.Name, ".java") &&
-									!strings.HasPrefix(change.From.Name, "src/test/") &&
-									!strings.HasPrefix(change.From.Name, "src/test/") {
-									CollectRandoopMetrics(repoDir, repoName, prevCommit.Hash.String(), change.From.Name, currCommit.Hash.String(), change.To.Name, changeObj.ID)
-								}
-							} else {
-								fmt.Println("change already exists in database...")
-							}
-						}
 						//codeanalysis.Understand(cs.Name)
 					}
 				}
@@ -269,7 +194,6 @@ func main2() {
 			if err != nil {
 				fmt.Println(err)
 			}
-
 		}
 		models.GetRandoopMetrics()
 	} else {

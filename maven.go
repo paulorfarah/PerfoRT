@@ -108,13 +108,14 @@ func MvnCompile(path string) bool {
 	return true
 }
 
-func MvnTest(path string) (bool, []MvnTestResult) {
-	success := true
+func MvnTest(path string) ([]MvnTestResult, bool) {
+	ok := true
 	logfile := "maven-test.log"
 
 	fmt.Println("mvn test")
 	cmd := exec.Command("mvn", "test")
 	cmd.Dir = path
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
@@ -122,7 +123,7 @@ func MvnTest(path string) (bool, []MvnTestResult) {
 	fmt.Printf("combined out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
-		success = false
+		ok = false
 		panic(err)
 	}
 	// if err != nil {
@@ -135,10 +136,10 @@ func MvnTest(path string) (bool, []MvnTestResult) {
 	// fmt.Printf("%s\n", out.String())
 	// fmt.Println("^^^ out ^^^ - vvv error vvv")
 	// fmt.Printf("%s\n", stderr.String())
-	return success, getTests(path)
+	return readMavenTestResults(path), ok
 }
 
-func getTests(path string) []MvnTestResult {
+func readMavenTestResults(path string) []MvnTestResult {
 	logfile := "maven-test.log"
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	if err != nil {
@@ -151,11 +152,8 @@ func getTests(path string) []MvnTestResult {
 	var tests []MvnTestResult
 	for scanner.Scan() {
 		row := scanner.Bytes()
-		fmt.Printf("\n%s\n", row)
 		elements := strings.Split(string(row), " ")
-		fmt.Printf("elements: %d", len(elements))
 		if len(elements) > 9 {
-			fmt.Printf(">>>>>>>>>>>>> %s\n", row[10:])
 			if bytes.Equal(row[:10], []byte("Tests run:")) {
 				cls := strings.Split(string(row), " ")
 				cl := cls[len(cls)-1]
