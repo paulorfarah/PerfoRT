@@ -1,18 +1,14 @@
 package main
 
 import (
-	"crypto/sha1"
-	"encoding/base64"
 	"fmt"
 	"go-repo-downloader/models"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/jinzhu/gorm"
-	"github.com/waigani/diffparser"
 )
 
 func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit, changes object.Changes) {
@@ -67,7 +63,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, repository models.Repository
 		// 	}
 	} else {
 		fmt.Println("********************** CRITICAL ERROR ***************")
-		fmt.Println("successAfter is false")
+		fmt.Println("successAfter is false measuring maven tests")
 	}
 }
 
@@ -93,80 +89,80 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file string) {
 	// CollectRandoopMetrics(repoDir, repository.Name, commit.PreviousCommitHash, change.From.Name, commit.CommitHash, change.To.Name, changeObj.ID)
 }
 
-func MeasureChanges(db *gorm.DB, repoDir string, repository models.Repository, commit models.Commit, changes object.Changes) {
-	//randoop
-	for _, change := range changes {
-		// fmt.Println(change.From.Name)
-		// fmt.Println(change.To.Name)
-		// fmt.Println(change.Action())
-		// fmt.Println(change.Files())
-		// fmt.Println("------------------- start")
-		// fmt.Println(change.Patch())
+// func MeasureChanges(db *gorm.DB, repoDir string, repository models.Repository, commit models.Commit, changes object.Changes) {
+// 	//randoop
+// 	for _, change := range changes {
+// 		// fmt.Println(change.From.Name)
+// 		// fmt.Println(change.To.Name)
+// 		// fmt.Println(change.Action())
+// 		// fmt.Println(change.Files())
+// 		// fmt.Println("------------------- start")
+// 		// fmt.Println(change.Patch())
 
-		patch, _ := change.Patch()
-		diff, _ := diffparser.Parse(patch.String())
+// 		patch, _ := change.Patch()
+// 		diff, _ := diffparser.Parse(patch.String())
 
-		//files
-		count := 0
-		for _, file := range diff.Files {
-			// fmt.Println("************************** file: ", file)
+// 		//files
+// 		count := 0
+// 		for _, file := range diff.Files {
+// 			// fmt.Println("************************** file: ", file)
 
-			sc := fmt.Sprintf("%d", count)
+// 			sc := fmt.Sprintf("%d", count)
 
-			fNew, _ := os.Create("results/" + commit.CommitHash + "f" + sc + "_new.java")
-			defer fNew.Close()
+// 			fNew, _ := os.Create("results/" + commit.CommitHash + "f" + sc + "_new.java")
+// 			defer fNew.Close()
 
-			fOld, _ := os.Create("results/" + commit.CommitHash + "f" + sc + "_old.java")
-			defer fOld.Close()
+// 			fOld, _ := os.Create("results/" + commit.CommitHash + "f" + sc + "_old.java")
+// 			defer fOld.Close()
 
-			// //hunks
-			for _, hunk := range file.Hunks {
-				for _, l := range hunk.NewRange.Lines {
-					fNew.WriteString(l.Content + "\n")
-				}
-				for _, l := range hunk.OrigRange.Lines {
-					fOld.WriteString(l.Content + "\n")
-				}
-			}
-			count++
+// 			// //hunks
+// 			for _, hunk := range file.Hunks {
+// 				for _, l := range hunk.NewRange.Lines {
+// 					fNew.WriteString(l.Content + "\n")
+// 				}
+// 				for _, l := range hunk.OrigRange.Lines {
+// 					fOld.WriteString(l.Content + "\n")
+// 				}
+// 			}
+// 			count++
 
-		}
+// 		}
 
-		hasher := sha1.New()
-		patch, err := change.Patch()
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		hasher.Write([]byte(patch.String()))
-		changeSha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-		//fmt.Println(changeSha)
-		//	id := fmt.Sprintf("%s",currCommit.ID)
-		//	fmt.Printf("*************  %s\n", id)
-		_, err = models.FindChangeByHash(db, changeSha, commit.ID)
-		if err != nil {
-			fmt.Println("new change")
-			fmt.Println(err)
-			action, err := change.Action()
-			if err != nil {
-				fmt.Println(err.Error()) //return err
-			}
-			changeObj := &models.Change{CommitID: commit.ID, ChangeHash: changeSha, FileFrom: change.From.Name, FileTo: change.To.Name, Action: action.String(), Patch: patch.String()}
-			models.CreateChange(db, changeObj)
+// 		hasher := sha1.New()
+// 		patch, err := change.Patch()
+// 		if err != nil {
+// 			fmt.Println(err.Error())
+// 		}
+// 		hasher.Write([]byte(patch.String()))
+// 		changeSha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+// 		//fmt.Println(changeSha)
+// 		//	id := fmt.Sprintf("%s",currCommit.ID)
+// 		//	fmt.Printf("*************  %s\n", id)
+// 		_, err = models.FindChangeByHash(db, changeSha, commit.ID)
+// 		if err != nil {
+// 			fmt.Println("new change")
+// 			fmt.Println(err)
+// 			action, err := change.Action()
+// 			if err != nil {
+// 				fmt.Println(err.Error()) //return err
+// 			}
+// 			changeObj := &models.Change{CommitID: commit.ID, ChangeHash: changeSha, FileFrom: change.From.Name, FileTo: change.To.Name, Action: action.String(), Patch: patch.String()}
+// 			models.CreateChange(db, changeObj)
 
-			//call randoop
-			fmt.Println(change.From.Name)
-			if action.String() == "Modify" &&
-				strings.Contains(change.From.Name, ".java") &&
-				strings.Contains(change.To.Name, ".java") &&
-				!strings.HasPrefix(change.From.Name, "src/test/") &&
-				!strings.HasPrefix(change.From.Name, "src/test/") {
-				// CollectRandoopMetrics(repoDir, repository.Name, commit.PreviousCommitHash, change.From.Name, commit.CommitHash, change.To.Name, changeObj.ID)
-			}
-		} else {
-			fmt.Println("change already exists in database...")
-		}
-	}
-}
+// 			//call randoop
+// 			fmt.Println(change.From.Name)
+// 			if action.String() == "Modify" &&
+// 				strings.Contains(change.From.Name, ".java") &&
+// 				strings.Contains(change.To.Name, ".java") &&
+// 				!strings.HasPrefix(change.From.Name, "src/test/") &&
+// 				!strings.HasPrefix(change.From.Name, "src/test/") {
+// 				// CollectRandoopMetrics(repoDir, repository.Name, commit.PreviousCommitHash, change.From.Name, commit.CommitHash, change.To.Name, changeObj.ID)
+// 			}
+// 		} else {
+// 			fmt.Println("change already exists in database...")
+// 		}
+// 	}
+// }
 
 func listJavaFiles(repoDir string) []string {
 	var files []string

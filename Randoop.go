@@ -219,6 +219,7 @@ func parseProjectPath(file string) (string, string) {
 	return dir, pack
 }
 func readRandoopGentestResults(path string) []string {
+	fmt.Println("readRandoopGentestResults: " + path)
 	// logfile := "randoop-gentest.log"
 	// f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	f, err := os.Open(path)
