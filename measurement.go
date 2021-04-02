@@ -71,7 +71,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file string) {
 	//java -classpath ${RANDOOP_JAR} randoop.main.Main gentests --classlist=myclasses.txt --time-limit=60
 	//Randoop prints out is the name of the JUnit files containing the tests it generated
 	testfiles, okGen := generateRandoopTests(repoDir, file)
-	fmt.Println(testfiles)
+	// fmt.Println(testfiles)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
 	// export JUNITPATH=.../junit.jar:.../hamcrest-core.jar

@@ -125,7 +125,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	// remove old tests
 	err := os.Remove("./RegressionTest*.java")
 	if err != nil {
-		fmt.Println(">>>> ERROR: Cannot delete old regression tests")
+		fmt.Println(">>>> ERROR: Cannot delete old regression tests: " + err.Error())
 	}
 	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath := dir + "target" + string(os.PathSeparator) + "classes" + cpSep
@@ -138,7 +138,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 
 	output, err := cmdRandoop.CombinedOutput()
 	if err != nil {
-		fmt.Printf("cmd.Run() failed with %s\n", err)
+		fmt.Printf("cmd.Run() failed with %s\n", err.Error())
 	}
 	fmt.Printf("combined out:\n%s\n", string(output))
 
