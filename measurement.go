@@ -79,7 +79,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file string) {
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore ErrorTest
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	if okGen {
-		okComp := compileRandoopTests(repoDir, testfiles)
+		okComp := compileRandoopTests(repoDir)
 		if okComp {
 			runRandoopTests(testfiles)
 		}

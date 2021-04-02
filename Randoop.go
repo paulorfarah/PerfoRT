@@ -149,46 +149,57 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	return readRandoopGentestResults(className + ".txt"), true
 }
 
-func compileRandoopTests(repoDir string, testfiles []string) bool {
+func compileRandoopTests(repoDir string) bool {
 	// javac -classpath .:$JUNITPATH ErrorTest*.java RegressionTest*.java -sourcepath .:path/to/files/under/test/
-	//javac -cp /mnt/sda4/go-work/src/github.com/paulorfarah/junit4/target/classes:/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar:. RegressionTest2.java
+	// javac -cp /mnt/sda4/go-work/src/github.com/paulorfarah/junit4/target/classes:/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar:. RegressionTest2.java
 
-	for _, file := range testfiles {
-		dir, pack := parseProjectPath(file)
-		if dir != "" {
-			dir += string(os.PathSeparator)
-		}
-		path := strings.Split(pack, ".java")[0]
-		junitJar := "$JUNITPATH"
-		cpSep := ":"
-		if runtime.GOOS == "windows" {
-			junitJar = "%JUNITPATH%"
-			cpSep = ";"
-		}
-		// classpath := "/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar" + cpSep
-		classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
-		classpath += GetMavenDependenciesClasspath(repoDir)
-		className := strings.ReplaceAll(path, "/", ".")
+	// gerado:
+	// javac
+	//-cp /mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/ (repoDir) ok
+	//    /mnt/sda4/go-work/ (dir)
+	//    /target/classes
+	//   :/users/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/users/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:$JUNITPATHgithub.com.paulorfarah.go-repo-downloader.RegressionTest2
 
-		// clean temporary files to avoid Too many links error
-		cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
-		cmdClean.Run()
+	// correto:
+	//javac -cp /mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/:/mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/users/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/users/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:$JUNITPATH RegressionTest.java -sourcepath /mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java
 
-		randoopStr := "javac -cp " + classpath + cpSep + junitJar + className + " > " + className + "_comp.txt"
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> javac")
-		fmt.Println(randoopStr)
-		cmdRandoop := exec.Command("bash", "-c", randoopStr)
-		var out bytes.Buffer
-		var stderr bytes.Buffer
-		cmdRandoop.Stdout = &out
-		cmdRandoop.Stderr = &stderr
-		err := cmdRandoop.Run()
-		if err != nil {
-			fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot compile randoop tests (" + fmt.Sprint(err) + "): " + stderr.String())
-			fmt.Println(out)
-			// return false
-		}
+	// for _, file := range testfiles {
+	// dir, pack := parseProjectPath(file)
+	// if dir != "" {
+	// 	dir += string(os.PathSeparator)
+	// }
+	// path := strings.Split(pack, ".java")[0]
+	junitJar := "$JUNITPATH"
+	cpSep := ":"
+	if runtime.GOOS == "windows" {
+		junitJar = "%JUNITPATH%"
+		cpSep = ";"
 	}
+	// classpath := "/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar" + cpSep
+	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
+	classpath := GetMavenDependenciesClasspath(repoDir)
+	// className := strings.ReplaceAll(path, "/", ".")
+
+	// clean temporary files to avoid Too many links error
+	cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
+	cmdClean.Run()
+
+	// randoopStr := "javac -cp " + classpath + cpSep + junitJar + className + " > " + className + "_comp.txt"
+	randoopStr := "javac -cp " + classpath + cpSep + junitJar + " RegressionTest*.java > RegressionTest_compilation.txt"
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> javac")
+	fmt.Println(randoopStr)
+	cmdRandoop := exec.Command("bash", "-c", randoopStr)
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmdRandoop.Stdout = &out
+	cmdRandoop.Stderr = &stderr
+	err := cmdRandoop.Run()
+	if err != nil {
+		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot compile randoop tests (" + fmt.Sprint(err) + "): " + stderr.String())
+		fmt.Println(out)
+		// return false
+	}
+	// }
 	return true
 }
 
@@ -242,7 +253,6 @@ func readRandoopGentestResults(path string) []string {
 	for scanner.Scan() {
 		row := scanner.Bytes()
 		if len(string(row)) > 12 {
-			fmt.Printf("%s\n", row[:12])
 			if bytes.Equal(row[:12], []byte("Created file")) {
 				aux := strings.Split(string(row), " ")
 
