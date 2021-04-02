@@ -124,7 +124,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	}
 
 	// remove old tests
-	deleteJavaFiles()
+	deleteOldRandoopTests()
 
 	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath := dir + "target" + string(os.PathSeparator) + "classes" + cpSep
@@ -149,7 +149,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	// err := cmdRandoop.Run()
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
-		fmt.Println(output)
+		fmt.Println(string(output))
 		return []string{}, false
 	}
 	return readRandoopGentestResults(className + ".txt"), true
@@ -261,10 +261,8 @@ func readRandoopGentestResults(path string) []string {
 		if len(string(row)) > 12 {
 			if bytes.Equal(row[:12], []byte("Created file")) {
 				aux := strings.Split(string(row), " ")
-
 				f := aux[2]
 				files = append(files, f)
-
 			}
 		}
 	}
@@ -282,7 +280,7 @@ func parseResult(line []byte, metric string) string {
 	return res
 }
 
-func deleteJavaFiles() bool {
+func deleteOldRandoopTests() bool {
 	dirname, err := os.Getwd()
 	if err != nil {
 		fmt.Println(">>>> ERROR: Cannot get local directory: " + err.Error())
