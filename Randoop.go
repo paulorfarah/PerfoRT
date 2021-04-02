@@ -123,7 +123,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	}
 
 	// remove old tests
-	err := os.Remove("RegressionTest*.java")
+	err := os.Remove("./RegressionTest*.java")
 	if err != nil {
 		fmt.Println(">>>> ERROR: Cannot delete old regression tests")
 	}
