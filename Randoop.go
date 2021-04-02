@@ -121,7 +121,14 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 		cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
 		cmdClean.Run()
 	}
-	classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
+
+	// remove old tests
+	err := os.Remove("RegressionTest*.java")
+	if err != nil {
+		fmt.Println(">>>> ERROR: Cannot delete old regression tests")
+	}
+	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
+	classpath := dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath += GetMavenDependenciesClasspath(repoDir)
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
