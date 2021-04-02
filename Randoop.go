@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -123,15 +124,8 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	}
 
 	// remove old tests
-	localDir, err := os.Getwd()
-	if err != nil {
-		fmt.Println(">>>> ERROR: Cannot get local directory: " + err.Error())
-	}
-	fmt.Println("localDir: " + localDir)
-	err = os.Remove(localDir + string(os.PathSeparator) + "RegressionTest*.java")
-	if err != nil {
-		fmt.Println(">>>> ERROR: Cannot delete old regression tests: " + err.Error())
-	}
+	deleteJavaFiles()
+
 	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath := dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath += GetMavenDependenciesClasspath(repoDir)
@@ -286,4 +280,32 @@ func parseResult(line []byte, metric string) string {
 		}
 	}
 	return res
+}
+
+func deleteJavaFiles() bool {
+	dirname, err := os.Getwd()
+	if err != nil {
+		fmt.Println(">>>> ERROR: Cannot get local directory: " + err.Error())
+	}
+	d, err := os.Open(dirname)
+	if err != nil {
+		fmt.Println("Error openning dir to delete java files: " + err.Error())
+		return false
+	}
+	defer d.Close()
+
+	files, err := d.Readdir(-1)
+	if err != nil {
+		fmt.Println("Error reading java files: " + err.Error())
+		return false
+	}
+
+	for _, file := range files {
+		if file.Mode().IsRegular() {
+			if filepath.Ext(file.Name()) == ".java" || filepath.Ext(file.Name()) == ".class" {
+				os.Remove(file.Name())
+			}
+		}
+	}
+	return true
 }
