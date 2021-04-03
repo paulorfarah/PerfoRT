@@ -5,7 +5,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type MeasurementResults struct {
+type Maven struct {
 	Model
 	MeasurementID     uint //   `gorm:"not null"`
 	Measurement       Measurement
@@ -25,14 +25,14 @@ type MeasurementResults struct {
 	TimeElapsedAfter  float64
 }
 
-func (r *MeasurementResults) TableName() string {
-	return "measurementresults"
+func (r *Maven) TableName() string {
+	return "maven"
 }
 
-func CreateMeasurementResults(db *gorm.DB, measurementResults *MeasurementResults) (uint, error) {
-	err := db.Create(measurementResults).Error
+func CreateMaven(db *gorm.DB, results *Maven) (uint, error) {
+	err := db.Create(results).Error
 	if err != nil {
 		return 0, err
 	}
-	return measurementResults.ID, nil
+	return results.ID, nil
 }

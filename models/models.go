@@ -54,7 +54,8 @@ func init() {
 		&Issue{},
 		&RandoopMetrics{},
 		&Measurement{},
-		&MeasurementResults{},
+		&Maven{},
+		&Randoop{},
 	)
 
 	db.Model(&Repository{}).AddForeignKey("platform_id", "platform(id)", "RESTRICT", "RESTRICT")
@@ -67,8 +68,10 @@ func init() {
 	//	db.Model(&Issue{}).AddForeignKey("editor", "accounts(id)", "RESTRICT", "RESTRICT")
 	db.Model(&RandoopMetrics{}).AddForeignKey("change_id", "changes(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Measurement{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
-	db.Model(&MeasurementResults{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	db.Model(&MeasurementResults{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Maven{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Maven{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Randoop{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Randoop{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
 
 }
 

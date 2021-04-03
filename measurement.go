@@ -21,22 +21,22 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 	} else {
 		ok := MvnCompile(repoDir)
 		if ok {
-			MeasureMavenTests(db, repoDir, repository, commitID, currCommit, *measurement)
+			MeasureMavenTests(db, repoDir, commitID, *measurement)
 			for _, file := range listJavaFiles(repoDir) {
-				MeasureRandoopTests(db, repoDir, file)
+				MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
 			}
 		}
 	}
 }
 
-func MeasureMavenTests(db *gorm.DB, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit, measurement models.Measurement) {
+func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
 	testResultsAfter, ok := MvnTest(repoDir)
 	if ok {
 		// if len(testResultsBefore) == len(testResultsAfter) {
 		for ind := range testResultsAfter {
 			// fmt.Println(testResultsBefore[ind].ClassName, testResultsAfter[ind].ClassName)
 			// if testResultsBefore[ind].ClassName == testResultsAfter[ind].ClassName {
-			mr := &models.MeasurementResults{MeasurementID: measurement.ID,
+			mr := &models.Maven{MeasurementID: measurement.ID,
 				Type:      byte('C'),
 				ClassName: testResultsAfter[ind].ClassName,
 				CommitID:  commitID,
@@ -50,7 +50,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, repository models.Repository
 				ErrorsAfter:      testResultsAfter[ind].Errors,
 				SkippedAfter:     testResultsAfter[ind].Skipped,
 				TimeElapsedAfter: testResultsAfter[ind].TimeElapsed}
-			models.CreateMeasurementResults(db, mr)
+			models.CreateMaven(db, mr)
 			// } else {
 			// 	fmt.Println("********************** CRITICAL ERROR ***************")
 			// 	fmt.Println("Class name of tests before and after are different, not considering this result")
@@ -66,7 +66,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, repository models.Repository
 	}
 }
 
-func MeasureRandoopTests(db *gorm.DB, repoDir, file string) {
+func MeasureRandoopTests(db *gorm.DB, repoDir, file string, commitID uint, measurement models.Measurement) {
 	//java -classpath ${RANDOOP_JAR} randoop.main.Main gentests --classlist=myclasses.txt --time-limit=60
 	//Randoop prints out is the name of the JUnit files containing the tests it generated
 	testfiles, okGen := generateRandoopTests(repoDir, file)
@@ -80,7 +80,20 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file string) {
 	if okGen {
 		okComp := compileRandoopTests(repoDir)
 		if okComp {
-			runRandoopTests(testfiles)
+			testTime, numTests, ok := runRandoopTests(testfiles)
+			if ok {
+				rr := &models.Randoop{MeasurementID: measurement.ID,
+					Type:      byte('C'),
+					ClassName: file,
+					CommitID:  commitID,
+					TestsRun:  numTests,
+					// Failures:    failures,
+					// Errors:      errors,
+					// Skipped:     skipped,
+					TimeElapsed: testTime}
+				models.CreateRandoop(db, rr)
+			}
+
 		}
 
 	}

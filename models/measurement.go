@@ -8,10 +8,11 @@ import (
 //https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type Measurement struct {
 	Model
-	RepositoryID       uint //   `gorm:"not null"`
-	Repository         Repository
-	Executions         int `gorm:"default:1"`
-	MeasurementResults []MeasurementResults
+	RepositoryID uint //   `gorm:"not null"`
+	Repository   Repository
+	Executions   int `gorm:"default:1"`
+	Maven        []Maven
+	Randoop      []Randoop
 }
 
 func (r *Measurement) TableName() string {
