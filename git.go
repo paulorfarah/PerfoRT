@@ -56,7 +56,7 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 }
 
 func Checkout(repoName, hash string) error {
-	// fmt.Println("------------------------------------------------ checkout")
+	fmt.Println("------------------------------------------------ checkout")
 	dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	cmd := exec.Command("git", "checkout", "-f", hash)
 	cmd.Dir = dir

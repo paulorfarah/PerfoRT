@@ -106,7 +106,7 @@ import (
 // }
 
 func generateRandoopTests(repoDir, file string) ([]string, bool) {
-	fmt.Println("Generating Randoop tests for " + file + "...")
+	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
 		dir += string(os.PathSeparator)
@@ -139,7 +139,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err.Error())
 	}
-	fmt.Printf("combined out:\n%s\n", string(output))
+	fmt.Printf("test generation out:\n%s\n", string(output))
 
 	// cmdRandoop := exec.Command("bash", "-c", randoopStr)
 	// var out bytes.Buffer
@@ -156,6 +156,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 }
 
 func compileRandoopTests(repoDir string) bool {
+	fmt.Println("------------------------------------------------ compile randoop tests")
 	// javac -classpath .:$JUNITPATH ErrorTest*.java RegressionTest*.java -sourcepath .:path/to/files/under/test/
 	// javac -cp /mnt/sda4/go-work/src/github.com/paulorfarah/junit4/target/classes:/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar:. RegressionTest2.java
 
@@ -210,6 +211,7 @@ func compileRandoopTests(repoDir string) bool {
 }
 
 func runRandoopTests(testfiles []string) bool {
+	fmt.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
 	return true

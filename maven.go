@@ -83,14 +83,14 @@ func getClasspath(path string) string {
 func MvnCompile(path string) bool {
 	logfile := "maven-compiler.log"
 
-	fmt.Println("mvn compile")
+	fmt.Println("------------------------------------------------ mvn compile")
 	cmd := exec.Command("mvn", "compile")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
-	fmt.Printf("combined out:\n%s\n", string(output))
+	fmt.Printf("Compilation out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		panic(err)
@@ -112,7 +112,7 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 	ok := true
 	logfile := "maven-test.log"
 
-	fmt.Println("mvn test")
+	fmt.Println("------------------------------------------------ mvn test")
 	cmd := exec.Command("mvn", "test")
 	cmd.Dir = path
 
@@ -120,7 +120,7 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
-	fmt.Printf("combined out:\n%s\n", string(output))
+	fmt.Printf("Mvn test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		ok = false

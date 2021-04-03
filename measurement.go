@@ -19,7 +19,6 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 	if err != nil {
 		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 	} else {
-
 		ok := MvnCompile(repoDir)
 		if ok {
 			MeasureMavenTests(db, repoDir, repository, commitID, currCommit, *measurement)
