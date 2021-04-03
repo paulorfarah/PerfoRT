@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -152,7 +153,7 @@ func generateRandoopTests(repoDir, file string) ([]string, bool) {
 		fmt.Println(string(output))
 		return []string{}, false
 	}
-	return readRandoopGentestResults(className + ".txt"), true
+	return readRandoopGentestResults(className + ".txt")
 }
 
 func compileRandoopTests(repoDir string) bool {
@@ -191,9 +192,7 @@ func compileRandoopTests(repoDir string) bool {
 	cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
 	cmdClean.Run()
 
-	// randoopStr := "javac -cp " + classpath + cpSep + junitJar + className + " > " + className + "_comp.txt"
 	randoopStr := "javac -cp " + classpath + cpSep + junitJar + " RegressionTest*.java > RegressionTest_compilation.txt"
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> javac")
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 	var out bytes.Buffer
@@ -204,17 +203,39 @@ func compileRandoopTests(repoDir string) bool {
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot compile randoop tests (" + fmt.Sprint(err) + "): " + stderr.String())
 		fmt.Println(out)
-		// return false
+		return false
 	}
 	// }
 	return true
 }
 
-func runRandoopTests(testfiles []string) bool {
+func runRandoopTests(testfiles []string) (float64, int, bool) {
 	fmt.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
-	return true
+
+	junitJar := "$JUNITPATH"
+	cpSep := ":"
+	if runtime.GOOS == "windows" {
+		junitJar = "%JUNITPATH%"
+		cpSep = ";"
+	}
+
+	junitStr := "java -cp ." + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+	fmt.Println(junitStr)
+	cmdRandoop := exec.Command("bash", "-c", junitStr)
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmdRandoop.Stdout = &out
+	cmdRandoop.Stderr = &stderr
+	err := cmdRandoop.Run()
+	if err != nil {
+		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+		fmt.Println(out)
+		return float64(0.0), 0, false
+	}
+
+	return readRandoopTestResults("runRT.txt")
 }
 
 func parseProjectPath(file string) (string, string) {
@@ -245,10 +266,9 @@ func parseProjectPath(file string) (string, string) {
 	}
 	return dir, pack
 }
-func readRandoopGentestResults(path string) []string {
+func readRandoopGentestResults(path string) ([]string, bool) {
 	fmt.Println("readRandoopGentestResults: " + path)
-	// logfile := "randoop-gentest.log"
-	// f, err := os.Open(path + string(os.PathSeparator) + logfile)
+	ok := false
 	f, err := os.Open(path)
 	if err != nil {
 		fmt.Println("[>>ERROR]: There has been an error openning randoop-gentest log file: ", err.Error())
@@ -265,10 +285,42 @@ func readRandoopGentestResults(path string) []string {
 				aux := strings.Split(string(row), " ")
 				f := aux[2]
 				files = append(files, f)
+				ok = true
+			} else if bytes.Equal(row[:30], []byte("No regression tests to output.")) {
+				ok = false
 			}
 		}
 	}
-	return files
+	return files, ok
+}
+
+func readRandoopTestResults(path string) (float64, int, bool) {
+	fmt.Println("readRandooTestResults: " + path)
+	ok := false
+	f, err := os.Open(path)
+	if err != nil {
+		fmt.Println("[>>ERROR]: There has been an error openning randoop-gentest log file: ", err.Error())
+		fmt.Println("log file: " + path)
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	testTime := float64(0.0)
+	numTests := 0
+	for scanner.Scan() {
+		row := scanner.Bytes()
+		if len(string(row)) > 5 {
+			if bytes.Equal(row[:5], []byte("Time:")) {
+				aux := strings.Split(string(row), " ")
+				testTime, _ = strconv.ParseFloat(aux[1], 64)
+			} else if bytes.Equal(row[:4], []byte("OK (")) {
+				ok = true
+				aux := strings.Split(string(row), " ")
+				numTests, _ = strconv.Atoi(aux[1][1:])
+			}
+		}
+	}
+	return testTime, numTests, ok
 }
 
 func parseResult(line []byte, metric string) string {
