@@ -184,7 +184,7 @@ func compileRandoopTests(repoDir string) bool {
 		cpSep = ";"
 	}
 	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes" + cpSep
-	classpath = GetMavenDependenciesClasspath(repoDir)
+	classpath += GetMavenDependenciesClasspath(repoDir)
 	// className := strings.ReplaceAll(path, "/", ".")
 
 	// clean temporary files to avoid Too many links error
