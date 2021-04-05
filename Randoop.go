@@ -151,7 +151,7 @@ func generateRandoopTests(repoDir, file string) bool {
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
 		fmt.Println(string(output))
-		return []string{}, false
+		return false
 	}
 	return readRandoopGentestResults(className + ".txt")
 }
