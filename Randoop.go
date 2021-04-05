@@ -183,9 +183,8 @@ func compileRandoopTests(repoDir string) bool {
 		junitJar = "%JUNITPATH%"
 		cpSep = ";"
 	}
-	// classpath := "/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar" + cpSep
-	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
-	classpath := GetMavenDependenciesClasspath(repoDir)
+	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes" + cpSep
+	classpath = GetMavenDependenciesClasspath(repoDir)
 	// className := strings.ReplaceAll(path, "/", ".")
 
 	// clean temporary files to avoid Too many links error
