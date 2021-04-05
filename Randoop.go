@@ -106,7 +106,7 @@ import (
 // 	}
 // }
 
-func generateRandoopTests(repoDir, file string) ([]string, bool) {
+func generateRandoopTests(repoDir, file string) bool {
 	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
@@ -183,8 +183,8 @@ func compileRandoopTests(repoDir string) bool {
 		junitJar = "%JUNITPATH%"
 		cpSep = ";"
 	}
-	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes" + cpSep
-	classpath += GetMavenDependenciesClasspath(repoDir)
+	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	classpath += cpSep + GetMavenDependenciesClasspath(repoDir)
 	// className := strings.ReplaceAll(path, "/", ".")
 
 	// clean temporary files to avoid Too many links error
@@ -208,7 +208,7 @@ func compileRandoopTests(repoDir string) bool {
 	return true
 }
 
-func runRandoopTests(testfiles []string) (float64, int, bool) {
+func runRandoopTests(repoDir string) (float64, int, bool) {
 	fmt.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
@@ -220,7 +220,8 @@ func runRandoopTests(testfiles []string) (float64, int, bool) {
 		cpSep = ";"
 	}
 
-	junitStr := "java -cp ." + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	junitStr := "java -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
 	fmt.Println(junitStr)
 	cmdRandoop := exec.Command("bash", "-c", junitStr)
 	var out bytes.Buffer
@@ -265,7 +266,7 @@ func parseProjectPath(file string) (string, string) {
 	}
 	return dir, pack
 }
-func readRandoopGentestResults(path string) ([]string, bool) {
+func readRandoopGentestResults(path string) bool {
 	fmt.Println("readRandoopGentestResults: " + path)
 	ok := false
 	f, err := os.Open(path)
@@ -276,21 +277,17 @@ func readRandoopGentestResults(path string) ([]string, bool) {
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
-	var files []string
 	for scanner.Scan() {
 		row := scanner.Bytes()
 		if len(string(row)) > 12 {
 			if bytes.Equal(row[:12], []byte("Created file")) {
-				aux := strings.Split(string(row), " ")
-				f := aux[2]
-				files = append(files, f)
 				ok = true
 			} else if bytes.Equal(row[:30], []byte("No regression tests to output.")) {
 				ok = false
 			}
 		}
 	}
-	return files, ok
+	return ok
 }
 
 func readRandoopTestResults(path string) (float64, int, bool) {
