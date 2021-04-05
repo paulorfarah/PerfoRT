@@ -37,19 +37,14 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 			// fmt.Println(testResultsBefore[ind].ClassName, testResultsAfter[ind].ClassName)
 			// if testResultsBefore[ind].ClassName == testResultsAfter[ind].ClassName {
 			mr := &models.Maven{MeasurementID: measurement.ID,
-				Type:      byte('C'),
-				ClassName: testResultsAfter[ind].ClassName,
-				CommitID:  commitID,
-				// TestsRunBefore:    testResultsBefore[ind].TestsRun,
-				// FailuresBefore:    testResultsBefore[ind].Failures,
-				// ErrorsBefore:      testResultsBefore[ind].Errors,
-				// SkippedBefore:     testResultsBefore[ind].Skipped,
-				// TimeElapsedBefore: testResultsBefore[ind].TimeElapsed,
-				TestsRunAfter:    testResultsAfter[ind].TestsRun,
-				FailuresAfter:    testResultsAfter[ind].Failures,
-				ErrorsAfter:      testResultsAfter[ind].Errors,
-				SkippedAfter:     testResultsAfter[ind].Skipped,
-				TimeElapsedAfter: testResultsAfter[ind].TimeElapsed}
+				Type:        byte('C'),
+				ClassName:   testResultsAfter[ind].ClassName,
+				CommitID:    commitID,
+				TestsRun:    testResultsAfter[ind].TestsRun,
+				Failures:    testResultsAfter[ind].Failures,
+				Errors:      testResultsAfter[ind].Errors,
+				Skipped:     testResultsAfter[ind].Skipped,
+				TimeElapsed: testResultsAfter[ind].TimeElapsed}
 			models.CreateMaven(db, mr)
 			// } else {
 			// 	fmt.Println("********************** CRITICAL ERROR ***************")

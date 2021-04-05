@@ -7,22 +7,17 @@ import (
 
 type Maven struct {
 	Model
-	MeasurementID     uint //   `gorm:"not null"`
-	Measurement       Measurement
-	Type              byte `gorm:"not null"`
-	CommitID          uint
-	COmmit            Commit
-	ClassName         string
-	TestsRunBefore    int
-	FailuresBefore    int
-	ErrorsBefore      int
-	SkippedBefore     int
-	TimeElapsedBefore float64
-	TestsRunAfter     int
-	FailuresAfter     int
-	ErrorsAfter       int
-	SkippedAfter      int
-	TimeElapsedAfter  float64
+	MeasurementID uint //   `gorm:"not null"`
+	Measurement   Measurement
+	Type          byte `gorm:"not null"`
+	CommitID      uint
+	COmmit        Commit
+	ClassName     string
+	TestsRun      int
+	Failures      int
+	Errors        int
+	Skipped       int
+	TimeElapsed   float64
 }
 
 func (r *Maven) TableName() string {
