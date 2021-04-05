@@ -113,7 +113,7 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 	logfile := "maven-test.log"
 
 	fmt.Println("------------------------------------------------ mvn test")
-	cmd := exec.Command("mvn", "Drat.skip=true", "test")
+	cmd := exec.Command("mvn", "-Drat.skip=true", "test")
 	cmd.Dir = path
 
 	output, err := cmd.CombinedOutput()
