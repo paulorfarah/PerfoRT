@@ -140,6 +140,7 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 }
 
 func readMavenTestResults(path string) []MvnTestResult {
+	fmt.Println("===========================================> readMavenTestResults....................................")
 	logfile := "maven-test.log"
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	if err != nil {
@@ -186,6 +187,7 @@ func readMavenTestResults(path string) []MvnTestResult {
 					Errors:      e,
 					Skipped:     s,
 					TimeElapsed: te}
+				fmt.Printf("%s\n", test)
 				tests = append(tests, *test)
 
 			}
