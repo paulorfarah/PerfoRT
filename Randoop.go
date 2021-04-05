@@ -141,13 +141,6 @@ func generateRandoopTests(repoDir, file string) bool {
 		fmt.Printf("cmd.Run() failed with %s\n", err.Error())
 	}
 	fmt.Printf("test generation out:\n%s\n", string(output))
-
-	// cmdRandoop := exec.Command("bash", "-c", randoopStr)
-	// var out bytes.Buffer
-	// var stderr bytes.Buffer
-	// cmdRandoop.Stdout = &out
-	// cmdRandoop.Stderr = &stderr
-	// err := cmdRandoop.Run()
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
 		fmt.Println(string(output))

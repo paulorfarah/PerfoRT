@@ -155,7 +155,8 @@ func readMavenTestResults(path string) []MvnTestResult {
 		row := scanner.Bytes()
 		elements := strings.Split(string(row), " ")
 		if len(elements) > 9 {
-			if bytes.Equal(row[:10], []byte("Tests run:")) {
+			if bytes.Equal(row[:10], []byte("Tests run:")) ||
+				bytes.Equal(row[:17], []byte("[INFO] Tests run:")) {
 				cls := strings.Split(string(row), " ")
 				cl := cls[len(cls)-1]
 				re := regexp.MustCompile("[0-9]+(.[0-9]+)*")
@@ -187,7 +188,6 @@ func readMavenTestResults(path string) []MvnTestResult {
 					Errors:      e,
 					Skipped:     s,
 					TimeElapsed: te}
-				fmt.Printf("%s\n", test)
 				tests = append(tests, *test)
 
 			}
