@@ -179,7 +179,7 @@ func main() {
 							models.CreateCommit(db, commit)
 						}
 
-						Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
+						go Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
 
 						//codeanalysis.Understand(cs.Name)
 					}
