@@ -82,7 +82,7 @@ func Checkout(repoName, hash string) error {
 }
 
 func removeContents(dir string) error {
-	fmt.Println('deleting directory: ' + dir)
+	fmt.Println("deleting directory: " + dir)
 	d, err := os.Open(dir)
 	if err != nil {
 		return err
