@@ -345,6 +345,7 @@ func deleteOldRandoopTests() bool {
 	for _, file := range files {
 		if file.Mode().IsRegular() {
 			if filepath.Ext(file.Name()) == ".java" || filepath.Ext(file.Name()) == ".class" {
+				fmt.Println("deleting file: " + file.Name())
 				os.Remove(file.Name())
 			}
 		}
