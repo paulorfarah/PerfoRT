@@ -275,8 +275,9 @@ func readRandoopGentestResults(path string) bool {
 		if len(string(row)) > 12 {
 			if bytes.Equal(row[:12], []byte("Created file")) {
 				ok = true
-			} else if bytes.Equal(row[:30], []byte("No regression tests to output.")) {
+			} else if bytes.Contains(row, []byte("No regression tests to output.")) {
 				ok = false
+
 			}
 		}
 	}
