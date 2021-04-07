@@ -113,7 +113,7 @@ func generateRandoopTests(repoDir, file string) bool {
 		dir += string(os.PathSeparator)
 	}
 	path := strings.Split(pack, ".java")[0]
-	randoopJar := "$RANDOOP_JAR"
+	randoopJar := "${RANDOOP_JAR}"
 	cpSep := ":"
 	if runtime.GOOS == "windows" {
 		randoopJar = "%RANDOOP_JAR%"
