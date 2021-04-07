@@ -123,7 +123,7 @@ func generateRandoopTests(repoDir, file string) bool {
 		cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
 		cmdClean.Run()
 	}
-
+	envRandoopJar := os.Getenv("RANDOOP_JAR")
 	// remove old tests
 	deleteOldRandoopTests()
 
@@ -132,7 +132,7 @@ func generateRandoopTests(repoDir, file string) bool {
 	classpath += GetMavenDependenciesClasspath(repoDir)
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
-	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
+	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 
