@@ -132,7 +132,7 @@ func generateRandoopTests(repoDir, file string) bool {
 	classpath += GetMavenDependenciesClasspath(repoDir)
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
-	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " > " + className + ".txt"
+	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=30 > " + className + ".txt"
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 
