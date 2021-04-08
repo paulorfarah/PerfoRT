@@ -118,14 +118,15 @@ func generateRandoopTests(repoDir, file string) bool {
 	if runtime.GOOS == "windows" {
 		randoopJar = "%RANDOOP_JAR%"
 		cpSep = ";"
-	} else {
-		// clean temporary files to avoid Too many links error
-		cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
-		cmdClean.Run()
 	}
+	// else {
+	// clean temporary files to avoid Too many links error
+	// cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
+	// cmdClean.Run()
+	// }
 	envRandoopJar := os.Getenv("RANDOOP_JAR")
 	// remove old tests
-	deleteOldRandoopTests()
+	// deleteOldRandoopTests()
 
 	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	classpath := dir + "target" + string(os.PathSeparator) + "classes" + cpSep
