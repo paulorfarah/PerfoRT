@@ -217,7 +217,7 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 
 	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 
-	junitStr := "java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+	junitStr := "java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
 
 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
