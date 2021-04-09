@@ -74,8 +74,9 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file string, commitID uint, measu
 	if okGen {
 		okComp := compileRandoopTests(repoDir)
 		if okComp {
-			testTime, numTests, ok := runRandoopTests(repoDir)
-			if ok {
+			testTime, numTests, okRun := runRandoopTests(repoDir)
+			if okRun {
+				coverageRandoopTests(repoDir, file)
 				rr := &models.Randoop{MeasurementID: measurement.ID,
 					Type:      byte('C'),
 					ClassName: file,

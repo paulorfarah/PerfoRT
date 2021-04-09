@@ -206,6 +206,7 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 	fmt.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
+	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
 
 	junitJar := "$JUNITPATH"
 	cpSep := ":"
@@ -215,7 +216,11 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 	}
 
 	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
-	junitStr := "java -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+
+	junitStr := "java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+
+	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
+
 	fmt.Println(junitStr)
 	cmdRandoop := exec.Command("bash", "-c", junitStr)
 	var out bytes.Buffer
@@ -230,6 +235,42 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 	}
 
 	return readRandoopTestResults("runRT.txt")
+}
+
+func coverageRandoopTests(repoDir, src string) { //(map[string]int, bool) {
+	fmt.Println("------------------------------------------------ run randoop tests")
+	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
+	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
+	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
+
+	// junitJar := "$JUNITPATH"
+	// cpSep := ":"
+	// if runtime.GOOS == "windows" {
+	// 	junitJar = "%JUNITPATH%"
+	// 	cpSep = ";"
+	// }
+
+	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+
+	// junitStr := "java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+	jacocoStr := "java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + src + " --csv resJaCoCo.csv"
+
+	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
+
+	fmt.Println(jacocoStr)
+	cmdRandoop := exec.Command("bash", "-c", jacocoStr)
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmdRandoop.Stdout = &out
+	cmdRandoop.Stderr = &stderr
+	err := cmdRandoop.Run()
+	if err != nil {
+		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+		fmt.Println(out)
+		// return nil, false
+	}
+
+	// return readRandoopTestResults("runRT.txt")
 }
 
 func parseProjectPath(file string) (string, string) {
