@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -56,21 +57,24 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 }
 
 func Checkout(repoName, hash string) error {
-	fmt.Println("------------------------------------------------ checkout")
+	// fmt.Println("################################################ checkout " + hash)
+	// log.Println("################################################ checkout " + hash)
+
 	dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	cmd := exec.Command("git", "checkout", "-f", hash)
 	cmd.Dir = dir
 	err := cmd.Start()
 	if err != nil {
-		fmt.Println("[>>ERROR]: START dir: " + dir)
-		fmt.Printf("git checkout -f %s\n", hash)
-		fmt.Println("\nCannot run git checkout: ", hash, err)
+		log.Println("[>>ERROR]: START dir: " + dir)
+		log.Printf("git checkout -f %s\n", hash)
+		log.Println("\nCannot run git checkout: ", hash, err)
+		return err
 	}
 	err = cmd.Wait()
 	if err != nil {
-		fmt.Println("[>>ERROR]: WAIT dir: " + dir)
-		fmt.Printf("git checkout -f %s\n", hash)
-		fmt.Println("\nCannot run git checkout: ", hash, err)
+		log.Println("[>>ERROR]: WAIT dir: " + dir)
+		log.Printf("git checkout -f %s\n", hash)
+		log.Println("\nCannot run git checkout: ", hash, err)
 	}
 
 	// fmt.Println("checkout output: " + string(out))

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -107,7 +108,7 @@ import (
 // }
 
 func generateRandoopTests(repoDir, file string) bool {
-	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
+	log.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
 		dir += string(os.PathSeparator)
@@ -134,24 +135,24 @@ func generateRandoopTests(repoDir, file string) bool {
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > " + className + ".txt"
-	fmt.Println(randoopStr)
+	log.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 
 	output, err := cmdRandoop.CombinedOutput()
 	if err != nil {
-		fmt.Printf("cmd.Run() failed with %s\n", err.Error())
+		log.Printf("cmd.Run() failed with %s\n", err.Error())
 	}
-	fmt.Printf("test generation out:\n%s\n", string(output))
+	log.Printf("test generation out:\n%s\n", string(output))
 	if err != nil {
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
-		fmt.Println(string(output))
+		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
+		log.Println(string(output))
 		return false
 	}
 	return readRandoopGentestResults(className + ".txt")
 }
 
 func compileRandoopTests(repoDir string) bool {
-	fmt.Println("------------------------------------------------ compile randoop tests")
+	log.Println("------------------------------------------------ compile randoop tests")
 	// javac -classpath .:$JUNITPATH ErrorTest*.java RegressionTest*.java -sourcepath .:path/to/files/under/test/
 	// javac -cp /mnt/sda4/go-work/src/github.com/paulorfarah/junit4/target/classes:/mnt/sda4/downloads/junit-4.13.2.jar:/mnt/sda4/downloads/hamcrest-core-1.3.jar:. RegressionTest2.java
 
@@ -182,11 +183,11 @@ func compileRandoopTests(repoDir string) bool {
 	// className := strings.ReplaceAll(path, "/", ".")
 
 	// clean temporary files to avoid Too many links error
-	cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
-	cmdClean.Run()
+	// cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
+	// cmdClean.Run()
 
 	randoopStr := "javac -cp " + classpath + cpSep + junitJar + " RegressionTest*.java > RegressionTest_compilation.txt"
-	fmt.Println(randoopStr)
+	log.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
@@ -194,8 +195,8 @@ func compileRandoopTests(repoDir string) bool {
 	cmdRandoop.Stderr = &stderr
 	err := cmdRandoop.Run()
 	if err != nil {
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot compile randoop tests (" + fmt.Sprint(err) + "): " + stderr.String())
-		fmt.Println(out)
+		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot compile randoop tests (" + fmt.Sprint(err) + "): " + stderr.String())
+		log.Println(out)
 		return false
 	}
 	// }
@@ -203,7 +204,7 @@ func compileRandoopTests(repoDir string) bool {
 }
 
 func runRandoopTests(repoDir string) (float64, int, bool) {
-	fmt.Println("------------------------------------------------ run randoop tests")
+	log.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
 	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
@@ -221,7 +222,7 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 
 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
-	fmt.Println(junitStr)
+	log.Println(junitStr)
 	cmdRandoop := exec.Command("bash", "-c", junitStr)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
@@ -229,8 +230,8 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 	cmdRandoop.Stderr = &stderr
 	err := cmdRandoop.Run()
 	if err != nil {
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
-		fmt.Println(out)
+		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+		log.Println(out)
 		return float64(0.0), 0, false
 	}
 
@@ -238,7 +239,7 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 }
 
 func coverageRandoopTests(repoDir, src string) { //(map[string]int, bool) {
-	fmt.Println("------------------------------------------------ run randoop tests")
+	log.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
 	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
@@ -257,7 +258,7 @@ func coverageRandoopTests(repoDir, src string) { //(map[string]int, bool) {
 
 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
-	fmt.Println(jacocoStr)
+	log.Println(jacocoStr)
 	cmdRandoop := exec.Command("bash", "-c", jacocoStr)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
@@ -265,8 +266,8 @@ func coverageRandoopTests(repoDir, src string) { //(map[string]int, bool) {
 	cmdRandoop.Stderr = &stderr
 	err := cmdRandoop.Run()
 	if err != nil {
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
-		fmt.Println(out)
+		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+		log.Println(out)
 		// return nil, false
 	}
 
@@ -293,7 +294,7 @@ func parseProjectPath(file string) (string, string) {
 		} else if strings.HasPrefix(file, "src/test/") {
 			pack = strings.TrimLeft(file, "/src/test/")
 		} else {
-			fmt.Println("**************************** filefrom: " + file)
+			fmt.Println("Error in parseProjectPath, path not in list -  filefrom: " + file)
 			paths = strings.Split(file, "src/")
 			dir = paths[0]
 			pack = paths[1]
@@ -302,12 +303,12 @@ func parseProjectPath(file string) (string, string) {
 	return dir, pack
 }
 func readRandoopGentestResults(path string) bool {
-	fmt.Println("readRandoopGentestResults: " + path)
+	log.Println("readRandoopGentestResults: " + path)
 	ok := false
 	f, err := os.Open(path)
 	if err != nil {
-		fmt.Println("[>>ERROR]: There has been an error openning randoop-gentest log file: ", err.Error())
-		fmt.Println("log file: " + path)
+		log.Println("[>>ERROR]: There has been an error openning randoop-gentest log file: ", err.Error())
+		log.Println("log file: " + path)
 	}
 	defer f.Close()
 

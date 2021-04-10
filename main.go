@@ -21,6 +21,13 @@ import (
 func main() {
 	fmt.Println("go-repo-downloader")
 
+	logFile, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.SetOutput(logFile)
+	log.Println("starting...")
+
 	url := "https://github.com/apache/commons-io"
 	// url := "https://github.com/junit-team/junit4"   //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
 	//  "https://github.com/paulorfarah/TestProject"
@@ -32,8 +39,11 @@ func main() {
 	repoName := urlSplit[4]
 	repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	fmt.Println("repoDir: " + repoDir)
+	log.Println("repoDir: " + repoDir)
 
 	// fmt.Println("git clone " + url)
+	log.Println("git clone " + url)
+
 	repo, err := cloneRepository(url, repoDir)
 
 	if err == nil {
@@ -54,8 +64,7 @@ func main() {
 		db := models.GetDB()
 		platform, err := models.FindPlatformByName(db, "github")
 		if err != nil {
-			fmt.Println("Create new record...")
-			//fmt.Println(err)
+			log.Println("Create new platform: " + "github")
 			platform = &models.Platform{Name: "github"}
 			models.CreatePlatform(db, platform)
 		}
@@ -65,8 +74,7 @@ func main() {
 		//save repository in db
 		repository, err := models.FindRepositoryByName(db, repoName)
 		if err != nil {
-			fmt.Println("create new repo")
-			fmt.Println(err)
+			log.Println("create new repo: " + repoName)
 			repository = &models.Repository{PlatformID: platform.ID, Name: repoName}
 			models.CreateRepository(db, repository)
 		}
@@ -115,7 +123,7 @@ func main() {
 
 			commits, err := repo.Log(&git.LogOptions{From: branch.Hash()}) //, Since: &since, Until: &until})
 			if err != nil {
-				fmt.Println(err)
+				log.Println("Error in git log: " + err.Error())
 			}
 			defer commits.Close()
 			//		fmt.Println("---- commits ----")
@@ -143,16 +151,14 @@ func main() {
 						//Author
 						author, err := models.FindAccountByEmail(db, currCommit.Author.Email)
 						if err != nil {
-							fmt.Println("create new author...")
-							fmt.Println(err)
+							log.Println("create new author: " + currCommit.Author.Name)
 							author = &models.Account{Email: currCommit.Author.Email, Name: currCommit.Author.Name}
 							models.CreateAccount(db, author)
 						}
 						//Committer
 						committer, err := models.FindAccountByEmail(db, currCommit.Committer.Email)
 						if err != nil {
-							fmt.Println("create new committer...")
-							fmt.Println(err)
+							log.Println("create new committer: " + currCommit.Committer.Name)
 							committer = &models.Account{Email: currCommit.Committer.Email, Name: currCommit.Committer.Name}
 							models.CreateAccount(db, committer)
 						}
@@ -160,11 +166,10 @@ func main() {
 						//Commit
 						commit, err := models.FindCommitByHash(db, currCommit.Hash.String())
 						if err != nil {
-							fmt.Println("create new commit")
-							fmt.Println(err)
+							log.Println("create new commit: " + currCommit.Hash.String())
 							parent, errj := json.Marshal(currCommit.ParentHashes)
 							if errj != nil {
-								fmt.Println(errj)
+								log.Println("Error Marshalling parent hashes: " + errj.Error())
 							}
 							commit = &models.Commit{CommitHash: currCommit.Hash.String(),
 								PreviousCommitHash: prevCommit.Hash.String(),
@@ -193,12 +198,13 @@ func main() {
 				return nil
 			})
 			if err != nil {
-				fmt.Println(err)
+				log.Println("Error iterating over commits: " + err.Error())
 			}
 		}
-		models.GetRandoopMetrics()
+		// deprecated
+		// models.GetRandoopMetrics()
 	} else {
-		fmt.Println("Cannot get repository")
+		log.Println("Cannot get repository")
 	}
 }
 

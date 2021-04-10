@@ -56,8 +56,8 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 		// 		fmt.Println("size of tests before and after are different, not considering these results")
 		// 	}
 	} else {
-		fmt.Println("********************** CRITICAL ERROR ***************")
-		fmt.Println("successAfter is false measuring maven tests")
+		log.Println("********************** CRITICAL ERROR ***************")
+		log.Println("successAfter is false measuring maven tests")
 	}
 }
 
@@ -173,13 +173,10 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file string, commitID uint, measu
 
 func listJavaFiles(repoDir string) []string {
 	var files []string
-
-	// root := repoDir //"/mnt/sda4/go-work/src/github.com/paulorfarah/junit4" //"D:\\go-work\\src\\github.com\\paulorfarah\\repos\\junit4"
 	err := filepath.Walk(repoDir, visit(&files))
 	if err != nil {
 		panic(err)
 	}
-
 	return files
 }
 

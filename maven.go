@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -88,12 +89,14 @@ func MvnCompile(path string) bool {
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("cmd.Run() failed with %s\n", err)
+		log.Printf("cmd.Run() failed with %s\n", err)
+		return false
 	}
-	fmt.Printf("Compilation out:\n%s\n", string(output))
+	log.Printf("Compilation out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
-		panic(err)
+		log.Printf(err.Error())
+		return false
 	}
 	// if err != nil {
 	// 	fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
@@ -112,7 +115,7 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 	ok := true
 	logfile := "maven-test.log"
 
-	fmt.Println("------------------------------------------------ mvn test")
+	log.Println("------------------------------------------------ mvn test")
 	cmd := exec.Command("mvn", "-Drat.skip=true", "test")
 	cmd.Dir = path
 
@@ -121,6 +124,7 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("Mvn test out:\n%s\n", string(output))
+	log.Printf("Mvn test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		ok = false
@@ -140,12 +144,11 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 }
 
 func readMavenTestResults(path string) []MvnTestResult {
-	fmt.Println("===========================================> readMavenTestResults....................................")
 	logfile := "maven-test.log"
 	f, err := os.Open(path + string(os.PathSeparator) + logfile)
 	if err != nil {
-		fmt.Println("[>>ERROR]: There has been an error running mvn test: ", err.Error())
-		fmt.Println("log file: " + path + string(os.PathSeparator) + logfile)
+		log.Println("[>>ERROR]: There has been an error running mvn test: ", err.Error())
+		log.Println("log file: " + path + string(os.PathSeparator) + logfile)
 	}
 	defer f.Close()
 
