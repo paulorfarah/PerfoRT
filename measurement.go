@@ -22,9 +22,9 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 		ok := MvnCompile(repoDir)
 		if ok {
 			MeasureMavenTests(db, repoDir, commitID, *measurement)
-			for _, file := range listJavaFiles(repoDir) {
-				MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
-			}
+			// for _, file := range listJavaFiles(repoDir) {
+			// 	MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
+			// }
 		}
 	}
 }
