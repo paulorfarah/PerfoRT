@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -133,7 +132,7 @@ func main() {
 			err = commits.ForEach(func(currCommit *object.Commit) error {
 
 				if prevCommit != nil {
-					fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
+					// fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
 					//fmt.Println(currCommit.Hash)
 					//fmt.Println(currCommit.Author.Email)
 					//fmt.Println(currCommit.Committer)
@@ -185,7 +184,6 @@ func main() {
 								Subject:            currCommit.Message,
 								Branch:             branch.Name().String()}
 							models.CreateCommit(db, commit)
-							fmt.Println(commit.CommitHash)
 						}
 
 						// Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
