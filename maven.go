@@ -91,6 +91,8 @@ func MvnCompile(path string) bool {
 	if err != nil {
 		log.Printf("cmd.Run() failed with %s\n", err)
 		fmt.Printf("cmd.Run() failed with %s\n", err)
+		log.Printf("Compilation out:\n%s\n", string(output))
+		fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
 	log.Printf("Compilation out:\n%s\n", string(output))
