@@ -90,12 +90,15 @@ func MvnCompile(path string) bool {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("cmd.Run() failed with %s\n", err)
+		fmt.Printf("cmd.Run() failed with %s\n", err)
 		return false
 	}
 	log.Printf("Compilation out:\n%s\n", string(output))
+	fmt.Printf("Compilation out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		log.Printf(err.Error())
+		fmt.Printf(err.Error())
 		return false
 	}
 	// if err != nil {
