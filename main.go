@@ -37,7 +37,8 @@ func main() {
 	//}
 	//username := urlSplit[3]
 	repoName := urlSplit[4]
-	repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
+	// repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
+	repoDir := getParentDirectory() + "/repos/" + repoName
 	fmt.Println("repoDir: " + repoDir)
 	log.Println("repoDir: " + repoDir)
 
@@ -144,7 +145,8 @@ func main() {
 						return err
 					}
 					if prevTree != nil {
-						changes, err := currTree.Diff(prevTree)
+						// changes, err := currTree.Diff(prevTree)
+						_, err := currTree.Diff(prevTree)
 						if err != nil {
 							return err
 						}
@@ -183,9 +185,10 @@ func main() {
 								Subject:            currCommit.Message,
 								Branch:             branch.Name().String()}
 							models.CreateCommit(db, commit)
+							fmt.Println(commit.CommitHash)
 						}
 
-						Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
+						// Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
 
 						//codeanalysis.Understand(cs.Name)
 					}
