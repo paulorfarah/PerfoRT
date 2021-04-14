@@ -19,15 +19,16 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 	if err != nil {
 		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 		log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
-	} else {
-		ok := MvnCompile(repoDir)
+	} 
+	// else {
+		// ok := MvnCompile(repoDir)
 		// if ok {
 			// MeasureMavenTests(db, repoDir, commitID, *measurement)
 			// for _, file := range listJavaFiles(repoDir) {
 			// 	MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
 			// }
 		// }
-	}
+	// }
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
