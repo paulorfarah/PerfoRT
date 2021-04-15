@@ -37,7 +37,7 @@ func main() {
 	repoName := urlSplit[4]
 	// repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	// repoDir := getParentDirectory() + "/repos/" + repoName
-	repoDir := "/home/farah/go-work/src/github.com/paulorfarah/repos/" + repoName
+	repoDir := "/mnt/sda4/go-work/src/github.com/paulorfarah/repos/" + repoName
 	fmt.Println("repoDir: " + repoDir)
 	log.Println("repoDir: " + repoDir)
 
