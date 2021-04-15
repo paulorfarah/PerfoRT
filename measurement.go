@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/jinzhu/gorm"
@@ -15,20 +16,23 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 	measurement := &models.Measurement{RepositoryID: repository.ID}
 	models.CreateMeasurement(db, measurement)
 
+	dt := time.Now()
+	fmt.Println(currCommit.Hash.String() + " - " + dt.String())
+
 	err := Checkout(repository.Name, currCommit.Hash.String())
 	if err != nil {
 		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 		log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
-	} 
-	// else {
-		// ok := MvnCompile(repoDir)
-		// if ok {
-			// MeasureMavenTests(db, repoDir, commitID, *measurement)
-			// for _, file := range listJavaFiles(repoDir) {
-			// 	MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
-			// }
-		// }
-	// }
+	} else {
+
+		ok := MvnCompile(repoDir)
+		if ok {
+			MeasureMavenTests(db, repoDir, commitID, *measurement)
+			for _, file := range listJavaFiles(repoDir) {
+				MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
+			}
+		}
+	}
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {

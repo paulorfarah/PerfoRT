@@ -85,35 +85,29 @@ func MvnCompile(path string) bool {
 	logfile := "maven-compiler.log"
 
 	fmt.Println("------------------------------------------------ mvn compile")
-	cmd := exec.Command("mvn", "compile")
+	cmd := exec.Command("mvn", "-Drat.skip=true", "clean", "compile")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("cmd.Run() failed with %s\n", err)
+		log.Printf("mvn -Drat.skip=true clean compile failed with %s\n", err)
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 		log.Printf("Compilation out:\n%s\n", string(output))
 		fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
 	log.Printf("Compilation out:\n%s\n", string(output))
-	fmt.Printf("Compilation out:\n%s\n", string(output))
+	// fmt.Printf("Compilation out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		log.Printf(err.Error())
 		fmt.Printf(err.Error())
 		return false
 	}
-	// if err != nil {
-	// 	fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
-	// 	fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
-	// } else {
-	// 	fmt.Println("executed successfully")
-	// }
-	// fmt.Println("------")
-	// fmt.Printf("%s\n", out.String())
-	// fmt.Println("^^^ out ^^^ - vvv error vvv")
-	// fmt.Printf("%s\n", stderr.String())
-	return true
+	if strings.Contains(string(output), "BUILD SUCCESS") {
+		return true
+	} else {
+		return false
+	}
 }
 
 func MvnTest(path string) ([]MvnTestResult, bool) {
@@ -121,14 +115,15 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 	logfile := "maven-test.log"
 
 	log.Println("------------------------------------------------ mvn test")
+	fmt.Println("------------------------------------------------ mvn test")
 	cmd := exec.Command("mvn", "-Drat.skip=true", "test")
 	cmd.Dir = path
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("cmd.Run() failed with %s\n", err)
+		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err)
 	}
-	fmt.Printf("Mvn test out:\n%s\n", string(output))
+	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	log.Printf("Mvn test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {

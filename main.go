@@ -27,8 +27,7 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	url := "https://github.com/apache/commons-io"
-	// url := "https://github.com/junit-team/junit4"   //"https://github.com/eclipse/jgit" (cant compile) //"https://github.com/apache/pdfbox" (svnexit
+	url := "https://github.com/junit-team/junit4"
 	//  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
@@ -37,7 +36,8 @@ func main() {
 	//username := urlSplit[3]
 	repoName := urlSplit[4]
 	// repoDir := getParentDirectory() + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
-	repoDir := getParentDirectory() + "/repos/" + repoName
+	// repoDir := getParentDirectory() + "/repos/" + repoName
+	repoDir := "/home/farah/go-work/src/github.com/paulorfarah/repos/" + repoName
 	fmt.Println("repoDir: " + repoDir)
 	log.Println("repoDir: " + repoDir)
 
@@ -144,8 +144,8 @@ func main() {
 						return err
 					}
 					if prevTree != nil {
-						// changes, err := currTree.Diff(prevTree)
-						_, err := currTree.Diff(prevTree)
+						changes, err := currTree.Diff(prevTree)
+						// _, err := currTree.Diff(prevTree)
 						if err != nil {
 							return err
 						}
@@ -186,7 +186,7 @@ func main() {
 							models.CreateCommit(db, commit)
 						}
 
-						// Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
+						Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
 
 						//codeanalysis.Understand(cs.Name)
 					}
@@ -223,7 +223,10 @@ func getParentDirectory() string {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(dir)
 	dir = strings.Replace(dir, "\\", "/", -1)
-
-	return substr(dir, 0, strings.LastIndex(dir, "/"))
+	fmt.Println(dir)
+	dir = substr(dir, 0, strings.LastIndex(dir, "/"))
+	fmt.Println(dir)
+	return dir
 }
