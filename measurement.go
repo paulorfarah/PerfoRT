@@ -28,20 +28,19 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 		ok := MvnCompile(repoDir)
 		if ok {
 			MeasureMavenTests(db, repoDir, commitID, *measurement)
+			mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 			for _, file := range listJavaFiles(repoDir) {
-				MeasureRandoopTests(db, repoDir, file, commitID, *measurement)
+				MeasureRandoopTests(db, repoDir, file, mavenClasspath, commitID, *measurement)
 			}
+			coverageRandoopTests(repoDir)
 		}
 	}
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	testResultsAfter, ok := MvnTest(repoDir)
+	testResultsAfter, ok := MvnTest(db, repoDir, measurement.ID)
 	if ok {
-		// if len(testResultsBefore) == len(testResultsAfter) {
 		for ind := range testResultsAfter {
-			// fmt.Println(testResultsBefore[ind].ClassName, testResultsAfter[ind].ClassName)
-			// if testResultsBefore[ind].ClassName == testResultsAfter[ind].ClassName {
 			mr := &models.Maven{MeasurementID: measurement.ID,
 				Type:        byte('C'),
 				ClassName:   testResultsAfter[ind].ClassName,
@@ -52,37 +51,32 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 				Skipped:     testResultsAfter[ind].Skipped,
 				TimeElapsed: testResultsAfter[ind].TimeElapsed}
 			models.CreateMaven(db, mr)
-			// } else {
-			// 	fmt.Println("********************** CRITICAL ERROR ***************")
-			// 	fmt.Println("Class name of tests before and after are different, not considering this result")
-			// }
 		}
-		// 	} else {
-		// 		fmt.Println("********************** CRITICAL ERROR ***************")
-		// 		fmt.Println("size of tests before and after are different, not considering these results")
-		// 	}
 	} else {
 		log.Println("********************** CRITICAL ERROR ***************")
 		log.Println("successAfter is false measuring maven tests")
 	}
 }
 
-func MeasureRandoopTests(db *gorm.DB, repoDir, file string, commitID uint, measurement models.Measurement) {
+func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, commitID uint, measurement models.Measurement) {
 	//java -classpath ${RANDOOP_JAR} randoop.main.Main gentests --classlist=myclasses.txt --time-limit=60
 	//Randoop prints out is the name of the JUnit files containing the tests it generated
-	okGen := generateRandoopTests(repoDir, file)
+
+	okGen := generateRandoopTests(repoDir, file, mavenClasspath)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
 	// export JUNITPATH=.../junit.jar:.../hamcrest-core.jar
 	// javac -classpath .:$JUNITPATH ErrorTest*.java RegressionTest*.java -sourcepath .:path/to/files/under/test/
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore ErrorTest
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
+
 	if okGen {
-		okComp := compileRandoopTests(repoDir)
+		okComp := compileRandoopTests(repoDir, mavenClasspath)
 		if okComp {
-			testTime, numTests, okRun := runRandoopTests(repoDir)
-			if okRun {
-				coverageRandoopTests(repoDir, file)
+			// testTime, numTests, okRun := runRandoopTests(repoDir)
+			testTime, numTests, okTest := runRandoopTests(repoDir)
+			if okTest {
+				// coverageRandoopTests(repoDir, file)
 				rr := &models.Randoop{MeasurementID: measurement.ID,
 					Type:      byte('C'),
 					ClassName: file,

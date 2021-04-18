@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"go-repo-downloader/models"
 	"io/ioutil"
 	"log"
 	"os"
@@ -11,6 +12,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/jinzhu/gorm"
 )
 
 type MvnTestResult struct {
@@ -110,7 +113,7 @@ func MvnCompile(path string) bool {
 	}
 }
 
-func MvnTest(path string) ([]MvnTestResult, bool) {
+func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, bool) {
 	ok := true
 	logfile := "maven-test.log"
 
@@ -119,10 +122,54 @@ func MvnTest(path string) ([]MvnTestResult, bool) {
 	cmd := exec.Command("mvn", "-Drat.skip=true", "test")
 	cmd.Dir = path
 
-	output, err := cmd.CombinedOutput()
+	var output []byte
+	var err error
+
+	// output, err = cmd.CombinedOutput()
+	err = cmd.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
+	pid := cmd.Process.Pid
+
+	stop := make(chan bool)
+	go func() {
+		perfMetrics := []PerfMetrics{}
+		for {
+			select {
+			case <-stop:
+				//save
+				for _, perfMetric := range perfMetrics {
+					mr := &models.MavenResources{
+						MeasurementID: measurementID,
+						Cpu:           perfMetric.Cpu,
+						Mem:           perfMetric.Mem,
+						ReadCount:     perfMetric.IO.ReadCount,
+						WriteCount:    perfMetric.IO.WriteCount,
+						ReadBytes:     perfMetric.IO.ReadBytes,
+						WriteBytes:    perfMetric.IO.WriteBytes,
+					}
+					models.CreateMavenResources(db, mr)
+				}
+				return
+			default:
+				perfMetric, err := MonitorProcess(pid)
+				if err == nil {
+					perfMetrics = append(perfMetrics, perfMetric)
+				}
+
+			}
+		}
+	}()
+
+	err = cmd.Wait()
+	log.Printf("Command finished with error: %v", err)
+	stop <- true
+
 	if err != nil {
 		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err)
 	}
+
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	log.Printf("Mvn test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)

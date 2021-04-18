@@ -12,6 +12,7 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0
+	github.com/shirou/gopsutil/v3 v3.21.3 // indirect
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
 	github.com/shurcool/githubv4 v0.0.0-20200627185320-e003124d66e4
 	github.com/tdewolff/canvas v0.0.0-20210210144621-f73efe64c447
