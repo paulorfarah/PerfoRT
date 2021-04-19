@@ -213,7 +213,7 @@ func compileRandoopTests(repoDir, mavenClasspath string) bool {
 	return true
 }
 
-func runRandoopTests(repoDir string) (float64, int, bool) {
+func runRandoopTests(repoDir string) (float64, int, []PerfMetrics, bool) {
 	log.Println("------------------------------------------------ run randoop tests")
 	fmt.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
@@ -240,17 +240,45 @@ func runRandoopTests(repoDir string) (float64, int, bool) {
 	var stderr bytes.Buffer
 	cmdRandoop.Stdout = &out
 	cmdRandoop.Stderr = &stderr
-	err := cmdRandoop.Run()
+	// err := cmdRandoop.Run()
+	err := cmdRandoop.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
+	pid := cmdRandoop.Process.Pid
+
+	stop := make(chan bool)
+	perfMetrics := []PerfMetrics{}
+	go func() {
+		for {
+			select {
+			case <-stop:
+				return
+			default:
+				perfMetric, err := MonitorProcess(pid)
+				if err == nil {
+					perfMetrics = append(perfMetrics, perfMetric)
+				}
+
+			}
+		}
+	}()
+
+	err = cmdRandoop.Wait()
+	log.Printf("Command finished with error: %v", err)
+	stop <- true
+
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
 		log.Println(out)
 
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
 		fmt.Println(out)
-		return float64(0.0), 0, false
+		return float64(0.0), 0, []PerfMetrics{}, false
 	}
 
-	return readRandoopTestResults("runRT.txt")
+	testTime, numTests, ok := readRandoopTestResults("runRT.txt")
+	return testTime, numTests, perfMetrics, ok
 }
 
 func coverageRandoopTests(repoDir string) {

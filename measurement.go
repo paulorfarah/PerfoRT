@@ -74,10 +74,10 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 		okComp := compileRandoopTests(repoDir, mavenClasspath)
 		if okComp {
 			// testTime, numTests, okRun := runRandoopTests(repoDir)
-			testTime, numTests, okTest := runRandoopTests(repoDir)
+			testTime, numTests, perfMetrics, okTest := runRandoopTests(repoDir)
 			if okTest {
 				// coverageRandoopTests(repoDir, file)
-				rr := &models.Randoop{MeasurementID: measurement.ID,
+				r := &models.Randoop{MeasurementID: measurement.ID,
 					Type:      byte('C'),
 					ClassName: file,
 					CommitID:  commitID,
@@ -86,7 +86,24 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 					// Errors:      errors,
 					// Skipped:     skipped,
 					TimeElapsed: testTime}
-				models.CreateRandoop(db, rr)
+				randoopID, err := models.CreateRandoop(db, r)
+				if err != nil {
+					log.Println("Error creating randoop: " + err.Error())
+					fmt.Println("Error creating randoop: " + err.Error())
+				} else {
+					for _, perfMetric := range perfMetrics {
+						rr := &models.RandoopResources{
+							RandoopID:  randoopID,
+							Cpu:        perfMetric.Cpu,
+							Mem:        perfMetric.Mem,
+							ReadCount:  perfMetric.IO.ReadCount,
+							WriteCount: perfMetric.IO.WriteCount,
+							ReadBytes:  perfMetric.IO.ReadBytes,
+							WriteBytes: perfMetric.IO.WriteBytes,
+						}
+						models.CreateRandoopResources(db, rr)
+					}
+				}
 			}
 
 		}

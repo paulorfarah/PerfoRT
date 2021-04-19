@@ -28,3 +28,27 @@ func CreateMavenResources(db *gorm.DB, mr *MavenResources) (uint, error) {
 	}
 	return mr.ID, nil
 }
+
+type RandoopResources struct {
+	Model
+	RandoopID  uint //   `gorm:"not null"`
+	Randoop    Randoop
+	Cpu        float64
+	Mem        float32
+	ReadCount  uint64 `json:"readCount"`
+	WriteCount uint64 `json:"writeCount"`
+	ReadBytes  uint64 `json:"readBytes"`
+	WriteBytes uint64 `json:"writeBytes"`
+}
+
+func (r *RandoopResources) TableName() string {
+	return "randoopresources"
+}
+
+func CreateRandoopResources(db *gorm.DB, mr *RandoopResources) (uint, error) {
+	err := db.Create(mr).Error
+	if err != nil {
+		return 0, err
+	}
+	return mr.ID, nil
+}
