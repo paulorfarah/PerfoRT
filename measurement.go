@@ -92,14 +92,16 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 				} else {
 					for _, perfMetric := range perfMetrics {
 						rr := &models.TestResources{
-							TestID:     testID,
-							Type:       "randoop",
-							Cpu:        perfMetric.Cpu,
-							Mem:        perfMetric.Mem,
-							ReadCount:  perfMetric.IO.ReadCount,
-							WriteCount: perfMetric.IO.WriteCount,
-							ReadBytes:  perfMetric.IO.ReadBytes,
-							WriteBytes: perfMetric.IO.WriteBytes,
+							TestID: testID,
+							Type:   "randoop",
+							Resources: models.Resources{
+								Cpu:        perfMetric.Cpu,
+								Mem:        perfMetric.Mem,
+								ReadCount:  perfMetric.IO.ReadCount,
+								WriteCount: perfMetric.IO.WriteCount,
+								ReadBytes:  perfMetric.IO.ReadBytes,
+								WriteBytes: perfMetric.IO.WriteBytes,
+							},
 						}
 						models.CreateTestResources(db, rr)
 					}

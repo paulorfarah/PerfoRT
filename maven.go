@@ -143,12 +143,14 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, boo
 					mr := &models.MeasurementResources{
 						MeasurementID: measurementID,
 						Type:          "maven",
-						Cpu:           perfMetric.Cpu,
-						Mem:           perfMetric.Mem,
-						ReadCount:     perfMetric.IO.ReadCount,
-						WriteCount:    perfMetric.IO.WriteCount,
-						ReadBytes:     perfMetric.IO.ReadBytes,
-						WriteBytes:    perfMetric.IO.WriteBytes,
+						Resources: models.Resources{
+							Cpu:        perfMetric.Cpu,
+							Mem:        perfMetric.Mem,
+							ReadCount:  perfMetric.IO.ReadCount,
+							WriteCount: perfMetric.IO.WriteCount,
+							ReadBytes:  perfMetric.IO.ReadBytes,
+							WriteBytes: perfMetric.IO.WriteBytes,
+						},
 					}
 					models.CreateMeasurementResources(db, mr)
 				}

@@ -8845,3 +8845,562 @@ Exception in thread "Thread-105" java.lang.NullPointerException
 2021/04/20 02:42:45 readRandoopGentestResults: gentest/junit.framework.Protectable.txt
 2021/04/20 02:42:45 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/Test.java...
 2021/04/20 02:42:45 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.Test --time-limit=5 > gentest/junit.framework.Test.txt
+2021/04/20 02:42:51 test generation out:
+
+2021/04/20 02:42:51 readRandoopGentestResults: gentest/junit.framework.Test.txt
+2021/04/20 02:42:51 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/TestCase.java...
+2021/04/20 02:42:51 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.TestCase --time-limit=5 > gentest/junit.framework.TestCase.txt
+2021/04/20 02:42:57 test generation out:
+
+2021/04/20 02:42:57 readRandoopGentestResults: gentest/junit.framework.TestCase.txt
+2021/04/20 02:42:57 ------------------------------------------------ compile randoop tests
+2021/04/20 02:42:57 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:42:58 ------------------------------------------------ run randoop tests
+2021/04/20 02:42:58 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:42:58 Command finished with error: <nil>
+2021/04/20 02:43:12 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/TestFailure.java...
+2021/04/20 02:43:12 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.TestFailure --time-limit=5 > gentest/junit.framework.TestFailure.txt
+2021/04/20 02:43:18 test generation out:
+
+2021/04/20 02:43:18 readRandoopGentestResults: gentest/junit.framework.TestFailure.txt
+2021/04/20 02:43:18 ------------------------------------------------ compile randoop tests
+2021/04/20 02:43:18 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:43:20 ------------------------------------------------ run randoop tests
+2021/04/20 02:43:20 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:43:21 Command finished with error: <nil>
+2021/04/20 02:43:42 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/TestListener.java...
+2021/04/20 02:43:42 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.TestListener --time-limit=5 > gentest/junit.framework.TestListener.txt
+2021/04/20 02:43:48 test generation out:
+
+2021/04/20 02:43:48 readRandoopGentestResults: gentest/junit.framework.TestListener.txt
+2021/04/20 02:43:48 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/TestResult.java...
+2021/04/20 02:43:48 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.TestResult --time-limit=5 > gentest/junit.framework.TestResult.txt
+2021/04/20 02:43:54 test generation out:
+
+2021/04/20 02:43:54 readRandoopGentestResults: gentest/junit.framework.TestResult.txt
+2021/04/20 02:43:54 ------------------------------------------------ compile randoop tests
+2021/04/20 02:43:54 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:43:55 ------------------------------------------------ run randoop tests
+2021/04/20 02:43:55 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:43:56 Command finished with error: <nil>
+2021/04/20 02:44:14 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/TestSuite.java...
+2021/04/20 02:44:14 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.TestSuite --time-limit=5 > gentest/junit.framework.TestSuite.txt
+2021/04/20 02:44:20 test generation out:
+
+2021/04/20 02:44:20 readRandoopGentestResults: gentest/junit.framework.TestSuite.txt
+2021/04/20 02:44:20 ------------------------------------------------ compile randoop tests
+2021/04/20 02:44:20 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:44:22 ------------------------------------------------ run randoop tests
+2021/04/20 02:44:22 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:44:22 Command finished with error: <nil>
+2021/04/20 02:44:35 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/framework/package-info.java...
+2021/04/20 02:44:35 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.framework.package-info --time-limit=5 > gentest/junit.framework.package-info.txt
+2021/04/20 02:44:36 GenerateRandoopTests failed with exit status 1
+2021/04/20 02:44:36 test generation out:
+
+2021/04/20 02:44:36 
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (exit status 1): 
+2021/04/20 02:44:36 
+2021/04/20 02:44:36 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/runner/BaseTestRunner.java...
+2021/04/20 02:44:36 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.runner.BaseTestRunner --time-limit=5 > gentest/junit.runner.BaseTestRunner.txt
+2021/04/20 02:44:43 test generation out:
+
+2021/04/20 02:44:43 readRandoopGentestResults: gentest/junit.runner.BaseTestRunner.txt
+2021/04/20 02:44:43 ------------------------------------------------ compile randoop tests
+2021/04/20 02:44:43 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:44:44 ------------------------------------------------ run randoop tests
+2021/04/20 02:44:44 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:44:45 Command finished with error: <nil>
+2021/04/20 02:45:01 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/runner/TestRunListener.java...
+2021/04/20 02:45:01 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.runner.TestRunListener --time-limit=5 > gentest/junit.runner.TestRunListener.txt
+2021/04/20 02:45:07 test generation out:
+
+2021/04/20 02:45:07 readRandoopGentestResults: gentest/junit.runner.TestRunListener.txt
+2021/04/20 02:45:07 ------------------------------------------------ compile randoop tests
+2021/04/20 02:45:07 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:45:07 ------------------------------------------------ run randoop tests
+2021/04/20 02:45:07 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:45:08 Command finished with error: <nil>
+2021/04/20 02:45:22 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/runner/Version.java...
+2021/04/20 02:45:22 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.runner.Version --time-limit=5 > gentest/junit.runner.Version.txt
+2021/04/20 02:45:28 test generation out:
+
+2021/04/20 02:45:28 readRandoopGentestResults: gentest/junit.runner.Version.txt
+2021/04/20 02:45:28 ------------------------------------------------ compile randoop tests
+2021/04/20 02:45:28 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:45:28 ------------------------------------------------ run randoop tests
+2021/04/20 02:45:28 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:45:29 Command finished with error: <nil>
+2021/04/20 02:45:43 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/runner/package-info.java...
+2021/04/20 02:45:43 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.runner.package-info --time-limit=5 > gentest/junit.runner.package-info.txt
+2021/04/20 02:45:43 GenerateRandoopTests failed with exit status 1
+2021/04/20 02:45:43 test generation out:
+
+2021/04/20 02:45:43 
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (exit status 1): 
+2021/04/20 02:45:43 
+2021/04/20 02:45:43 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/textui/ResultPrinter.java...
+2021/04/20 02:45:43 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.textui.ResultPrinter --time-limit=5 > gentest/junit.textui.ResultPrinter.txt
+2021/04/20 02:45:49 test generation out:
+
+2021/04/20 02:45:49 readRandoopGentestResults: gentest/junit.textui.ResultPrinter.txt
+2021/04/20 02:45:49 ------------------------------------------------ compile randoop tests
+2021/04/20 02:45:49 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:45:51 ------------------------------------------------ run randoop tests
+2021/04/20 02:45:51 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:45:51 Command finished with error: <nil>
+2021/04/20 02:46:10 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/textui/TestRunner.java...
+2021/04/20 02:46:10 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.textui.TestRunner --time-limit=5 > gentest/junit.textui.TestRunner.txt
+2021/04/20 02:46:12 GenerateRandoopTests failed with exit status 1
+2021/04/20 02:46:12 test generation out:
+Class not found "0.01
+"
+
+2021/04/20 02:46:12 
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (exit status 1): 
+2021/04/20 02:46:12 Class not found "0.01
+"
+
+2021/04/20 02:46:12 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/textui/package-info.java...
+2021/04/20 02:46:12 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.textui.package-info --time-limit=5 > gentest/junit.textui.package-info.txt
+2021/04/20 02:46:12 GenerateRandoopTests failed with exit status 1
+2021/04/20 02:46:12 test generation out:
+
+2021/04/20 02:46:12 
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (exit status 1): 
+2021/04/20 02:46:12 
+2021/04/20 02:46:12 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/After.java...
+2021/04/20 02:46:12 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.After --time-limit=5 > gentest/org.junit.After.txt
+2021/04/20 02:46:18 test generation out:
+
+2021/04/20 02:46:18 readRandoopGentestResults: gentest/org.junit.After.txt
+2021/04/20 02:46:18 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/AfterClass.java...
+2021/04/20 02:46:18 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.AfterClass --time-limit=5 > gentest/org.junit.AfterClass.txt
+2021/04/20 02:46:23 test generation out:
+
+2021/04/20 02:46:23 readRandoopGentestResults: gentest/org.junit.AfterClass.txt
+2021/04/20 02:46:23 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/Assert.java...
+2021/04/20 02:46:23 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.Assert --time-limit=5 > gentest/org.junit.Assert.txt
+2021/04/20 02:46:29 test generation out:
+
+2021/04/20 02:46:29 readRandoopGentestResults: gentest/org.junit.Assert.txt
+2021/04/20 02:46:29 ------------------------------------------------ compile randoop tests
+2021/04/20 02:46:29 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:46:30 ------------------------------------------------ run randoop tests
+2021/04/20 02:46:30 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:46:30 Command finished with error: <nil>
+2021/04/20 02:46:43 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/Assume.java...
+2021/04/20 02:46:43 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.Assume --time-limit=5 > gentest/org.junit.Assume.txt
+2021/04/20 02:46:49 test generation out:
+
+2021/04/20 02:46:49 readRandoopGentestResults: gentest/org.junit.Assume.txt
+2021/04/20 02:46:49 ------------------------------------------------ compile randoop tests
+2021/04/20 02:46:49 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:46:51 ------------------------------------------------ run randoop tests
+2021/04/20 02:46:51 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:46:52 Command finished with error: <nil>
+2021/04/20 02:47:13 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/AssumptionViolatedException.java...
+2021/04/20 02:47:13 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.AssumptionViolatedException --time-limit=5 > gentest/org.junit.AssumptionViolatedException.txt
+2021/04/20 02:47:19 test generation out:
+
+2021/04/20 02:47:19 readRandoopGentestResults: gentest/org.junit.AssumptionViolatedException.txt
+2021/04/20 02:47:19 ------------------------------------------------ compile randoop tests
+2021/04/20 02:47:19 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:47:21 ------------------------------------------------ run randoop tests
+2021/04/20 02:47:21 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:47:21 Command finished with error: <nil>
+2021/04/20 02:47:37 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/Before.java...
+2021/04/20 02:47:37 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.Before --time-limit=5 > gentest/org.junit.Before.txt
+2021/04/20 02:47:42 test generation out:
+
+2021/04/20 02:47:42 readRandoopGentestResults: gentest/org.junit.Before.txt
+2021/04/20 02:47:42 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/BeforeClass.java...
+2021/04/20 02:47:42 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.BeforeClass --time-limit=5 > gentest/org.junit.BeforeClass.txt
+2021/04/20 02:47:48 test generation out:
+
+2021/04/20 02:47:48 readRandoopGentestResults: gentest/org.junit.BeforeClass.txt
+2021/04/20 02:47:48 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/ClassRule.java...
+2021/04/20 02:47:48 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.ClassRule --time-limit=5 > gentest/org.junit.ClassRule.txt
+2021/04/20 02:47:53 test generation out:
+
+2021/04/20 02:47:53 readRandoopGentestResults: gentest/org.junit.ClassRule.txt
+2021/04/20 02:47:53 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/ComparisonFailure.java...
+2021/04/20 02:47:53 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.ComparisonFailure --time-limit=5 > gentest/org.junit.ComparisonFailure.txt
+2021/04/20 02:48:00 test generation out:
+
+2021/04/20 02:48:00 readRandoopGentestResults: gentest/org.junit.ComparisonFailure.txt
+2021/04/20 02:48:00 ------------------------------------------------ compile randoop tests
+2021/04/20 02:48:00 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:48:01 ------------------------------------------------ run randoop tests
+2021/04/20 02:48:01 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:48:02 Command finished with error: <nil>
+2021/04/20 02:48:14 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/FixMethodOrder.java...
+2021/04/20 02:48:14 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.FixMethodOrder --time-limit=5 > gentest/org.junit.FixMethodOrder.txt
+2021/04/20 02:48:20 test generation out:
+
+2021/04/20 02:48:20 readRandoopGentestResults: gentest/org.junit.FixMethodOrder.txt
+2021/04/20 02:48:20 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/Ignore.java...
+2021/04/20 02:48:20 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.Ignore --time-limit=5 > gentest/org.junit.Ignore.txt
+2021/04/20 02:48:25 test generation out:
+
+2021/04/20 02:48:25 readRandoopGentestResults: gentest/org.junit.Ignore.txt
+2021/04/20 02:48:25 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/Rule.java...
+2021/04/20 02:48:25 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.Rule --time-limit=5 > gentest/org.junit.Rule.txt
+2021/04/20 02:48:31 test generation out:
+
+2021/04/20 02:48:31 readRandoopGentestResults: gentest/org.junit.Rule.txt
+2021/04/20 02:48:31 ------------------------------------------------ compile randoop tests
+2021/04/20 02:48:31 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:48:31 ------------------------------------------------ run randoop tests
+2021/04/20 02:48:31 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:48:32 Command finished with error: <nil>
+2021/04/20 02:48:41 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/Test.java...
+2021/04/20 02:48:41 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.Test --time-limit=5 > gentest/org.junit.Test.txt
+2021/04/20 02:48:47 test generation out:
+
+2021/04/20 02:48:47 readRandoopGentestResults: gentest/org.junit.Test.txt
+2021/04/20 02:48:47 ------------------------------------------------ compile randoop tests
+2021/04/20 02:48:47 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:48:47 ------------------------------------------------ run randoop tests
+2021/04/20 02:48:47 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:48:48 Command finished with error: <nil>
+2021/04/20 02:48:58 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/TestCouldNotBeSkippedException.java...
+2021/04/20 02:48:58 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.TestCouldNotBeSkippedException --time-limit=5 > gentest/org.junit.TestCouldNotBeSkippedException.txt
+2021/04/20 02:49:04 test generation out:
+
+2021/04/20 02:49:04 readRandoopGentestResults: gentest/org.junit.TestCouldNotBeSkippedException.txt
+2021/04/20 02:49:04 ------------------------------------------------ compile randoop tests
+2021/04/20 02:49:04 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:49:06 ------------------------------------------------ run randoop tests
+2021/04/20 02:49:06 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:49:07 Command finished with error: <nil>
+2021/04/20 02:49:21 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/ParallelComputer.java...
+2021/04/20 02:49:21 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.ParallelComputer --time-limit=5 > gentest/org.junit.experimental.ParallelComputer.txt
+2021/04/20 02:49:28 test generation out:
+
+2021/04/20 02:49:28 readRandoopGentestResults: gentest/org.junit.experimental.ParallelComputer.txt
+2021/04/20 02:49:28 ------------------------------------------------ compile randoop tests
+2021/04/20 02:49:28 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:49:29 ------------------------------------------------ run randoop tests
+2021/04/20 02:49:29 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:49:29 Command finished with error: <nil>
+2021/04/20 02:49:49 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/categories/Categories.java...
+2021/04/20 02:49:49 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.categories.Categories --time-limit=5 > gentest/org.junit.experimental.categories.Categories.txt
+2021/04/20 02:49:55 test generation out:
+
+2021/04/20 02:49:55 readRandoopGentestResults: gentest/org.junit.experimental.categories.Categories.txt
+2021/04/20 02:49:55 ------------------------------------------------ compile randoop tests
+2021/04/20 02:49:55 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:49:55 ------------------------------------------------ run randoop tests
+2021/04/20 02:49:55 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:49:56 Command finished with error: <nil>
+2021/04/20 02:50:06 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/categories/Category.java...
+2021/04/20 02:50:06 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.categories.Category --time-limit=5 > gentest/org.junit.experimental.categories.Category.txt
+2021/04/20 02:50:12 test generation out:
+
+2021/04/20 02:50:12 readRandoopGentestResults: gentest/org.junit.experimental.categories.Category.txt
+2021/04/20 02:50:12 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/categories/CategoryFilterFactory.java...
+2021/04/20 02:50:12 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.categories.CategoryFilterFactory --time-limit=5 > gentest/org.junit.experimental.categories.CategoryFilterFactory.txt
+2021/04/20 02:50:13 GenerateRandoopTests failed with exit status 1
+2021/04/20 02:50:13 test generation out:
+
+2021/04/20 02:50:13 
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (exit status 1): 
+2021/04/20 02:50:13 
+2021/04/20 02:50:13 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/categories/CategoryValidator.java...
+2021/04/20 02:50:13 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.categories.CategoryValidator --time-limit=5 > gentest/org.junit.experimental.categories.CategoryValidator.txt
+2021/04/20 02:50:19 test generation out:
+
+2021/04/20 02:50:19 readRandoopGentestResults: gentest/org.junit.experimental.categories.CategoryValidator.txt
+2021/04/20 02:50:19 ------------------------------------------------ compile randoop tests
+2021/04/20 02:50:19 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:50:21 ------------------------------------------------ run randoop tests
+2021/04/20 02:50:21 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:50:21 Command finished with error: <nil>
+2021/04/20 02:50:35 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/categories/ExcludeCategories.java...
+2021/04/20 02:50:35 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.categories.ExcludeCategories --time-limit=5 > gentest/org.junit.experimental.categories.ExcludeCategories.txt
+2021/04/20 02:50:41 test generation out:
+
+2021/04/20 02:50:41 readRandoopGentestResults: gentest/org.junit.experimental.categories.ExcludeCategories.txt
+2021/04/20 02:50:41 ------------------------------------------------ compile randoop tests
+2021/04/20 02:50:41 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:50:41 ------------------------------------------------ run randoop tests
+2021/04/20 02:50:41 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:50:41 Command finished with error: <nil>
+2021/04/20 02:50:56 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/categories/IncludeCategories.java...
+2021/04/20 02:50:56 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.categories.IncludeCategories --time-limit=5 > gentest/org.junit.experimental.categories.IncludeCategories.txt
+2021/04/20 02:51:03 test generation out:
+
+2021/04/20 02:51:03 readRandoopGentestResults: gentest/org.junit.experimental.categories.IncludeCategories.txt
+2021/04/20 02:51:03 ------------------------------------------------ compile randoop tests
+2021/04/20 02:51:03 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:51:03 ------------------------------------------------ run randoop tests
+2021/04/20 02:51:03 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:51:04 Command finished with error: <nil>
+2021/04/20 02:51:13 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/max/CouldNotReadCoreException.java...
+2021/04/20 02:51:13 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.max.CouldNotReadCoreException --time-limit=5 > gentest/org.junit.experimental.max.CouldNotReadCoreException.txt
+2021/04/20 02:51:19 test generation out:
+
+2021/04/20 02:51:19 readRandoopGentestResults: gentest/org.junit.experimental.max.CouldNotReadCoreException.txt
+2021/04/20 02:51:19 ------------------------------------------------ compile randoop tests
+2021/04/20 02:51:19 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:51:21 ------------------------------------------------ run randoop tests
+2021/04/20 02:51:21 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:51:21 Command finished with error: <nil>
+2021/04/20 02:51:37 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/max/MaxCore.java...
+2021/04/20 02:51:37 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.max.MaxCore --time-limit=5 > gentest/org.junit.experimental.max.MaxCore.txt
+2021/04/20 02:51:42 test generation out:
+
+2021/04/20 02:51:42 readRandoopGentestResults: gentest/org.junit.experimental.max.MaxCore.txt
+2021/04/20 02:51:42 ------------------------------------------------ compile randoop tests
+2021/04/20 02:51:42 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:51:43 ------------------------------------------------ run randoop tests
+2021/04/20 02:51:43 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:51:43 Command finished with error: <nil>
+2021/04/20 02:52:00 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/max/MaxHistory.java...
+2021/04/20 02:52:00 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.max.MaxHistory --time-limit=5 > gentest/org.junit.experimental.max.MaxHistory.txt
+2021/04/20 02:52:05 test generation out:
+
+2021/04/20 02:52:05 readRandoopGentestResults: gentest/org.junit.experimental.max.MaxHistory.txt
+2021/04/20 02:52:05 ------------------------------------------------ compile randoop tests
+2021/04/20 02:52:05 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:52:06 ------------------------------------------------ run randoop tests
+2021/04/20 02:52:06 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:52:06 Command finished with error: <nil>
+2021/04/20 02:52:15 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/results/FailureList.java...
+2021/04/20 02:52:15 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.results.FailureList --time-limit=5 > gentest/org.junit.experimental.results.FailureList.txt
+2021/04/20 02:52:16 GenerateRandoopTests failed with exit status 1
+2021/04/20 02:52:16 test generation out:
+
+2021/04/20 02:52:16 
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (exit status 1): 
+2021/04/20 02:52:16 
+2021/04/20 02:52:16 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/results/PrintableResult.java...
+2021/04/20 02:52:16 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.results.PrintableResult --time-limit=5 > gentest/org.junit.experimental.results.PrintableResult.txt
+2021/04/20 02:52:22 test generation out:
+
+2021/04/20 02:52:22 readRandoopGentestResults: gentest/org.junit.experimental.results.PrintableResult.txt
+2021/04/20 02:52:22 ------------------------------------------------ compile randoop tests
+2021/04/20 02:52:22 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:52:23 ------------------------------------------------ run randoop tests
+2021/04/20 02:52:23 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:52:24 Command finished with error: <nil>
+2021/04/20 02:52:37 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/experimental/results/ResultMatchers.java...
+2021/04/20 02:52:37 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=org.junit.experimental.results.ResultMatchers --time-limit=5 > gentest/org.junit.experimental.results.ResultMatchers.txt
+2021/04/20 02:52:42 test generation out:
+
+2021/04/20 02:52:42 readRandoopGentestResults: gentest/org.junit.experimental.results.ResultMatchers.txt
+2021/04/20 02:52:42 ------------------------------------------------ compile randoop tests
+2021/04/20 02:52:42 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 02:52:43 ------------------------------------------------ run randoop tests
+2021/04/20 02:52:43 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 02:52:43 Command finished with error: <nil>
+2021/04/20 03:02:49 starting...
+2021/04/20 03:02:49 repoDir: /home/farah/go-work/src/github.com/paulorfarah/repos/junit4
+2021/04/20 03:02:49 git clone https://github.com/junit-team/junit4
+2021/04/20 03:03:09 Create new platform: github
+2021/04/20 03:03:09 create new repo: junit4
+2021/04/20 03:03:09 create new author: Marc Philipp
+2021/04/20 03:03:09 create new commit: 8b2ff14399264a378130c41cf0a00ca66d0c3a60
+2021/04/20 03:03:14 Compilation out:
+[INFO] Scanning for projects...
+[WARNING] The project junit:junit:jar:4.13.3-SNAPSHOT uses prerequisites which is only intended for maven-plugin projects but not for non maven-plugin projects. For such purposes you should use the maven-enforcer-plugin. See https://maven.apache.org/enforcer/enforcer-rules/requireMavenVersion.html
+[INFO] 
+[INFO] ----------------------------< junit:junit >-----------------------------
+[INFO] Building JUnit 4.13.3-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.6.1:clean (default-clean) @ junit ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.4:enforce (enforce-versions) @ junit ---
+[INFO] 
+[INFO] --- replacer:1.5.3:replace (default) @ junit ---
+[INFO] Replacement run on 1 file.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.7:resources (default-resources) @ junit ---
+[INFO] Using 'ISO-8859-1' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ junit ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 219 source files to /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes
+[WARNING] To suppress warnings about obsolete options, use -Xlint:-options.
+/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/extensions/TestDecorator.java:[3,22] [deprecation] Assert in junit.framework has been deprecated
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/internal/Classes.java:[24,7] no description for @throws
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/internal/Classes.java:[37,7] no description for @throws
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/runner/FilterFactories.java:[19,7] no description for @throws
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/runner/notification/SynchronizedRunListener.java:[67,7] no description for @throws
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/internal/runners/statements/FailOnTimeout.java:[109,11] no description for @param
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/runner/JUnitCore.java:[66,7] no description for @param
+[WARNING] /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/runners/model/FrameworkMember.java:[33,19] [unchecked] unchecked cast
+[WARNING]   required: T
+  found:    FrameworkMember<T>
+  where T is a type-variable:
+    T extends FrameworkMember<T> declared in class FrameworkMember
+/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/rules/ExpectedException.java:[271,12] [deprecation] <T>assertThat(T,Matcher<? super T>) in Assert has been deprecated
+[WARNING]   where T is a type-variable:
+    T extends Object declared in method <T>assertThat(T,Matcher<? super T>)
+/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/org/junit/rules/ErrorCollector.java:[77,16] [deprecation] <T>assertThat(String,T,Matcher<? super T>) in Assert has been deprecated
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.754 s
+[INFO] Finished at: 2021-04-20T03:03:14-03:00
+[INFO] ------------------------------------------------------------------------
+
+2021/04/20 03:03:14 ------------------------------------------------ mvn test
+2021/04/20 03:03:32 Command finished with error: <nil>
+2021/04/20 03:03:32 Mvn test out:
+
+2021/04/20 03:03:32 ------------------------------------------------ test coverage
+2021/04/20 03:03:32 java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes --sourcefiles /home/farah/go-work/src/github.com/paulorfarah/repos/junit4 --csv coverage/_home_farah_go-work_src_github.com_paulorfarah_repos_junit4.csv
+2021/04/20 03:03:37 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/extensions/ActiveTestSuite.java...
+2021/04/20 03:03:37 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.extensions.ActiveTestSuite --time-limit=5 > gentest/junit.extensions.ActiveTestSuite.txt
+2021/04/20 03:03:43 test generation out:
+Exception in thread "Thread-8" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-9" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-12" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-19" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-21" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-24" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-26" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-28" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-31" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-36" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-39" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-43" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-44" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-50" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-54" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-55" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-60" java.lang.NullPointerException
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-61" java.lang.NullPointerException
+	at junit.framework.TestCase.run(TestCase.java:130)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-69" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-72" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-78" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-80" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-84" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-86" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-90" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-95" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-101" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-105" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-117" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-119" java.lang.NullPointerException
+	at junit.framework.TestSuite.run(TestSuite.java:233)
+	at junit.extensions.ActiveTestSuite.run(ActiveTestSuite.java:35)
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+Exception in thread "Thread-132" java.lang.NullPointerException
+	at junit.extensions.ActiveTestSuite$1.run(ActiveTestSuite.java:47)
+
+2021/04/20 03:03:43 readRandoopGentestResults: gentest/junit.extensions.ActiveTestSuite.txt
+2021/04/20 03:03:43 ------------------------------------------------ compile randoop tests
+2021/04/20 03:03:43 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 03:03:44 ------------------------------------------------ run randoop tests
+2021/04/20 03:03:44 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 03:03:44 Command finished with error: <nil>
+2021/04/20 03:04:05 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/extensions/RepeatedTest.java...
+2021/04/20 03:04:05 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.extensions.RepeatedTest --time-limit=5 > gentest/junit.extensions.RepeatedTest.txt
+2021/04/20 03:04:12 test generation out:
+
+2021/04/20 03:04:12 readRandoopGentestResults: gentest/junit.extensions.RepeatedTest.txt
+2021/04/20 03:04:12 ------------------------------------------------ compile randoop tests
+2021/04/20 03:04:12 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 03:04:13 ------------------------------------------------ run randoop tests
+2021/04/20 03:04:13 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 03:04:13 Command finished with error: <nil>
+2021/04/20 03:04:31 ------------------------------------------------ Generating Randoop tests for /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java/junit/extensions/TestDecorator.java...
+2021/04/20 03:04:31 java -classpath /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:${RANDOOP_JAR}:/home/farah/Downloads/randoop-4.2.5/randoop-all-4.2.5.jar randoop.main.Main gentests --testclass=junit.extensions.TestDecorator --time-limit=5 > gentest/junit.extensions.TestDecorator.txt
+2021/04/20 03:04:38 test generation out:
+
+2021/04/20 03:04:38 readRandoopGentestResults: gentest/junit.extensions.TestDecorator.txt
+2021/04/20 03:04:38 ------------------------------------------------ compile randoop tests
+2021/04/20 03:04:38 javac -cp /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/home/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/home/farah/Downloads/junit-4.13.2.jar:/home/farah/Downloads/hamcrest-core-1.3.jar RegressionTest*.java > RegressionTest_compilation.txt
+2021/04/20 03:04:39 ------------------------------------------------ run randoop tests
+2021/04/20 03:04:39 java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp .:/home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:${JUNITPATH} org.junit.runner.JUnitCore RegressionTest > runRT.txt
+2021/04/20 03:04:40 Command finished with error: <nil>

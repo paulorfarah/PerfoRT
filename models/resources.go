@@ -5,17 +5,21 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+type Resources struct {
+	Cpu        float64
+	Mem        float32
+	ReadCount  uint64 `json:"readCount"`
+	WriteCount uint64 `json:"writeCount"`
+	ReadBytes  uint64 `json:"readBytes"`
+	WriteBytes uint64 `json:"writeBytes"`
+}
+
 type MeasurementResources struct {
 	Model
 	MeasurementID uint //   `gorm:"not null"`
 	Measurement   Measurement
 	Type          string
-	Cpu           float64
-	Mem           float32
-	ReadCount     uint64 `json:"readCount"`
-	WriteCount    uint64 `json:"writeCount"`
-	ReadBytes     uint64 `json:"readBytes"`
-	WriteBytes    uint64 `json:"writeBytes"`
+	Resources
 }
 
 func (r *MeasurementResources) TableName() string {
@@ -32,15 +36,10 @@ func CreateMeasurementResources(db *gorm.DB, mr *MeasurementResources) (uint, er
 
 type TestResources struct {
 	Model
-	TestID     uint
-	Test       Test
-	Type       string
-	Cpu        float64
-	Mem        float32
-	ReadCount  uint64 `json:"readCount"`
-	WriteCount uint64 `json:"writeCount"`
-	ReadBytes  uint64 `json:"readBytes"`
-	WriteBytes uint64 `json:"writeBytes"`
+	TestID uint
+	Test   Test
+	Type   string
+	Resources
 }
 
 func (r *TestResources) TableName() string {
