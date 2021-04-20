@@ -307,45 +307,46 @@ func coverageRandoopTests(repoDir string) {
 	// return readRandoopTestResults("runRT.txt")
 }
 
-func coverageRandoopTestsByFile(repoDir, src string) { //(map[string]int, bool) {
-	log.Println("------------------------------------------------ coverage randoop tests")
-	fmt.Println("------------------------------------------------ coverage randoop tests")
-	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
-	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
-	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
+// Deprecated: changed to coverage.go
+// func coverageRandoopTestsByFile(repoDir, src string) { //(map[string]int, bool) {
+// 	log.Println("------------------------------------------------ coverage randoop tests")
+// 	fmt.Println("------------------------------------------------ coverage randoop tests")
+// 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
+// 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
+// 	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
 
-	// junitJar := "$JUNITPATH"
-	// cpSep := ":"
-	// if runtime.GOOS == "windows" {
-	// 	junitJar = "%JUNITPATH%"
-	// 	cpSep = ";"
-	// }
+// 	// junitJar := "$JUNITPATH"
+// 	// cpSep := ":"
+// 	// if runtime.GOOS == "windows" {
+// 	// 	junitJar = "%JUNITPATH%"
+// 	// 	cpSep = ";"
+// 	// }
 
-	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+// 	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 
-	// junitStr := "java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
-	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + src + " --csv coverage/" + strings.ReplaceAll(src, "/", "_") + ".csv"
+// 	// junitStr := "java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+// 	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + src + " --csv coverage/" + strings.ReplaceAll(src, "/", "_") + ".csv"
 
-	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
+// 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
-	log.Println(jacocoStr)
-	fmt.Println(jacocoStr)
-	cmdRandoop := exec.Command("bash", "-c", jacocoStr)
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmdRandoop.Stdout = &out
-	cmdRandoop.Stderr = &stderr
-	err := cmdRandoop.Run()
-	if err != nil {
-		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
-		log.Println(out)
+// 	log.Println(jacocoStr)
+// 	fmt.Println(jacocoStr)
+// 	cmdRandoop := exec.Command("bash", "-c", jacocoStr)
+// 	var out bytes.Buffer
+// 	var stderr bytes.Buffer
+// 	cmdRandoop.Stdout = &out
+// 	cmdRandoop.Stderr = &stderr
+// 	err := cmdRandoop.Run()
+// 	if err != nil {
+// 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+// 		log.Println(out)
 
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
-		fmt.Println(out)
-	}
+// 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+// 		fmt.Println(out)
+// 	}
 
-	// return readRandoopTestResults("runRT.txt")
-}
+// 	// return readRandoopTestResults("runRT.txt")
+// }
 
 func parseProjectPath(file string) (string, string) {
 	dir := ""

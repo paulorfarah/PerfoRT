@@ -28,11 +28,12 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 		ok := MvnCompile(repoDir)
 		if ok {
 			MeasureMavenTests(db, repoDir, commitID, *measurement)
+			JacocoTestCoverage(db, repoDir, "maven", measurement.ID)
 			mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 			for _, file := range listJavaFiles(repoDir) {
 				MeasureRandoopTests(db, repoDir, file, mavenClasspath, commitID, *measurement)
 			}
-			coverageRandoopTests(repoDir)
+			JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 		}
 	}
 }

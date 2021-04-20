@@ -58,6 +58,7 @@ func init() {
 		&Randoop{},
 		&MavenResources{},
 		&RandoopResources{},
+		&Coverage{},
 	)
 
 	db.Model(&Repository{}).AddForeignKey("platform_id", "platform(id)", "RESTRICT", "RESTRICT")
@@ -76,6 +77,8 @@ func init() {
 	db.Model(&Randoop{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
 	db.Model(&MavenResources{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	db.Model(&RandoopResources{}).AddForeignKey("randoop_id", "randoop(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Coverage{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
+
 }
 
 func GetDB() *gorm.DB {
