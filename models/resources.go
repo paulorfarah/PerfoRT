@@ -5,10 +5,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type MavenResources struct {
+type MeasurementResources struct {
 	Model
 	MeasurementID uint //   `gorm:"not null"`
 	Measurement   Measurement
+	Type          string
 	Cpu           float64
 	Mem           float32
 	ReadCount     uint64 `json:"readCount"`
@@ -17,11 +18,11 @@ type MavenResources struct {
 	WriteBytes    uint64 `json:"writeBytes"`
 }
 
-func (r *MavenResources) TableName() string {
-	return "mavenresources"
+func (r *MeasurementResources) TableName() string {
+	return "measurementresources"
 }
 
-func CreateMavenResources(db *gorm.DB, mr *MavenResources) (uint, error) {
+func CreateMeasurementResources(db *gorm.DB, mr *MeasurementResources) (uint, error) {
 	err := db.Create(mr).Error
 	if err != nil {
 		return 0, err
@@ -29,10 +30,11 @@ func CreateMavenResources(db *gorm.DB, mr *MavenResources) (uint, error) {
 	return mr.ID, nil
 }
 
-type RandoopResources struct {
+type TestResources struct {
 	Model
-	RandoopID  uint //   `gorm:"not null"`
-	Randoop    Randoop
+	TestID     uint
+	Test       Test
+	Type       string
 	Cpu        float64
 	Mem        float32
 	ReadCount  uint64 `json:"readCount"`
@@ -41,14 +43,14 @@ type RandoopResources struct {
 	WriteBytes uint64 `json:"writeBytes"`
 }
 
-func (r *RandoopResources) TableName() string {
-	return "randoopresources"
+func (r *TestResources) TableName() string {
+	return "testresources"
 }
 
-func CreateRandoopResources(db *gorm.DB, mr *RandoopResources) (uint, error) {
-	err := db.Create(mr).Error
+func CreateTestResources(db *gorm.DB, tr *TestResources) (uint, error) {
+	err := db.Create(tr).Error
 	if err != nil {
 		return 0, err
 	}
-	return mr.ID, nil
+	return tr.ID, nil
 }

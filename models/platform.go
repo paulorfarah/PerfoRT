@@ -13,7 +13,7 @@ type Platform struct {
 }
 
 func (p *Platform) TableName() string {
-	return "platform"
+	return "platforms"
 }
 
 func CreatePlatform(db *gorm.DB, platform *Platform) (uint, error) {

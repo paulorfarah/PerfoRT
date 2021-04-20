@@ -39,19 +39,19 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	testResultsAfter, ok := MvnTest(db, repoDir, measurement.ID)
+	testResults, ok := MvnTest(db, repoDir, measurement.ID)
 	if ok {
-		for ind := range testResultsAfter {
-			mr := &models.Maven{MeasurementID: measurement.ID,
-				Type:        byte('C'),
-				ClassName:   testResultsAfter[ind].ClassName,
+		for ind := range testResults {
+			mr := &models.Test{MeasurementID: measurement.ID,
+				Type:        "maven",
+				ClassName:   testResults[ind].ClassName,
 				CommitID:    commitID,
-				TestsRun:    testResultsAfter[ind].TestsRun,
-				Failures:    testResultsAfter[ind].Failures,
-				Errors:      testResultsAfter[ind].Errors,
-				Skipped:     testResultsAfter[ind].Skipped,
-				TimeElapsed: testResultsAfter[ind].TimeElapsed}
-			models.CreateMaven(db, mr)
+				TestsRun:    testResults[ind].TestsRun,
+				Failures:    testResults[ind].Failures,
+				Errors:      testResults[ind].Errors,
+				Skipped:     testResults[ind].Skipped,
+				TimeElapsed: testResults[ind].TimeElapsed}
+			models.CreateTest(db, mr)
 		}
 	} else {
 		log.Println("********************** CRITICAL ERROR ***************")
@@ -74,12 +74,10 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 	if okGen {
 		okComp := compileRandoopTests(repoDir, mavenClasspath)
 		if okComp {
-			// testTime, numTests, okRun := runRandoopTests(repoDir)
 			testTime, numTests, perfMetrics, okTest := runRandoopTests(repoDir)
 			if okTest {
-				// coverageRandoopTests(repoDir, file)
-				r := &models.Randoop{MeasurementID: measurement.ID,
-					Type:      byte('C'),
+				r := &models.Test{MeasurementID: measurement.ID,
+					Type:      "randoop",
 					ClassName: file,
 					CommitID:  commitID,
 					TestsRun:  numTests,
@@ -87,14 +85,15 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 					// Errors:      errors,
 					// Skipped:     skipped,
 					TimeElapsed: testTime}
-				randoopID, err := models.CreateRandoop(db, r)
+				testID, err := models.CreateTest(db, r)
 				if err != nil {
 					log.Println("Error creating randoop: " + err.Error())
 					fmt.Println("Error creating randoop: " + err.Error())
 				} else {
 					for _, perfMetric := range perfMetrics {
-						rr := &models.RandoopResources{
-							RandoopID:  randoopID,
+						rr := &models.TestResources{
+							TestID:     testID,
+							Type:       "randoop",
 							Cpu:        perfMetric.Cpu,
 							Mem:        perfMetric.Mem,
 							ReadCount:  perfMetric.IO.ReadCount,
@@ -102,7 +101,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 							ReadBytes:  perfMetric.IO.ReadBytes,
 							WriteBytes: perfMetric.IO.WriteBytes,
 						}
-						models.CreateRandoopResources(db, rr)
+						models.CreateTestResources(db, rr)
 					}
 				}
 			}
