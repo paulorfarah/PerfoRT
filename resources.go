@@ -2,7 +2,13 @@ package main
 
 import (
 	"fmt"
+	"go-repo-downloader/models"
 
+	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/disk"
+	"github.com/shirou/gopsutil/v3/load"
+	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
 )
 
@@ -12,9 +18,17 @@ import (
 // 	// go memMonitor()
 // }
 type PerfMetrics struct {
-	Cpu float64
-	Mem float32
-	IO  *process.IOCountersStat
+	CpuPercent     float64
+	MemoryPercent  float32
+	IOCounters     *process.IOCountersStat
+	MemoryInfo     *process.MemoryInfoStat
+	PageFaults     *process.PageFaultsStat
+	Load           *load.AvgStat
+	CPUTimes       []cpu.TimesStat
+	VirtualMemory  *mem.VirtualMemoryStat
+	SwapMemory     *models.SwapMemoryStat
+	DiskIOCounters map[string]disk.IOCountersStat
+	NetIOCounters  []net.IOCountersStat
 }
 
 func MonitorProcess(pid int) (PerfMetrics, error) {
@@ -23,11 +37,11 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 	if err != nil {
 		fmt.Println("Error CPU Percent: ", err.Error())
 	}
-	cpu, err := p.CPUPercent()
+	cp, err := p.CPUPercent()
 	if err != nil {
 		return PerfMetrics{}, err
 	}
-	mem, err := p.MemoryPercent()
+	m, err := p.MemoryPercent()
 	if err != nil {
 		return PerfMetrics{}, err
 	}
@@ -35,10 +49,50 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 	if err != nil {
 		return PerfMetrics{}, err
 	}
+
+	mi, err := p.MemoryInfo()
+	if err != nil {
+		return PerfMetrics{}, err
+	}
+	pf, err := p.PageFaults()
+	if err != nil {
+		return PerfMetrics{}, err
+	}
+
+	l, _ := load.Avg()
+	ct, _ := cpu.Times(false)
+	vm, _ := mem.VirtualMemory()
+
+	swap, _ := mem.SwapMemory()
+	sm := &models.SwapMemoryStat{
+		SwapTotal:   swap.Total,
+		Used:        swap.Used,
+		Free:        swap.Free,
+		UsedPercent: swap.UsedPercent,
+		Sin:         swap.Sin,
+		Sout:        swap.Sout,
+		PgIn:        swap.PgIn,
+		PgOut:       swap.PgOut,
+		PgFault:     swap.PgFault,
+		PgMajFaults: swap.PgMajFault,
+	}
+
+	mem.SwapMemory()
+	di, _ := disk.IOCounters()
+	ni, _ := net.IOCounters(false)
+
 	perfMetrics := &PerfMetrics{
-		Cpu: cpu,
-		Mem: mem,
-		IO:  io,
+		CpuPercent:     cp,
+		MemoryPercent:  m,
+		IOCounters:     io,
+		MemoryInfo:     mi,
+		PageFaults:     pf,
+		Load:           l,
+		CPUTimes:       ct,
+		VirtualMemory:  vm,
+		SwapMemory:     sm,
+		DiskIOCounters: di,
+		NetIOCounters:  ni,
 	}
 	return *perfMetrics, nil
 

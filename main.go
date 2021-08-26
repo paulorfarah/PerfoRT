@@ -27,7 +27,8 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	url := "https://github.com/junit-team/junit4"
+	url := "https://github.com/zxing/zxing"
+	//  "https://github.com/junit-team/junit4"
 	//  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {

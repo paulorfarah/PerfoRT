@@ -51,7 +51,7 @@ func init() {
 		&Repository{},
 		&Commit{},
 		&Change{},
-		&Issue{},
+		// &Issue{},
 		// &RandoopMetrics{},
 		&Measurement{},
 		// &Maven{},
@@ -60,14 +60,17 @@ func init() {
 		&MeasurementResources{},
 		&TestResources{},
 		&Coverage{},
+		&CPUTimes{},
+		&DiskIOCounters{},
+		&NetIOCounters{},
 	)
 
-	db.Model(&Repository{}).AddForeignKey("platform_id", "platform(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Repository{}).AddForeignKey("platform_id", "platforms(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("committer", "accounts(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Change{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
-	db.Model(&Issue{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
+	// db.Model(&Issue{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("editor", "accounts(id)", "RESTRICT", "RESTRICT")
 	// db.Model(&RandoopMetrics{}).AddForeignKey("change_id", "changes(id)", "RESTRICT", "RESTRICT")
@@ -81,6 +84,9 @@ func init() {
 	db.Model(&MeasurementResources{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	db.Model(&TestResources{}).AddForeignKey("test_id", "tests(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Coverage{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
+	db.Model(&CPUTimes{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
+	db.Model(&DiskIOCounters{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
+	db.Model(&NetIOCounters{}).AddForeignKey("measurement_resources_id", "testresources(id)", "RESTRICT", "RESTRICT")
 
 }
 
