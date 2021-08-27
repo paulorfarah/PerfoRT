@@ -37,7 +37,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testType string, measurementID uin
 	var stderr bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute JaCoCo coverage (" + err.Error() + "): " + stderr.String())
 		log.Println(out)
