@@ -18,13 +18,6 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testType string, measurementID uin
 	log.Println("------------------------------------------------ test coverage")
 	fmt.Println("------------------------------------------------ test coverage")
 
-	folderInfo, errd := os.Stat("coverage")
-	if os.IsNotExist(errd) {
-		err := os.Mkdir("coverage", 0755)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
 	filename := "coverage/" + strings.ReplaceAll(repoDir, "/", "_") + ".csv"
 
 	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"

@@ -61,6 +61,8 @@ func main() {
 		//	When:  time.Now(),
 		//},
 
+		createDirs()
+
 		db := models.GetDB()
 		platform, err := models.FindPlatformByName(db, "github")
 		if err != nil {
@@ -229,4 +231,24 @@ func getParentDirectory() string {
 	dir = substr(dir, 0, strings.LastIndex(dir, "/"))
 	fmt.Println(dir)
 	return dir
+}
+
+func createDirs() {
+
+	_, errd := os.Stat("coverage")
+	if os.IsNotExist(errd) {
+		err := os.Mkdir("coverage", 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	_, errd = os.Stat("getest")
+	if os.IsNotExist(errd) {
+		err := os.Mkdir("getest", 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 }
