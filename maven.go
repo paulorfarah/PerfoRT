@@ -310,3 +310,32 @@ func readMavenTestResults(path string) []MvnTestResult {
 	}
 	return tests
 }
+
+func MvnInstall(path string) bool {
+	logfile := "maven-install.log"
+
+	fmt.Println("------------------------------------------------ mvn install")
+	cmd := exec.Command("mvn", "-Drat.skip=true", "clean", "install")
+	cmd.Dir = path
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("mvn -Drat.skip=true clean install failed with %s\n", err)
+		fmt.Printf("mvn -Drat.skip=true clean install failed with %s\n", err)
+		log.Printf("Compilation out:\n%s\n", string(output))
+		fmt.Printf("Compilation out:\n%s\n", string(output))
+		return false
+	}
+	log.Printf("Compilation out:\n%s\n", string(output))
+	// fmt.Printf("Compilation out:\n%s\n", string(output))
+	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	if err != nil {
+		log.Printf(err.Error())
+		fmt.Printf(err.Error())
+		return false
+	}
+	if strings.Contains(string(output), "BUILD SUCCESS") {
+		return true
+	} else {
+		return false
+	}
+}
