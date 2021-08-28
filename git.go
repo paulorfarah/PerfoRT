@@ -19,11 +19,8 @@ var fs billy.Filesystem
 
 func cloneRepository(url, directory string) (*git.Repository, error) {
 	// Clone the given repository to the given directory
-	removeContents(directory)
-	// r, err := git.PlainClone(directory, false, &git.CloneOptions{
-	// 	URL:      url,
-	// 	Progress: os.Stdout,
-	// })
+
+	//removeContents(directory)
 
 	urlSplit := strings.Split(url, "/")
 	repoName := urlSplit[4]
