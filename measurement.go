@@ -24,17 +24,35 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 		log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 	} else {
-		MvnInstall(repoDir)
-		ok := MvnCompile(repoDir)
-		if ok {
-			MeasureMavenTests(db, repoDir, commitID, *measurement)
-			JacocoTestCoverage(db, repoDir, "maven", measurement.ID)
-			mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-			for _, file := range listJavaFiles(repoDir) {
-				MeasureRandoopTests(db, repoDir, file, mavenClasspath, commitID, *measurement)
+
+		switch buildtool := checkBuildTool(repoDir); buildtool {
+		case "":
+			fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
+		case "maven":
+			MvnInstall(repoDir)
+			ok := MvnCompile(repoDir)
+			if ok {
+				MeasureMavenTests(db, repoDir, commitID, *measurement)
+				JacocoTestCoverage(db, repoDir, "maven", measurement.ID)
+				mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+				for _, file := range listJavaFiles(repoDir) {
+					MeasureRandoopTests(db, repoDir, file, mavenClasspath, commitID, *measurement)
+				}
+				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 			}
-			JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
+		case "gradle":
+			ok := GradleBuild(repoDir)
+			if ok {
+				MeasureGradleTests(db, repoDir, commitID, *measurement)
+				JacocoTestCoverage(db, repoDir, "gradle", measurement.ID)
+				gradleClasspath := GetGradleDependenciesClasspath(repoDir)
+				for _, file := range listJavaFiles(repoDir) {
+					MeasureRandoopTests(db, repoDir, file, gradleClasspath, commitID, *measurement)
+				}
+				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
+			}
 		}
+
 	}
 }
 
@@ -44,6 +62,27 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 		for ind := range testResults {
 			mr := &models.Test{MeasurementID: measurement.ID,
 				Type:        "maven",
+				ClassName:   testResults[ind].ClassName,
+				CommitID:    commitID,
+				TestsRun:    testResults[ind].TestsRun,
+				Failures:    testResults[ind].Failures,
+				Errors:      testResults[ind].Errors,
+				Skipped:     testResults[ind].Skipped,
+				TimeElapsed: testResults[ind].TimeElapsed}
+			models.CreateTest(db, mr)
+		}
+	} else {
+		log.Println("********************** CRITICAL ERROR ***************")
+		log.Println("successAfter is false measuring maven tests")
+	}
+}
+
+func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
+	testResults, ok := GradleTest(db, repoDir, measurement.ID)
+	if ok {
+		for ind := range testResults {
+			mr := &models.Test{MeasurementID: measurement.ID,
+				Type:        "gradle",
 				ClassName:   testResults[ind].ClassName,
 				CommitID:    commitID,
 				TestsRun:    testResults[ind].TestsRun,
@@ -271,4 +310,35 @@ func visit(files *[]string) filepath.WalkFunc {
 
 		return nil
 	}
+}
+
+// exists returns whether the given file or directory exists
+func fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func checkBuildTool(repoDir string) string {
+	pomExists, err := fileExists(repoDir + "/" + "pom.xml")
+	if err != nil {
+		fmt.Println("ERROR looking for pom.xml...")
+	}
+	if pomExists {
+		return "maven"
+	}
+	gradleExists, err := fileExists(repoDir + "/" + "build.gradle")
+	if err != nil {
+		fmt.Println("ERROR looking for build.gradle...")
+	}
+	if gradleExists {
+		return "gradle"
+	}
+	return ""
+
 }

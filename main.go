@@ -27,7 +27,8 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	url := "https://github.com/zxing/zxing"
+	url := "https://github.com/ReactiveX/RxJava"
+	//  "https://github.com/zxing/zxing"
 	//  "https://github.com/junit-team/junit4"
 	//  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
@@ -243,9 +244,9 @@ func createDirs() {
 		}
 	}
 
-	_, errd = os.Stat("getest")
+	_, errd = os.Stat("gentest")
 	if os.IsNotExist(errd) {
-		err := os.Mkdir("getest", 0755)
+		err := os.Mkdir("gentest", 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
