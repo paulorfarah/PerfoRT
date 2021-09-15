@@ -24,7 +24,13 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testType string, measurementID uin
 
 	folderInfo, errf := os.Stat("classpath")
 	if os.IsNotExist(errf) {
-		classpath = repoDir + string(os.PathSeparator) + "core" + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+		switch testType {
+		case "maven":
+			classpath = repoDir + string(os.PathSeparator) + "core" + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+		case "gradle":
+			classpath = repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes"
+
+		}
 	}
 	log.Println(folderInfo)
 
