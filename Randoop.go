@@ -109,6 +109,7 @@ import (
 
 func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) bool {
 	log.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
+	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
 		dir += string(os.PathSeparator)
@@ -384,6 +385,8 @@ func parseProjectPath(file string) (string, string) {
 			pack = strings.TrimLeft(file, "/src/test/")
 		} else if strings.Contains(file, "core/src/test/") {
 			pack = strings.TrimLeft(file, "/core/src/test/")
+		} else if strings.Contains(file, "src/jmh/java/") {
+			pack = strings.TrimLeft(file, "/src/jmh/java/")
 		} else if strings.Contains(file, "src/jmh/java/") {
 			pack = strings.TrimLeft(file, "/src/jmh/java/")
 		} else {
