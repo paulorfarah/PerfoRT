@@ -14,7 +14,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func JacocoTestCoverage(db *gorm.DB, repoDir, testType string, measurementID uint) error {
+func JacocoTestCoverage(db *gorm.DB, repoDir, buildTool string, measurementID uint) error {
 	log.Println("------------------------------------------------ test coverage")
 	fmt.Println("------------------------------------------------ test coverage")
 
@@ -24,7 +24,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testType string, measurementID uin
 
 	folderInfo, errf := os.Stat("classpath")
 	if os.IsNotExist(errf) {
-		switch testType {
+		switch buildTool {
 		case "maven":
 			classpath = repoDir + string(os.PathSeparator) + "core" + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 		case "gradle":
@@ -52,7 +52,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testType string, measurementID uin
 		fmt.Println(out)
 	}
 
-	err = saveCoverage(db, filename, testType, measurementID)
+	err = saveCoverage(db, filename, buildTool, measurementID)
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot save JaCoCo coverage: " + err.Error())
 		log.Println(out)

@@ -107,7 +107,7 @@ import (
 // 	}
 // }
 
-func generateRandoopTests(repoDir, file, mavenClasspath string) bool {
+func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) bool {
 	log.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
@@ -130,8 +130,14 @@ func generateRandoopTests(repoDir, file, mavenClasspath string) bool {
 	// deleteOldRandoopTests()
 
 	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
-	classpath := dir + "target" + string(os.PathSeparator) + "classes" + cpSep
-	classpath += mavenClasspath
+	classpath := ""
+	switch buildTool {
+	case "maven":
+		classpath += dir + "target" + string(os.PathSeparator) + "classes" + cpSep
+	case "gradle":
+		classpath += dir + "build" + string(os.PathSeparator) + "classes" + cpSep
+	}
+	classpath += buildToolClasspath
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > gentest/" + className + ".txt"

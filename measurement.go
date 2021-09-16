@@ -36,7 +36,7 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 				JacocoTestCoverage(db, repoDir, "maven", measurement.ID)
 				mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				for _, file := range listJavaFiles(repoDir) {
-					MeasureRandoopTests(db, repoDir, file, mavenClasspath, commitID, *measurement)
+					MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, *measurement)
 				}
 				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 			}
@@ -47,7 +47,7 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 				JacocoTestCoverage(db, repoDir, "gradle", measurement.ID)
 				gradleClasspath := GetGradleDependenciesClasspath(repoDir)
 				for _, file := range listJavaFiles(repoDir) {
-					MeasureRandoopTests(db, repoDir, file, gradleClasspath, commitID, *measurement)
+					MeasureRandoopTests(db, repoDir, file, "gradle", gradleClasspath, commitID, *measurement)
 				}
 				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 			}
@@ -98,11 +98,11 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 	}
 }
 
-func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, commitID uint, measurement models.Measurement) {
+func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspath string, commitID uint, measurement models.Measurement) {
 	//java -classpath ${RANDOOP_JAR} randoop.main.Main gentests --classlist=myclasses.txt --time-limit=60
 	//Randoop prints out is the name of the JUnit files containing the tests it generated
 
-	okGen := generateRandoopTests(repoDir, file, mavenClasspath)
+	okGen := generateRandoopTests(repoDir, file, buildTool, buildToolClasspath)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
 	// export JUNITPATH=.../junit.jar:.../hamcrest-core.jar
@@ -111,7 +111,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, mavenClasspath string, comm
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 
 	if okGen {
-		okComp := compileRandoopTests(repoDir, mavenClasspath)
+		okComp := compileRandoopTests(repoDir, buildToolClasspath)
 		if okComp {
 			testTime, numTests, perfMetrics, okTest := runRandoopTests(repoDir)
 			if okTest {
