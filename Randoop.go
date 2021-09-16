@@ -113,7 +113,13 @@ func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) b
 	if dir != "" {
 		dir += string(os.PathSeparator)
 	}
+
+	fmt.Println("=============================")
+	fmt.Println("dir: ", dir)
+	fmt.Println("pack: ", pack)
+
 	path := strings.Split(pack, ".java")[0]
+	fmt.Println("path: ", path)
 	randoopJar := "${RANDOOP_JAR}"
 	cpSep := ":"
 	if runtime.GOOS == "windows" {
