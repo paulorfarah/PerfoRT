@@ -372,6 +372,8 @@ func parseProjectPath(file string) (string, string) {
 			pack = strings.TrimLeft(file, "/src/test/")
 		} else if strings.Contains(file, "core/src/test/") {
 			pack = strings.TrimLeft(file, "/core/src/test/")
+		} else if strings.Contains(file, "src/jmh/java/") {
+			pack = strings.TrimLeft(file, "/src/jmh/java/")
 		} else {
 			fmt.Println("Error in parseProjectPath, path not in list -  filefrom: " + file)
 			paths = strings.Split(file, "src/")
