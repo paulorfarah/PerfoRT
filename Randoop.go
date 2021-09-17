@@ -416,7 +416,8 @@ func parseProjectPath(file string) (string, string) {
 			// dir = paths[0]
 			// pack = paths[1]
 			pack = readPackage(file)
-			dir = strings.TrimLeft(file, pack)
+			packTmp := strings.ReplaceAll(pack, ".", "/")
+			dir = strings.TrimLeft(file, packTmp)
 			fmt.Println("###################### parse project path: ")
 			fmt.Println("file: ", file)
 			fmt.Println("pack: ", pack)
