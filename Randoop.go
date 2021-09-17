@@ -361,6 +361,30 @@ func coverageRandoopTests(repoDir string) {
 // 	// return readRandoopTestResults("runRT.txt")
 // }
 
+func readPackage(fileName string) string {
+	file, err := os.Open(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	pack := ""
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "package") {
+			pack = strings.TrimLeft(strings.Replace(line, "package ", "", 1), ";")
+			break
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("pack: ", pack)
+	return pack
+}
+
 func parseProjectPath(file string) (string, string) {
 	dir := ""
 	pack := ""
@@ -391,9 +415,11 @@ func parseProjectPath(file string) (string, string) {
 			pack = strings.TrimLeft(file, "/src/jmh/java/")
 		} else {
 			fmt.Println("Error in parseProjectPath, path not in list -  filefrom: " + file)
-			paths = strings.Split(file, "src/")
-			dir = paths[0]
-			pack = paths[1]
+			// paths = strings.Split(file, "src/")
+			// dir = paths[0]
+			// pack = paths[1]
+			pack = readPackage(file)
+			dir = strings.TrimLeft(file, pack)
 		}
 	}
 	return dir, pack
