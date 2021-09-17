@@ -373,7 +373,8 @@ func readPackage(fileName string) string {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.Contains(line, "package") {
-			pack = strings.TrimLeft(strings.Replace(line, "package ", "", 1), ";")
+			pack = strings.Replace(line, "package ", "", 1)
+			pack = strings.Replace(pack, ";", "", 1)
 			break
 		}
 	}
@@ -416,6 +417,11 @@ func parseProjectPath(file string) (string, string) {
 			// pack = paths[1]
 			pack = readPackage(file)
 			dir = strings.TrimLeft(file, pack)
+			fmt.Println("###################### parse project path: ")
+			fmt.Println("file: ", file)
+			fmt.Println("pack: ", pack)
+			fmt.Println("dir: ", dir)
+			fmt.Println("######################")
 		}
 	}
 	return dir, pack
