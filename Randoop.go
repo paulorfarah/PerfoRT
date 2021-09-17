@@ -421,6 +421,7 @@ func parseProjectPath(file string) (string, string) {
 			fmt.Println("###################### parse project path: ")
 			fmt.Println("file: ", file)
 			fmt.Println("pack: ", pack)
+			fmt.Println("packTmp: ", packTmp)
 			fmt.Println("dir: ", dir)
 			fmt.Println("######################")
 		}
