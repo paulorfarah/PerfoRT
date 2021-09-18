@@ -115,9 +115,9 @@ func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) b
 		dir += string(os.PathSeparator)
 	}
 
-	fmt.Println("=============================")
-	fmt.Println("dir: ", dir)
-	fmt.Println("pack: ", pack)
+	// fmt.Println("=============================")
+	// fmt.Println("dir: ", dir)
+	// fmt.Println("pack: ", pack)
 
 	path := strings.Split(pack, ".java")[0]
 	fmt.Println("path: ", path)
@@ -149,7 +149,7 @@ func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) b
 
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > gentest/" + className + ".txt"
 	log.Println(randoopStr)
-	// fmt.Println(randoopStr)
+	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 
 	output, err := cmdRandoop.CombinedOutput()
