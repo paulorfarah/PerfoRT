@@ -8,14 +8,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 
 	"github.com/jinzhu/gorm"
 )
 
-func JacocoTestCoverage(db *gorm.DB, repoDir, buildTool string, measurementID uint) error {
+func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measurementID uint) error {
 	log.Println("------------------------------------------------ test coverage")
 	fmt.Println("------------------------------------------------ test coverage")
 
@@ -23,28 +22,28 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, buildTool string, measurementID ui
 
 	// classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 	classpath := ""
-	cpSep := ":"
-	if runtime.GOOS == "windows" {
-		cpSep = ";"
-	}
+	// cpSep := ":"
+	// if runtime.GOOS == "windows" {
+	// 	cpSep = ";"
+	// }
 	switch buildTool {
 	case "maven":
 		classpath += repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 	case "gradle":
-		classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+		classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" //+ cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
 	}
 
-	folderInfo, errf := os.Stat("classpath")
-	if os.IsNotExist(errf) {
-		switch buildTool {
-		case "maven":
-			classpath = repoDir + string(os.PathSeparator) + "core" + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
-		case "gradle":
-			classpath = repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes"
+	// folderInfo, errf := os.Stat("classpath")
+	// if os.IsNotExist(errf) {
+	// 	switch buildTool {
+	// 	case "maven":
+	// 		classpath = repoDir + string(os.PathSeparator) + "core" + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	// 	case "gradle":
+	// 		classpath = repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes"
 
-		}
-	}
-	log.Println(folderInfo)
+	// 	}
+	// }
+	// log.Println(folderInfo)
 
 	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv " + filename
 
@@ -64,7 +63,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, buildTool string, measurementID ui
 		fmt.Println(out)
 	}
 
-	err = saveCoverage(db, filename, buildTool, measurementID)
+	err = saveCoverage(db, filename, testtype, measurementID)
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot save JaCoCo coverage: " + err.Error())
 		log.Println(out)

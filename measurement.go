@@ -37,27 +37,26 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 			ok := MvnCompile(repoDir)
 			if ok {
 				MeasureMavenTests(db, repoDir, commitID, *measurement)
-				JacocoTestCoverage(db, repoDir, "maven", measurement.ID)
+				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
 				mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				for _, file := range listJavaFiles(repoDir) {
 					MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, *measurement)
 				}
-				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
+				JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 			}
 		case "gradle":
 			projectPaths := getProjectPaths(repoDir)
 			for _, projectPath := range projectPaths {
-				fmt.Println("project path: ", projectPath)
 				buildPath := repoDir + string(os.PathSeparator) + projectPath
 				ok := GradleBuild(buildPath)
 				if ok {
 					MeasureGradleTests(db, buildPath, commitID, *measurement)
-					JacocoTestCoverage(db, buildPath, "gradle", measurement.ID)
+					JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
 					gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 					for _, file := range listJavaFiles(buildPath) {
 						MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, *measurement)
 					}
-					JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
+					JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
 				}
 			}
 		}
@@ -393,7 +392,6 @@ func getProjectPaths(repoDir string) []string {
 
 	scanner := bufio.NewScanner(file)
 	re := regexp.MustCompile(`\(\'(.*?)\'\)`)
-	fmt.Printf("Pattern: %v\n", re.String()) // print pattern
 	for scanner.Scan() {
 		str1 := scanner.Text()
 		// fmt.Println(str1)
