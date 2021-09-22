@@ -57,7 +57,7 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 					for _, file := range listJavaFiles(buildPath) {
 						MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, *measurement)
 					}
-					JacocoTestCoverage(db, buildPath, "randoop", measurement.ID)
+					JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 				}
 			}
 		}
@@ -134,7 +134,9 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	case "maven":
 		classpath += dir + "target" + string(os.PathSeparator) + "classes" + cpSep
 	case "gradle":
-		classpath += dir + "build" + string(os.PathSeparator) + "classes" + cpSep + dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+		classpath += dir + "build" + string(os.PathSeparator) + "classes" + cpSep +
+			dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main" + cpSep +
+			dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "test"
 	}
 	classpath += buildToolClasspath
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
