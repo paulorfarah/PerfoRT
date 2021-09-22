@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 )
@@ -107,45 +106,40 @@ import (
 // 	}
 // }
 
-func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) bool {
-	log.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
-	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
-	dir, pack := parseProjectPath(file)
-	if dir != "" {
-		dir += string(os.PathSeparator)
-	}
+func generateRandoopTests(classpath, cpSep, randoopJar, envRandoopJar, className string) bool {
+	log.Println("------------------------------------------------ Generating Randoop tests for " + className + "...")
+	// fmt.Println("------------------------------------------------ Generating Randoop tests for " + className + "...")
+	// dir, pack := parseProjectPath(file)
+	// if dir != "" {
+	// 	dir += string(os.PathSeparator)
+	// }
 
 	// fmt.Println("=============================")
 	// fmt.Println("dir: ", dir)
 	// fmt.Println("pack: ", pack)
 
-	path := strings.Split(pack, ".java")[0]
-	fmt.Println("path: ", path)
-	randoopJar := "${RANDOOP_JAR}"
-	cpSep := ":"
-	if runtime.GOOS == "windows" {
-		randoopJar = "%RANDOOP_JAR%"
-		cpSep = ";"
-	}
-	// else {
-	// clean temporary files to avoid Too many links error
-	// cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
-	// cmdClean.Run()
+	// path := strings.Split(pack, ".java")[0]
+	// // fmt.Println("path: ", path)
+	// randoopJar := "${RANDOOP_JAR}"
+	// cpSep := ":"
+	// if runtime.GOOS == "windows" {
+	// 	randoopJar = "%RANDOOP_JAR%"
+	// 	cpSep = ";"
 	// }
-	envRandoopJar := os.Getenv("RANDOOP_JAR")
-	// remove old tests
-	// deleteOldRandoopTests()
 
-	// classpath := repoDir + string(os.PathSeparator) + dir + "target" + string(os.PathSeparator) + "classes" + cpSep
-	classpath := ""
-	switch buildTool {
-	case "maven":
-		classpath += dir + "target" + string(os.PathSeparator) + "classes" + cpSep
-	case "gradle":
-		classpath += dir + "build" + string(os.PathSeparator) + "classes" + cpSep
-	}
-	classpath += buildToolClasspath
-	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
+	// envRandoopJar := os.Getenv("RANDOOP_JAR")
+	// // remove old tests
+	// // deleteOldRandoopTests()
+
+	// classpath := ""
+	// switch buildTool {
+	// case "maven":
+	// 	classpath += dir + "target" + string(os.PathSeparator) + "classes" + cpSep
+	// case "gradle":
+	// 	classpath += dir + "build" + string(os.PathSeparator) + "classes" + cpSep + dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+	// }
+	// classpath += buildToolClasspath
+	// className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > gentest/" + className + ".txt"
 	log.Println(randoopStr)
@@ -170,7 +164,7 @@ func generateRandoopTests(repoDir, file, buildTool, buildToolClasspath string) b
 	return readRandoopGentestResults("gentest/" + className + ".txt")
 }
 
-func compileRandoopTests(repoDir, mavenClasspath string) bool {
+func compileRandoopTests(classpath, cpSep string) bool {
 	log.Println("------------------------------------------------ compile randoop tests")
 	fmt.Println("------------------------------------------------ compile randoop tests")
 	// javac -classpath .:$JUNITPATH ErrorTest*.java RegressionTest*.java -sourcepath .:path/to/files/under/test/
@@ -186,28 +180,32 @@ func compileRandoopTests(repoDir, mavenClasspath string) bool {
 	// correto:
 	//javac -cp /mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/:/mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/target/classes:/users/farah/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/users/farah/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:$JUNITPATH RegressionTest.java -sourcepath /mnt/sda4/go-work/src/github.com/paulorfarah/repos/junit4/src/main/java
 
-	// for _, file := range testfiles {
-	// dir, pack := parseProjectPath(file)
-	// if dir != "" {
-	// 	dir += string(os.PathSeparator)
+	// cpSep := ":"
+	// if runtime.GOOS == "windows" {
+	// 	junitJar = "%JUNITPATH%"
+	// 	cpSep = ";"
 	// }
-	// path := strings.Split(pack, ".java")[0]
-	junitJar := "$JUNITPATH"
-	cpSep := ":"
-	if runtime.GOOS == "windows" {
-		junitJar = "%JUNITPATH%"
-		cpSep = ";"
-	}
-	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
-	classpath += cpSep + mavenClasspath //GetMavenDependenciesClasspath(repoDir)
+
+	// classpath := ""
+	// switch buildTool {
+	// case "maven":
+	// 	classpath += repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes" + cpSep
+	// case "gradle":
+	// 	classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+	// }
+	// classpath += buildToolClasspath
+
 	// className := strings.ReplaceAll(path, "/", ".")
 
 	// clean temporary files to avoid Too many links error
 	// cmdClean := exec.Command("bash", "-c", "find", "/tmp/", "-name", "\"*\"", "-print0|", "xargs", "-0", "rm", "-rf")
 	// cmdClean.Run()
 
+	junitJar := "$JUNITPATH"
+
 	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " RegressionTest*.java > RegressionTest_compilation.txt"
 	log.Println(randoopStr)
+	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
@@ -226,27 +224,35 @@ func compileRandoopTests(repoDir, mavenClasspath string) bool {
 	return true
 }
 
-func runRandoopTests(repoDir string) (float64, int, []PerfMetrics, bool) {
+func runRandoopTests(classpath, cpSep string) (float64, int, []PerfMetrics, bool) {
 	log.Println("------------------------------------------------ run randoop tests")
 	fmt.Println("------------------------------------------------ run randoop tests")
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 	// java -cp .:/usr/share/java/junit.jar org.junit.runner.JUnitCore [test class name]
 	// java -javaagent:jacoco-0.8.6/lib/jacocoagent.jar -cp junit-4.12.jar:hamcrest-core-1.3.jar:classes:test-classes org.junit.runner.JUnitCore CalculatorTest
 
+	// cpSep := ":"
+	// if runtime.GOOS == "windows" {
+	// 	junitJar = "%JUNITPATH%"
+	// 	cpSep = ";"
+	// }
+
+	// classpath := ""
+	// // classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	// switch buildTool {
+	// case "maven":
+	// 	classpath += repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes" + cpSep
+	// case "gradle":
+	// 	classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+	// }
+
 	junitJar := "${JUNITPATH}"
-	cpSep := ":"
-	if runtime.GOOS == "windows" {
-		junitJar = "%JUNITPATH%"
-		cpSep = ";"
-	}
-
-	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
-
 	junitStr := "java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
 
 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
 	log.Println(junitStr)
+	fmt.Println(junitStr)
 	// fmt.Println(junitStr)
 	cmdRandoop := exec.Command("bash", "-c", junitStr)
 	var out bytes.Buffer
@@ -294,31 +300,44 @@ func runRandoopTests(repoDir string) (float64, int, []PerfMetrics, bool) {
 	return testTime, numTests, perfMetrics, ok
 }
 
-func coverageRandoopTests(repoDir string) {
-	log.Println("------------------------------------------------ coverage randoop tests")
-	fmt.Println("------------------------------------------------ coverage randoop tests")
+// func coverageRandoopTests(repoDir, buildTool string) {
+// 	log.Println("------------------------------------------------ coverage randoop tests")
+// 	fmt.Println("------------------------------------------------ coverage randoop tests")
 
-	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
-	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv coverage/" + strings.ReplaceAll(repoDir, "/", "_") + ".csv"
+// 	cpSep := ":"
+// 	if runtime.GOOS == "windows" {
+// 		cpSep = ";"
+// 	}
 
-	log.Println(jacocoStr)
-	fmt.Println(jacocoStr)
-	cmdRandoop := exec.Command("bash", "-c", jacocoStr)
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmdRandoop.Stdout = &out
-	cmdRandoop.Stderr = &stderr
-	err := cmdRandoop.Run()
-	if err != nil {
-		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
-		log.Println(out)
+// 	// classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+// 	classpath := ""
+// 	switch buildTool {
+// 	case "maven":
+// 		classpath += repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+// 	case "gradle":
+// 		classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+// 	}
 
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
-		fmt.Println(out)
-	}
+// 	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv coverage/" + strings.ReplaceAll(repoDir, "/", "_") + ".csv"
 
-	// return readRandoopTestResults("runRT.txt")
-}
+// 	log.Println(jacocoStr)
+// 	fmt.Println(jacocoStr)
+// 	cmdRandoop := exec.Command("bash", "-c", jacocoStr)
+// 	var out bytes.Buffer
+// 	var stderr bytes.Buffer
+// 	cmdRandoop.Stdout = &out
+// 	cmdRandoop.Stderr = &stderr
+// 	err := cmdRandoop.Run()
+// 	if err != nil {
+// 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+// 		log.Println(out)
+
+// 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
+// 		fmt.Println(out)
+// 	}
+
+// 	// return readRandoopTestResults("runRT.txt")
+// }
 
 // Deprecated: changed to coverage.go
 // func coverageRandoopTestsByFile(repoDir, src string) { //(map[string]int, bool) {
@@ -393,37 +412,46 @@ func parseProjectPath(file string) (string, string) {
 	if len(paths) > 1 {
 		dir = paths[0]
 		pack = paths[1]
-	} else if len(paths) == 1 {
-		if strings.Contains(file, "src/main/java/") {
-			//commons-io
-			pack = strings.TrimLeft(file, "/src/main/java/")
-		} else if strings.Contains(file, "src/conf/") {
-			pack = strings.TrimLeft(file, "/src/conf/")
-		} else if strings.Contains(file, "src/examples/") {
-			pack = strings.TrimLeft(file, "/src/examples/")
-		} else if strings.Contains(file, "src/java/") {
-			pack = strings.TrimLeft(file, "/src/java/")
-		} else if strings.Contains(file, "/src/test/java/") {
-			//junit4
-			pack = strings.Split(file, "/src/test/java/")[1]
-		} else if strings.Contains(file, "src/test/") {
-			pack = strings.TrimLeft(file, "/src/test/")
-		} else if strings.Contains(file, "core/src/test/") {
-			pack = strings.TrimLeft(file, "/core/src/test/")
-		} else {
-			fmt.Println("Error in parseProjectPath, path not in list -  filefrom: " + file)
-			// paths = strings.Split(file, "src/")
-			// dir = paths[0]
-			// pack = paths[1]
-			pack = readPackage(file)
-			packTmp := strings.ReplaceAll(pack, ".", "/")
-			dir = strings.Split(file, packTmp)[0]
-			fmt.Println("###################### parse project path: ")
-			fmt.Println("file: ", file)
-			fmt.Println("pack: ", pack)
-			fmt.Println("packTmp: ", packTmp)
-			fmt.Println("dir: ", dir)
-			fmt.Println("######################")
+	} else {
+		paths = strings.Split(file, string(os.PathSeparator)+"src"+string(os.PathSeparator)+"test"+string(os.PathSeparator)+"java"+string(os.PathSeparator))
+		if len(paths) > 1 {
+			dir = paths[0]
+			pack = paths[1]
+		} else if len(paths) == 1 {
+			if strings.Contains(file, "src/main/java/") {
+				//commons-io
+				pack = strings.TrimLeft(file, "/src/main/java/")
+			} else if strings.Contains(file, "src/conf/") {
+				pack = strings.TrimLeft(file, "/src/conf/")
+			} else if strings.Contains(file, "src/examples/") {
+				pack = strings.TrimLeft(file, "/src/examples/")
+			} else if strings.Contains(file, "src/java/") {
+				pack = strings.TrimLeft(file, "/src/java/")
+			} else if strings.Contains(file, "/src/test/java/") {
+				//junit4
+				parts := strings.Split(file, "/src/test/java/")
+				dir = parts[0] //+ "/src/test/java"
+				pack = parts[1]
+
+			} else if strings.Contains(file, "src/test/") {
+				pack = strings.TrimLeft(file, "/src/test/")
+			} else if strings.Contains(file, "core/src/test/") {
+				pack = strings.TrimLeft(file, "/core/src/test/")
+			} else {
+				fmt.Println("Error in parseProjectPath, path not in list -  filefrom: " + file)
+				// paths = strings.Split(file, "src/")
+				// dir = paths[0]
+				// pack = paths[1]
+				pack = readPackage(file)
+				packTmp := strings.ReplaceAll(pack, ".", "/")
+				dir = strings.Split(file, packTmp)[0]
+				fmt.Println("###################### parse project path: ")
+				fmt.Println("file: ", file)
+				fmt.Println("pack: ", pack)
+				fmt.Println("packTmp: ", packTmp)
+				fmt.Println("dir: ", dir)
+				fmt.Println("######################")
+			}
 		}
 	}
 	return dir, pack

@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -20,7 +21,18 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, buildTool string, measurementID ui
 
 	filename := "coverage/" + strings.ReplaceAll(repoDir, "/", "_") + ".csv"
 
-	classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	// classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	classpath := ""
+	cpSep := ":"
+	if runtime.GOOS == "windows" {
+		cpSep = ";"
+	}
+	switch buildTool {
+	case "maven":
+		classpath += repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
+	case "gradle":
+		classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+	}
 
 	folderInfo, errf := os.Stat("classpath")
 	if os.IsNotExist(errf) {

@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"go-repo-downloader/models"
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -41,15 +45,20 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 			}
 		case "gradle":
-			ok := GradleBuild(repoDir)
-			if ok {
-				MeasureGradleTests(db, repoDir, commitID, *measurement)
-				JacocoTestCoverage(db, repoDir, "gradle", measurement.ID)
-				gradleClasspath := GetGradleDependenciesClasspath(repoDir)
-				for _, file := range listJavaFiles(repoDir) {
-					MeasureRandoopTests(db, repoDir, file, "gradle", gradleClasspath, commitID, *measurement)
+			projectPaths := getProjectPaths(repoDir)
+			for _, projectPath := range projectPaths {
+				fmt.Println("project path: ", projectPath)
+				buildPath := repoDir + string(os.PathSeparator) + projectPath
+				ok := GradleBuild(buildPath)
+				if ok {
+					MeasureGradleTests(db, buildPath, commitID, *measurement)
+					JacocoTestCoverage(db, buildPath, "gradle", measurement.ID)
+					gradleClasspath := GetGradleDependenciesClasspath(buildPath)
+					for _, file := range listJavaFiles(buildPath) {
+						MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, *measurement)
+					}
+					JacocoTestCoverage(db, buildPath, "randoop", measurement.ID)
 				}
-				JacocoTestCoverage(db, repoDir, "randoop", measurement.ID)
 			}
 		}
 
@@ -102,7 +111,36 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	//java -classpath ${RANDOOP_JAR} randoop.main.Main gentests --classlist=myclasses.txt --time-limit=60
 	//Randoop prints out is the name of the JUnit files containing the tests it generated
 
-	okGen := generateRandoopTests(repoDir, file, buildTool, buildToolClasspath)
+	dir, pack := parseProjectPath(file)
+	if dir != "" {
+		dir += string(os.PathSeparator)
+	}
+
+	path := strings.Split(pack, ".java")[0]
+	// fmt.Println("path: ", path)
+	randoopJar := "${RANDOOP_JAR}"
+	cpSep := ":"
+	if runtime.GOOS == "windows" {
+		randoopJar = "%RANDOOP_JAR%"
+		cpSep = ";"
+	}
+
+	envRandoopJar := os.Getenv("RANDOOP_JAR")
+	// remove old tests
+	// deleteOldRandoopTests()
+
+	classpath := ""
+	switch buildTool {
+	case "maven":
+		classpath += dir + "target" + string(os.PathSeparator) + "classes" + cpSep
+	case "gradle":
+		classpath += dir + "build" + string(os.PathSeparator) + "classes" + cpSep + dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
+	}
+	classpath += buildToolClasspath
+	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
+
+	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
+	okGen := generateRandoopTests(classpath, cpSep, randoopJar, envRandoopJar, className)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
 	// export JUNITPATH=.../junit.jar:.../hamcrest-core.jar
@@ -111,9 +149,9 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 
 	if okGen {
-		okComp := compileRandoopTests(repoDir, buildToolClasspath)
+		okComp := compileRandoopTests(classpath, cpSep)
 		if okComp {
-			testTime, numTests, perfMetrics, okTest := runRandoopTests(repoDir)
+			testTime, numTests, perfMetrics, okTest := runRandoopTests(classpath, cpSep)
 			if okTest {
 				r := &models.Test{MeasurementID: measurement.ID,
 					Type:      "randoop",
@@ -332,13 +370,44 @@ func checkBuildTool(repoDir string) string {
 	if pomExists {
 		return "maven"
 	}
-	gradleExists, err := fileExists(repoDir + "/" + "build.gradle")
+	gradleExists, err := fileExists(repoDir + "/" + "settings.gradle")
 	if err != nil {
-		fmt.Println("ERROR looking for build.gradle...")
+		fmt.Println("ERROR looking for settings.gradle...")
 	}
 	if gradleExists {
 		return "gradle"
 	}
 	return ""
 
+}
+
+func getProjectPaths(repoDir string) []string {
+	var includes []string
+	file, err := os.Open(repoDir + "/settings.gradle")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	re := regexp.MustCompile(`\(\'(.*?)\'\)`)
+	fmt.Printf("Pattern: %v\n", re.String()) // print pattern
+	for scanner.Scan() {
+		str1 := scanner.Text()
+		// fmt.Println(str1)
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+
+		if strings.Contains(str1, "include('") {
+			submatchall := re.FindAllString(str1, -1)
+			for _, element := range submatchall {
+				element = strings.Trim(element, "('")
+				element = strings.Trim(element, "')")
+				includes = append(includes, element)
+			}
+		}
+	}
+
+	return includes
 }
