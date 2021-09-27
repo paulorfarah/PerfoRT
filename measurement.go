@@ -16,7 +16,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit, changes object.Changes) {
+func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
 	measurement := &models.Measurement{RepositoryID: repository.ID}
 	models.CreateMeasurement(db, measurement)
 

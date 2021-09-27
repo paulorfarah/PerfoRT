@@ -150,6 +150,7 @@ func main() {
 					}
 					if prevTree != nil {
 						changes, err := currTree.Diff(prevTree)
+						fmt.Println(changes)
 						// _, err := currTree.Diff(prevTree)
 						if err != nil {
 							return err
@@ -191,7 +192,43 @@ func main() {
 							models.CreateCommit(db, commit)
 						}
 
-						Measure(db, repoDir, *repository, commit.ID, currCommit, changes)
+						//changes
+
+						prevTree.Files().ForEach(func(f *object.File) error {
+							contents, _ := f.Contents()
+
+							fmt.Printf("100644 blob %s    %s	%s\n", f.Hash, f.Name, contents)
+							return nil
+						})
+
+						// changes.ForEach(func(change *object.Change) error {
+						// 	fmt.Println(change.From.Name)
+						// })
+						// fmt.Println(change)
+						// fmt.Println(&change.From.Name)
+						// fmt.Println(change.To.Name)
+						// 		// fmt.Println(change.Action())
+						// 		// fmt.Println(change.Files())
+						// 		// fmt.Println("------------------- start")
+						// 		// fmt.Println(change.Patch())
+						// fileFrom, err := models.FindFileByName(change.From.Name)
+						// if change.From.Name == change.To.Name {
+						// 	fileTo = fileFrom
+						// } else {
+						// 	fileTo = models.FindFileByName(change.To.Name)
+						// }
+
+						// ch := &models.Change{
+						// 	// ChangeHash:
+						// 	FileFromID: fileFrom.ID,
+						// 	FileFrom:   fileFrom,
+						// 	FileToID:   fileTo.ID,
+						// 	FileTo:     fileTo,
+						// 	Action:     change.Action(),
+						// 	Patch:      change.Patch(),
+						// }
+
+						// Measure(db, repoDir, *repository, commit.ID, currCommit)
 
 						//codeanalysis.Understand(cs.Name)
 					}
