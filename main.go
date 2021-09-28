@@ -192,20 +192,42 @@ func main() {
 							models.CreateCommit(db, commit)
 						}
 
-						//changes
+						//files
 
 						prevTree.Files().ForEach(func(f *object.File) error {
-							contents, _ := f.Contents()
 
-							fmt.Printf("100644 blob %s    %s	%s\n", f.Hash, f.Name, contents)
+							contents, _ := f.Contents()
+							isBin, _ := f.IsBinary()
+							lines, _ := f.Lines()
+							// fmt.Printf("100644 blob %s    %s	%s\n", f.Hash, f.Name, contents)
+
+							// db.Create(&Dog{Name: "dog1", Toys: []Toy{{Name: "toy1"}, {Name: "toy2"}}})
+							ls := []models.FileLine{}
+							for _, l := range lines {
+								ls = append(ls, models.FileLine{Line: l})
+							}
+							fl := &models.File{
+								Hash:       f.Hash.String(),
+								Name:       f.Name,
+								Size:       f.Size,
+								Contents:   contents,
+								IsBinary:   isBin,
+								Lines:      ls,
+								HasChanged: false}
+							models.CreateFile(db, fl)
+							// fmt.Println(fl)
 							return nil
 						})
+
+						//changes
 
 						// changes.ForEach(func(change *object.Change) error {
 						// 	fmt.Println(change.From.Name)
 						// })
-						// fmt.Println(change)
-						// fmt.Println(&change.From.Name)
+						for _, change := range changes {
+							fmt.Println(change)
+							fmt.Println(&change.From.Name)
+						}
 						// fmt.Println(change.To.Name)
 						// 		// fmt.Println(change.Action())
 						// 		// fmt.Println(change.Files())
