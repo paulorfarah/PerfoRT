@@ -8,11 +8,13 @@ import (
 //https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type Change struct {
 	Model
-	CommitID       uint //   `gorm:"not null"`
-	Commit         Commit
+	// FileID         uint //   `gorm:"not null"`
+	// File           File
 	ChangeHash     string `gorm:"not null"`
-	FileFrom       string `gorm:"not null"`
-	FileTo         string `gorm:"not null"`
+	FileFromID     uint   `gorm:"not null"`
+	FileFrom       File
+	FileToID       uint `gorm:"not null"`
+	FileTo         File
 	Action         string `gorm:"not null"`
 	Patch          string `gorm:"type:text;not null"`
 	RandoopMetrics []RandoopMetrics
@@ -30,8 +32,8 @@ func CreateChange(db *gorm.DB, change *Change) (uint, error) {
 	return change.ID, nil
 }
 
-func FindChangeByHash(db *gorm.DB, hash string, commitID uint) (*Change, error) {
+func FindChangeByHash(db *gorm.DB, hash string, fileFromID uint) (*Change, error) {
 	var change Change
-	res := db.Find(&change, &Change{CommitID: commitID, ChangeHash: hash})
+	res := db.Find(&change, &Change{FileFromID: fileFromID, ChangeHash: hash})
 	return &change, res.Error
 }

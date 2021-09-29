@@ -150,7 +150,6 @@ func main() {
 					}
 					if prevTree != nil {
 						changes, err := currTree.Diff(prevTree)
-						fmt.Println(changes)
 						// _, err := currTree.Diff(prevTree)
 						if err != nil {
 							return err
@@ -195,7 +194,6 @@ func main() {
 						//files
 
 						prevTree.Files().ForEach(func(f *object.File) error {
-
 							contents, _ := f.Contents()
 							isBin, _ := f.IsBinary()
 							lines, _ := f.Lines()
@@ -207,6 +205,7 @@ func main() {
 								ls = append(ls, models.FileLine{Line: l})
 							}
 							fl := &models.File{
+								CommitID:   commit.ID,
 								Hash:       f.Hash.String(),
 								Name:       f.Name,
 								Size:       f.Size,
@@ -225,34 +224,50 @@ func main() {
 						// 	fmt.Println(change.From.Name)
 						// })
 						for _, change := range changes {
-							fmt.Println(change)
-							fmt.Println(&change.From.Name)
-						}
-						// fmt.Println(change.To.Name)
-						// 		// fmt.Println(change.Action())
-						// 		// fmt.Println(change.Files())
-						// 		// fmt.Println("------------------- start")
-						// 		// fmt.Println(change.Patch())
-						// fileFrom, err := models.FindFileByName(change.From.Name)
-						// if change.From.Name == change.To.Name {
-						// 	fileTo = fileFrom
-						// } else {
-						// 	fileTo = models.FindFileByName(change.To.Name)
-						// }
+							// fmt.Println(change.To.Name)
+							// 		// fmt.Println(change.Action())
+							// 		// fmt.Println(change.Files())
+							// 		// fmt.Println("------------------- start")
+							// 		// fmt.Println(change.Patch())
+							fileFrom, err := models.FindFileByNameAndCommit(db, change.From.Name, commit.ID)
+							var fileTo *models.File
+							if err != nil {
+								log.Println("Cannot find file: " + change.From.Name)
+								log.Println(err.Error())
+								fmt.Println("Cannot find file: " + change.From.Name)
+								fmt.Println(err.Error())
+							} else {
+								if change.From.Name == change.To.Name {
+									fileTo = fileFrom
+								} else {
+									var err2 error
+									fileTo, err2 = models.FindFileByNameAndCommit(db, change.To.Name, commit.ID)
+									if err2 != nil {
+										log.Println("Cannot find file: " + change.From.Name)
+										log.Println(err2.Error())
+										fmt.Println("Cannot find file: " + change.From.Name)
+										fmt.Println(err2.Error())
+									}
 
-						// ch := &models.Change{
-						// 	// ChangeHash:
-						// 	FileFromID: fileFrom.ID,
-						// 	FileFrom:   fileFrom,
-						// 	FileToID:   fileTo.ID,
-						// 	FileTo:     fileTo,
-						// 	Action:     change.Action(),
-						// 	Patch:      change.Patch(),
-						// }
+								}
+								act, _ := change.Action()
+								patch, _ := change.Patch()
+
+								ch := &models.Change{
+									// ChangeHash:
+									FileFromID: fileFrom.ID,
+									FileToID:   fileTo.ID,
+									Action:     act.String(),
+									Patch:      patch.String(),
+								}
+								models.CreateChange(db, ch)
+							}
+						}
 
 						// Measure(db, repoDir, *repository, commit.ID, currCommit)
 
 						//codeanalysis.Understand(cs.Name)
+						models.BarChart()
 					}
 				}
 				prevCommit = currCommit

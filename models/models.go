@@ -50,6 +50,7 @@ func init() {
 		&Platform{},
 		&Repository{},
 		&Commit{},
+		&File{},
 		&Change{},
 		// &Issue{},
 		// &RandoopMetrics{},
@@ -69,7 +70,8 @@ func init() {
 	db.Model(&Commit{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Commit{}).AddForeignKey("committer", "accounts(id)", "RESTRICT", "RESTRICT")
-	db.Model(&Change{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
+	db.Model(&File{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Change{}).AddForeignKey("file_from_id", "files(id)", "RESTRICT", "RESTRICT")
 	// db.Model(&Issue{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
 	//	db.Model(&Issue{}).AddForeignKey("editor", "accounts(id)", "RESTRICT", "RESTRICT")
@@ -87,7 +89,7 @@ func init() {
 	db.Model(&CPUTimes{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
 	db.Model(&DiskIOCounters{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
 	db.Model(&NetIOCounters{}).AddForeignKey("measurement_resources_id", "testresources(id)", "RESTRICT", "RESTRICT")
-
+	db.Model(&File{}).Related(&FileLine{})
 }
 
 func GetDB() *gorm.DB {
