@@ -19,6 +19,7 @@ require (
 	github.com/waigani/diffparser v0.0.0-20190828052634-7391f219313d
 	github.com/wcharczuk/go-chart v2.0.2-0.20191206192251-962b9abdec2b+incompatible
 	github.com/wcharczuk/go-chart/v2 v2.1.0
+	github.com/go-echarts/go-echarts/v2 v2.0.0
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71 // indirect
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
