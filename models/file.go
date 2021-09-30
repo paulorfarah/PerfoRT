@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -10,11 +12,11 @@ type File struct {
 	Model
 	CommitID    uint
 	Commit      Commit
-	Hash        string `gorm:"unique;not null;unique_index:idx_commit"`
+	Hash        string `gorm:"not null;idx_commit"`
 	Name        string `gorm:"not null"`
 	Size        int64
-	Contents    string
-	IsBinary    bool `gorm:"not null;default: false"`
+	Contents    string `gorm:"type:text"`
+	IsBinary    bool   `gorm:"not null;default: false"`
 	Lines       []FileLine
 	IsMalformed bool `gorm:"not null;default: false"`
 	HasChanged  bool `gorm:"not null;default: false"`
@@ -32,6 +34,7 @@ func (r *File) TableName() string {
 func CreateFile(db *gorm.DB, f *File) (uint, error) {
 	err := db.Create(f).Error
 	if err != nil {
+		fmt.Printf("Error creating file %s: %s\n", f.Name, err.Error())
 		return 0, err
 	}
 	return f.ID, nil

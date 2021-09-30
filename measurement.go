@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/jinzhu/gorm"
+	"github.com/joshdk/go-junit"
 )
 
 func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
@@ -100,6 +101,23 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				TimeElapsed: testResults[ind].TimeElapsed}
 			models.CreateTest(db, mr)
 		}
+		fmt.Printf("repoDir gradle tests: %s", repoDir)
+		suites, err := junit.IngestDir(repoDir + "/build/test-results/test/")
+		if err != nil {
+			log.Fatalf("failed to ingest JUnit xml %v", err)
+		}
+		for _, suite := range suites {
+			fmt.Println(suite.Name)
+			for _, test := range suite.Tests {
+				fmt.Printf("  %s\n", test.Name)
+				if test.Error != nil {
+					fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
+				} else {
+					fmt.Printf("    %s %f\n", test.Status, test.Duration.Seconds())
+				}
+			}
+		}
+
 	} else {
 		log.Println("********************** CRITICAL ERROR ***************")
 		log.Println("successAfter is false measuring maven tests")

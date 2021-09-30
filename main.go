@@ -192,14 +192,15 @@ func main() {
 						}
 
 						//files
-
-						prevTree.Files().ForEach(func(f *object.File) error {
-							contents, _ := f.Contents()
+						currTree.Files().ForEach(func(f *object.File) error {
+							contents := ""
+							if !(strings.HasSuffix(f.Name, ".class") || strings.HasSuffix(f.Name, ".jar")) {
+								contents, _ = f.Contents()
+							}
 							isBin, _ := f.IsBinary()
 							lines, _ := f.Lines()
-							// fmt.Printf("100644 blob %s    %s	%s\n", f.Hash, f.Name, contents)
+							// fmt.Printf("%d	%s\n", commit.ID, f.Name)
 
-							// db.Create(&Dog{Name: "dog1", Toys: []Toy{{Name: "toy1"}, {Name: "toy2"}}})
 							ls := []models.FileLine{}
 							for _, l := range lines {
 								ls = append(ls, models.FileLine{Line: l})
@@ -214,7 +215,6 @@ func main() {
 								Lines:      ls,
 								HasChanged: false}
 							models.CreateFile(db, fl)
-							// fmt.Println(fl)
 							return nil
 						})
 
@@ -229,6 +229,8 @@ func main() {
 							// 		// fmt.Println(change.Files())
 							// 		// fmt.Println("------------------- start")
 							// 		// fmt.Println(change.Patch())
+
+							fmt.Printf("(change) file: %s - commit: %d\n", change.From.Name, commit.ID)
 							fileFrom, err := models.FindFileByNameAndCommit(db, change.From.Name, commit.ID)
 							var fileTo *models.File
 							if err != nil {
@@ -264,7 +266,7 @@ func main() {
 							}
 						}
 
-						// Measure(db, repoDir, *repository, commit.ID, currCommit)
+						Measure(db, repoDir, *repository, commit.ID, currCommit)
 
 						//codeanalysis.Understand(cs.Name)
 						models.BarChart()
@@ -302,11 +304,11 @@ func getParentDirectory() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(dir)
+	// fmt.Println(dir)
 	dir = strings.Replace(dir, "\\", "/", -1)
-	fmt.Println(dir)
+	// fmt.Println(dir)
 	dir = substr(dir, 0, strings.LastIndex(dir, "/"))
-	fmt.Println(dir)
+	// fmt.Println(dir)
 	return dir
 }
 
