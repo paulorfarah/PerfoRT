@@ -73,7 +73,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 				Type:      "maven",
 				ClassName: testResults[ind].ClassName,
 				CommitID:  commitID,
-				Duration:  testResults[ind].TimeElapsed,
+				// Duration:  testResults[ind].TimeElapsed,
 				// TestsRun:    testResults[ind].TestsRun,
 				// Failures:    testResults[ind].Failures,
 				// Errors:      testResults[ind].Errors,
@@ -89,22 +89,8 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 }
 
 func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	testResults, ok := GradleTest(db, repoDir, measurement.ID)
+	_, ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
-		for ind := range testResults {
-			mr := &models.TestCase{MeasurementID: measurement.ID,
-				Type:      "gradle",
-				ClassName: testResults[ind].ClassName,
-				CommitID:  commitID,
-				Duration:  testResults[ind].TimeElapsed,
-				// 	TestsRun:    testResults[ind].TestsRun,
-				// 	Failures:    testResults[ind].Failures,
-				// 	Errors:      testResults[ind].Errors,
-				// 	Skipped:     testResults[ind].Skipped,
-				// 	TimeElapsed: testResults[ind].TimeElapsed
-			}
-			models.CreateTestCase(db, mr)
-		}
 
 		// read tests xml file
 		fmt.Printf("repoDir gradle tests: %s", repoDir)
@@ -115,12 +101,30 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 		for _, suite := range suites {
 			fmt.Println(suite.Name)
 			for _, test := range suite.Tests {
-				fmt.Printf("  %s\n", test.Name)
-				if test.Error != nil {
-					fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
-				} else {
-					fmt.Printf("    %s %f\n", test.Status, test.Duration.Seconds())
+				// fmt.Printf("  %s\n", test.Name)
+				// if test.Error != nil {
+				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
+				// } else {
+				// 	fmt.Printf("    %s %f\n", test.Status, test.Duration.Seconds())
+				// }
+				testSuite, _ := models.FindFileByNameAndCommit(db, test.Classname, commitID)
+
+				mr := &models.TestCase{
+					MeasurementID: measurement.ID,
+					Type:          "gradle",
+					ClassName:     test.Classname,
+					CommitID:      commitID,
+					Duration:      test.Duration,
+					TestSuiteID:   testSuite.ID,
+					Name:          test.Name,
+					Status:        string(test.Status),
+					Error:         test.Error.Error(),
+					Message:       test.Message,
+					SystemErr:     string(test.SystemErr),
+					SystemOut:     string(test.SystemOut),
 				}
+				models.CreateTestCase(db, mr)
+
 			}
 		}
 
@@ -176,13 +180,13 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	if okGen {
 		okComp := compileRandoopTests(classpath, cpSep)
 		if okComp {
-			testTime, _, perfMetrics, okTest := runRandoopTests(classpath, cpSep)
+			_, _, perfMetrics, okTest := runRandoopTests(classpath, cpSep)
 			if okTest {
 				r := &models.TestCase{MeasurementID: measurement.ID,
 					Type:      "randoop",
 					ClassName: file,
 					CommitID:  commitID,
-					Duration:  testTime,
+					// Duration:  testTime,
 					// TestsRun:  numTests,
 					// Failures:    failures,
 					// Errors:      errors,
