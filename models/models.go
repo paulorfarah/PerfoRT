@@ -91,7 +91,7 @@ func init() {
 	db.Model(&Coverage{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	db.Model(&CPUTimes{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
 	db.Model(&DiskIOCounters{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
-	db.Model(&NetIOCounters{}).AddForeignKey("measurement_resources_id", "testresources(id)", "RESTRICT", "RESTRICT")
+	db.Model(&NetIOCounters{}).AddForeignKey("measurement_resources_id", "measrementresources(id)", "RESTRICT", "RESTRICT")
 	db.Model(&File{}).Related(&FileLine{})
 }
 
