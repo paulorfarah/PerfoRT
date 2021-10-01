@@ -109,6 +109,10 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				// }
 				testSuite, _ := models.FindFileByNameAndCommit(db, test.Classname, commitID)
 
+				errorMsg := ""
+				if test.Error != nil {
+					errorMsg = test.Error.Error()
+				}
 				mr := &models.TestCase{
 					MeasurementID: measurement.ID,
 					Type:          "gradle",
@@ -118,7 +122,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 					TestSuiteID:   testSuite.ID,
 					Name:          test.Name,
 					Status:        string(test.Status),
-					Error:         test.Error.Error(),
+					Error:         errorMsg,
 					Message:       test.Message,
 					SystemErr:     string(test.SystemErr),
 					SystemOut:     string(test.SystemOut),

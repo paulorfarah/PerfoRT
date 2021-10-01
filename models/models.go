@@ -59,7 +59,7 @@ func init() {
 		// &Randoop{},
 		&TestCase{},
 		&MeasurementResources{},
-		&TestResources{},
+		// &TestResources{},
 		&Coverage{},
 		&CPUTimes{},
 		&DiskIOCounters{},
@@ -87,7 +87,7 @@ func init() {
 	db.Model(&TestCase{}).AddForeignKey("test_suite_id", "files(id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&MeasurementResources{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	db.Model(&TestResources{}).AddForeignKey("test_id", "tests(id)", "RESTRICT", "RESTRICT")
+	// db.Model(&TestResources{}).AddForeignKey("test_id", "tests(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Coverage{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	db.Model(&CPUTimes{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
 	db.Model(&DiskIOCounters{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
