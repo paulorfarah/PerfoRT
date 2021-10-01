@@ -152,7 +152,7 @@ func CreateNetIOCounters(db *gorm.DB, nic *NetIOCounters) (uint, error) {
 type TestResources struct {
 	Model
 	TestID uint
-	Test   Test
+	Test   TestCase
 	Type   string
 	Resources
 }

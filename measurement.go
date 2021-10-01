@@ -69,16 +69,18 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 	testResults, ok := MvnTest(db, repoDir, measurement.ID)
 	if ok {
 		for ind := range testResults {
-			mr := &models.Test{MeasurementID: measurement.ID,
-				Type:        "maven",
-				ClassName:   testResults[ind].ClassName,
-				CommitID:    commitID,
-				TestsRun:    testResults[ind].TestsRun,
-				Failures:    testResults[ind].Failures,
-				Errors:      testResults[ind].Errors,
-				Skipped:     testResults[ind].Skipped,
-				TimeElapsed: testResults[ind].TimeElapsed}
-			models.CreateTest(db, mr)
+			mr := &models.TestCase{MeasurementID: measurement.ID,
+				Type:      "maven",
+				ClassName: testResults[ind].ClassName,
+				CommitID:  commitID,
+				Duration:  testResults[ind].TimeElapsed,
+				// TestsRun:    testResults[ind].TestsRun,
+				// Failures:    testResults[ind].Failures,
+				// Errors:      testResults[ind].Errors,
+				// Skipped:     testResults[ind].Skipped,
+				// TimeElapsed: testResults[ind].TimeElapsed
+			}
+			models.CreateTestCase(db, mr)
 		}
 	} else {
 		log.Println("********************** CRITICAL ERROR ***************")
@@ -90,17 +92,21 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 	testResults, ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
 		for ind := range testResults {
-			mr := &models.Test{MeasurementID: measurement.ID,
-				Type:        "gradle",
-				ClassName:   testResults[ind].ClassName,
-				CommitID:    commitID,
-				TestsRun:    testResults[ind].TestsRun,
-				Failures:    testResults[ind].Failures,
-				Errors:      testResults[ind].Errors,
-				Skipped:     testResults[ind].Skipped,
-				TimeElapsed: testResults[ind].TimeElapsed}
-			models.CreateTest(db, mr)
+			mr := &models.TestCase{MeasurementID: measurement.ID,
+				Type:      "gradle",
+				ClassName: testResults[ind].ClassName,
+				CommitID:  commitID,
+				Duration:  testResults[ind].TimeElapsed,
+				// 	TestsRun:    testResults[ind].TestsRun,
+				// 	Failures:    testResults[ind].Failures,
+				// 	Errors:      testResults[ind].Errors,
+				// 	Skipped:     testResults[ind].Skipped,
+				// 	TimeElapsed: testResults[ind].TimeElapsed
+			}
+			models.CreateTestCase(db, mr)
 		}
+
+		// read tests xml file
 		fmt.Printf("repoDir gradle tests: %s", repoDir)
 		suites, err := junit.IngestDir(repoDir + "/build/test-results/test/")
 		if err != nil {
@@ -170,18 +176,20 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	if okGen {
 		okComp := compileRandoopTests(classpath, cpSep)
 		if okComp {
-			testTime, numTests, perfMetrics, okTest := runRandoopTests(classpath, cpSep)
+			testTime, _, perfMetrics, okTest := runRandoopTests(classpath, cpSep)
 			if okTest {
-				r := &models.Test{MeasurementID: measurement.ID,
+				r := &models.TestCase{MeasurementID: measurement.ID,
 					Type:      "randoop",
 					ClassName: file,
 					CommitID:  commitID,
-					TestsRun:  numTests,
+					Duration:  testTime,
+					// TestsRun:  numTests,
 					// Failures:    failures,
 					// Errors:      errors,
 					// Skipped:     skipped,
-					TimeElapsed: testTime}
-				testID, err := models.CreateTest(db, r)
+					// TimeElapsed: testTime
+				}
+				testID, err := models.CreateTestCase(db, r)
 				if err != nil {
 					log.Println("Error creating randoop: " + err.Error())
 					fmt.Println("Error creating randoop: " + err.Error())

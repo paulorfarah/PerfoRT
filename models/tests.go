@@ -5,26 +5,31 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type Test struct {
+type TestCase struct {
 	Model
-	MeasurementID uint
-	Measurement   Measurement
-	Type          string `gorm:"not null"`
 	CommitID      uint
 	Commit        Commit
-	ClassName     string
-	TestsRun      int
-	Failures      int
-	Errors        int
-	Skipped       int
-	TimeElapsed   float64
+	MeasurementID uint
+	Measurement   Measurement
+	FileID        uint
+	TestSuiteID   uint
+	Name          string  `gorm:"not null"`
+	Type          string  `gorm:"not null"`
+	Status        string  `gorm:"not null"`
+	ClassName     string  `gorm:"not null"`
+	Duration      float64 `gorm:"not null"`
+	Error         string
+	Message       string
+	Properties    string
+	SystemErr     string
+	SystemOut     string
 }
 
-func (r *Test) TableName() string {
-	return "tests"
+func (r *TestCase) TableName() string {
+	return "testcases"
 }
 
-func CreateTest(db *gorm.DB, t *Test) (uint, error) {
+func CreateTestCase(db *gorm.DB, t *TestCase) (uint, error) {
 	err := db.Create(t).Error
 	if err != nil {
 		return 0, err
