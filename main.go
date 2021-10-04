@@ -15,6 +15,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"go-repo-downloader/models"
+	"go-repo-downloader/models/charts"
 )
 
 func main() {
@@ -50,7 +51,6 @@ func main() {
 	repo, err := cloneRepository(url, repoDir)
 
 	if err == nil {
-
 		//	ref, err := r.Head()
 		//	if err != nil {
 		//		fmt.Println(err)
@@ -67,6 +67,8 @@ func main() {
 		createDirs()
 
 		db := models.GetDB()
+
+		// platform
 		platform, err := models.FindPlatformByName(db, "github")
 		if err != nil {
 			log.Println("Create new platform: " + "github")
@@ -83,6 +85,10 @@ func main() {
 			repository = &models.Repository{PlatformID: platform.ID, Name: repoName}
 			models.CreateRepository(db, repository)
 		}
+
+		// measurement
+		measurement := &models.Measurement{RepositoryID: repository.ID}
+		models.CreateMeasurement(db, measurement)
 
 		//issues
 		//repository.Issues()
@@ -266,10 +272,12 @@ func main() {
 							}
 						}
 
-						Measure(db, repoDir, *repository, commit.ID, currCommit)
+						Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit)
 
 						//codeanalysis.Understand(cs.Name)
-						models.BarChart()
+						// models.BarChart()
+						boxplot := charts.BoxplotExamples{}
+						boxplot.Examples()
 					}
 				}
 				prevCommit = currCommit

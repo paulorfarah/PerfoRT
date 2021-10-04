@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 
@@ -14,6 +15,7 @@ func generateBarItems() []opts.BarData {
 	for i := 0; i < 7; i++ {
 		items = append(items, opts.BarData{Value: rand.Intn(300)})
 	}
+	fmt.Println(items)
 	return items
 }
 

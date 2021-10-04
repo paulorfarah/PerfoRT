@@ -17,10 +17,7 @@ import (
 	"github.com/joshdk/go-junit"
 )
 
-func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
-	measurement := &models.Measurement{RepositoryID: repository.ID}
-	models.CreateMeasurement(db, measurement)
-
+func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
 	dt := time.Now()
 	fmt.Println(currCommit.Hash.String() + " - " + dt.String())
 
@@ -37,11 +34,11 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 			MvnInstall(repoDir)
 			ok := MvnCompile(repoDir)
 			if ok {
-				MeasureMavenTests(db, repoDir, commitID, *measurement)
+				MeasureMavenTests(db, repoDir, commitID, measurement)
 				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
 				mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				for _, file := range listJavaFiles(repoDir) {
-					MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, *measurement)
+					MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
 				}
 				JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 			}
@@ -51,11 +48,11 @@ func Measure(db *gorm.DB, repoDir string, repository models.Repository, commitID
 				buildPath := repoDir + string(os.PathSeparator) + projectPath
 				ok := GradleBuild(buildPath)
 				if ok {
-					MeasureGradleTests(db, buildPath, commitID, *measurement)
+					MeasureGradleTests(db, buildPath, commitID, measurement)
 					JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
 					gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 					for _, file := range listJavaFiles(buildPath) {
-						MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, *measurement)
+						MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
 					}
 					JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
 				}
