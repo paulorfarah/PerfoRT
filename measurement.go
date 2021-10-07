@@ -90,21 +90,30 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 	if ok {
 
 		// read tests xml file
-		fmt.Printf("repoDir gradle tests: %s", repoDir)
+		// fmt.Printf("repoDir gradle tests: %s\n", repoDir)
 		suites, err := junit.IngestDir(repoDir + "/build/test-results/test/")
 		if err != nil {
 			log.Fatalf("failed to ingest JUnit xml %v", err)
 		}
+		// fmt.Println("suites: ", suites)
 		for _, suite := range suites {
-			fmt.Println(suite.Name)
+			// fmt.Println(suite.Name)
 			for _, test := range suite.Tests {
+				// fmt.Println(test.Classname + ".java")
 				// fmt.Printf("  %s\n", test.Name)
 				// if test.Error != nil {
 				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
 				// } else {
 				// 	fmt.Printf("    %s %f\n", test.Status, test.Duration.Seconds())
 				// }
-				testSuite, _ := models.FindFileByNameAndCommit(db, test.Classname, commitID)
+				classname := strings.Replace(test.Classname, ".", "/", -1)
+				filename := classname + ".java"
+				// fmt.Println(filename)
+				testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
+				if errF != nil {
+					fmt.Println("error finding file: ", test.Classname, commitID)
+				}
+				// fmt.Println("testSuite: ", testSuite)
 
 				errorMsg := ""
 				if test.Error != nil {
@@ -124,7 +133,10 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 					SystemErr:     string(test.SystemErr),
 					SystemOut:     string(test.SystemOut),
 				}
-				models.CreateTestCase(db, mr)
+				_, errTC := models.CreateTestCase(db, mr)
+				if errTC != nil {
+					fmt.Println(errTC.Error())
+				}
 
 			}
 		}
@@ -142,6 +154,19 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	dir, pack := parseProjectPath(file)
 	if dir != "" {
 		dir += string(os.PathSeparator)
+	}
+
+	//create gentest dir in project to save log files of randoop generation phase
+	fmt.Println("create gentest dir in project to save log files of randoop generation phase: ", dir+"gentest")
+	_, errd := os.Stat(dir + "gentest")
+	if os.IsNotExist(errd) {
+		err := os.Mkdir(dir+"gentest", 0755)
+		if err != nil {
+			fmt.Println(err.Error())
+			log.Fatal(err)
+		} else {
+			fmt.Println("gentest directory created...")
+		}
 	}
 
 	path := strings.Split(pack, ".java")[0]
@@ -170,7 +195,10 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	className := strings.ReplaceAll(path, string(os.PathSeparator), ".")
 
 	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
-	okGen := generateRandoopTests(classpath, cpSep, randoopJar, envRandoopJar, className)
+
+	// gradle-project-example/app/src/test/java
+	dirSourceTest := dir + ""
+	okGen := generateRandoopTests(dirSourceTest, classpath, cpSep, randoopJar, envRandoopJar, className)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
 	// export JUNITPATH=.../junit.jar:.../hamcrest-core.jar
@@ -179,14 +207,28 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 
 	if okGen {
-		okComp := compileRandoopTests(classpath, cpSep)
+		okComp := compileRandoopTests(dirSourceTest, classpath, cpSep)
 		if okComp {
-			_, _, perfMetrics, okTest := runRandoopTests(classpath, cpSep)
+			testTime, _, perfMetrics, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
+			filename, errF := models.FindFileByEndsWithNameAndCommit(db, path, commitID)
+			if errF != nil {
+				fmt.Println(errF.Error())
+			}
 			if okTest {
 				r := &models.TestCase{MeasurementID: measurement.ID,
 					Type:      "randoop",
 					ClassName: file,
 					CommitID:  commitID,
+					Duration:  time.Duration(testTime * float64(time.Second)),
+					// TestSuiteID: testSuite.ID,
+					FileID: filename.ID,
+					Name:   file,
+					// Status:    string(test.Status),
+					// Error:     errorMsg,
+					// Message:   test.Message,
+					// SystemErr: string(test.SystemErr),
+					// SystemOut: string(test.SystemOut),
+
 					// Duration:  testTime,
 					// TestsRun:  numTests,
 					// Failures:    failures,

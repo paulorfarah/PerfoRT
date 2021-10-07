@@ -83,8 +83,8 @@ func init() {
 	// db.Model(&Randoop{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
 	db.Model(&TestCase{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	db.Model(&TestCase{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
-	db.Model(&TestCase{}).AddForeignKey("file_id", "files(id)", "RESTRICT", "RESTRICT")
-	db.Model(&TestCase{}).AddForeignKey("test_suite_id", "files(id)", "RESTRICT", "RESTRICT")
+	// db.Model(&TestCase{}).AddForeignKey("file_id", "files(id)", "RESTRICT", "RESTRICT")
+	// db.Model(&TestCase{}).AddForeignKey("test_suite_id", "files(id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&MeasurementResources{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	// db.Model(&TestResources{}).AddForeignKey("test_id", "tests(id)", "RESTRICT", "RESTRICT")

@@ -101,17 +101,22 @@ import (
 // 			EMEPerc:    0,
 // 			AETNPerc:   0,
 // 			AETEPerc:   0,
-// 			AMUPerc:    0}
+// 			go biAMUPerc:    0}
 // 		models.CreateRandoopMetrics(db, rm)
 // 	}
 // }
 
-func generateRandoopTests(classpath, cpSep, randoopJar, envRandoopJar, className string) bool {
+func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, className string) bool {
 	log.Println("------------------------------------------------ generating Randoop tests for " + className + "...")
+
+	// fmt.Println("dir: ", dir)
+	// dir:  /home/farah/go-work/src/github.com/paulorfarah/repos/gradle-project-example/app/
+
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > gentest/" + className + ".txt"
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
+	cmdRandoop.Dir = dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
 
 	output, err := cmdRandoop.CombinedOutput()
 	if err != nil {
@@ -131,7 +136,7 @@ func generateRandoopTests(classpath, cpSep, randoopJar, envRandoopJar, className
 	return readRandoopGentestResults("gentest/" + className + ".txt")
 }
 
-func compileRandoopTests(classpath, cpSep string) bool {
+func compileRandoopTests(dir, classpath, cpSep string) bool {
 	log.Println("------------------------------------------------ compile randoop tests")
 	fmt.Println("------------------------------------------------ compile randoop tests")
 
@@ -141,6 +146,7 @@ func compileRandoopTests(classpath, cpSep string) bool {
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
+	cmdRandoop.Dir = dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdRandoop.Stdout = &out
@@ -158,7 +164,7 @@ func compileRandoopTests(classpath, cpSep string) bool {
 	return true
 }
 
-func runRandoopTests(classpath, cpSep string) (float64, int, []PerfMetrics, bool) {
+func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics, bool) {
 	log.Println("------------------------------------------------ run randoop tests")
 	fmt.Println("------------------------------------------------ run randoop tests")
 
@@ -170,6 +176,7 @@ func runRandoopTests(classpath, cpSep string) (float64, int, []PerfMetrics, bool
 	log.Println(junitStr)
 	fmt.Println(junitStr)
 	cmdRandoop := exec.Command("bash", "-c", junitStr)
+	cmdRandoop.Dir = dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdRandoop.Stdout = &out
@@ -253,7 +260,7 @@ func parseProjectPath(file string) (string, string) {
 			dir = paths[0]
 			pack = paths[1]
 		} else if len(paths) == 1 {
-			if strings.Contains(file, "src/main/java/") {
+			if strings.Contains(file, "/java/") {
 				//commons-io
 				pack = strings.TrimLeft(file, "/src/main/java/")
 			} else if strings.Contains(file, "src/conf/") {

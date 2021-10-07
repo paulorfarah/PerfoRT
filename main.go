@@ -237,7 +237,7 @@ func main() {
 							// 		// fmt.Println(change.Patch())
 
 							fmt.Printf("(change) file: %s - commit: %d\n", change.From.Name, commit.ID)
-							fileFrom, err := models.FindFileByNameAndCommit(db, change.From.Name, commit.ID)
+							fileFrom, err := models.FindFileByEndsWithNameAndCommit(db, change.From.Name, commit.ID)
 							var fileTo *models.File
 							if err != nil {
 								log.Println("Cannot find file: " + change.From.Name)
@@ -249,7 +249,7 @@ func main() {
 									fileTo = fileFrom
 								} else {
 									var err2 error
-									fileTo, err2 = models.FindFileByNameAndCommit(db, change.To.Name, commit.ID)
+									fileTo, err2 = models.FindFileByEndsWithNameAndCommit(db, change.To.Name, commit.ID)
 									if err2 != nil {
 										log.Println("Cannot find file: " + change.From.Name)
 										log.Println(err2.Error())

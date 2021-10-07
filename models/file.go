@@ -42,12 +42,14 @@ func CreateFile(db *gorm.DB, f *File) (uint, error) {
 
 func FindFileByName(db *gorm.DB, filename string) (*File, error) {
 	var file File
-	res := db.Find(&file, &File{Name: filename, HasChanged: false})
+	// res := db.Find(&file, &File{Name: filename, HasChanged: false})
+	res := db.Where("name like ?", "%"+filename)
 	return &file, res.Error
 }
 
-func FindFileByNameAndCommit(db *gorm.DB, filename string, commitID uint) (*File, error) {
+func FindFileByEndsWithNameAndCommit(db *gorm.DB, filename string, commitID uint) (*File, error) {
 	var file File
-	res := db.Find(&file, &File{Name: filename, CommitID: commitID})
+	// res := db.Find(&file, &File{Name: filename, CommitID: commitID})
+	res := db.Where("name like ? and commit_id=?", "%"+filename, commitID).First(&file)
 	return &file, res.Error
 }
