@@ -112,11 +112,11 @@ func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, clas
 	// fmt.Println("dir: ", dir)
 	// dir:  /home/farah/go-work/src/github.com/paulorfarah/repos/gradle-project-example/app/
 
-	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > gentest/" + className + ".txt"
+	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > " + getDirectory() + "/gentest/" + className + ".txt"
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
-	cmdRandoop.Dir = dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
+	cmdRandoop.Dir = dir
 
 	output, err := cmdRandoop.CombinedOutput()
 	if err != nil {
@@ -136,17 +136,17 @@ func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, clas
 	return readRandoopGentestResults("gentest/" + className + ".txt")
 }
 
-func compileRandoopTests(dir, classpath, cpSep string) bool {
+func compileRandoopTests(dir, output, classpath, cpSep string) bool {
 	log.Println("------------------------------------------------ compile randoop tests")
 	fmt.Println("------------------------------------------------ compile randoop tests")
 
 	junitJar := "$JUNITPATH"
 
-	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " RegressionTest*.java > RegressionTest_compilation.txt"
+	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " -d " + output + " RegressionTest*.java > RegressionTest_compilation.txt"
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
-	cmdRandoop.Dir = dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
+	cmdRandoop.Dir = dir
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdRandoop.Stdout = &out
@@ -176,7 +176,7 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 	log.Println(junitStr)
 	fmt.Println(junitStr)
 	cmdRandoop := exec.Command("bash", "-c", junitStr)
-	cmdRandoop.Dir = dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
+	cmdRandoop.Dir = dir
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdRandoop.Stdout = &out
@@ -390,4 +390,12 @@ func deleteOldRandoopTests() bool {
 		}
 	}
 	return true
+}
+
+func getDirectory() string {
+	path, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+	return path
 }

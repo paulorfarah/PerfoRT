@@ -197,7 +197,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	fmt.Println("------------------------------------------------ Generating Randoop tests for " + file + "...")
 
 	// gradle-project-example/app/src/test/java
-	dirSourceTest := dir + ""
+	dirSourceTest := dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
 	okGen := generateRandoopTests(dirSourceTest, classpath, cpSep, randoopJar, envRandoopJar, className)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
@@ -207,7 +207,8 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 	// java -classpath .:$JUNITPATH:myclasspath org.junit.runner.JUnitCore RegressionTest
 
 	if okGen {
-		okComp := compileRandoopTests(dirSourceTest, classpath, cpSep)
+		dirClassTest := dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "test"
+		okComp := compileRandoopTests(dirSourceTest, dirClassTest, classpath, cpSep)
 		if okComp {
 			testTime, _, perfMetrics, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
 			filename, errF := models.FindFileByEndsWithNameAndCommit(db, path, commitID)
