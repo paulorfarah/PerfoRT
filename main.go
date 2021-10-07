@@ -338,4 +338,20 @@ func createDirs() {
 		}
 	}
 
+	_, errd = os.Stat("compilation")
+	if os.IsNotExist(errd) {
+		err := os.Mkdir("compilation", 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	_, errd = os.Stat("run")
+	if os.IsNotExist(errd) {
+		err := os.Mkdir("run", 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 }

@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // func CollectRandoopMetricsByChange(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo string, changeID uint) {
@@ -136,17 +137,17 @@ func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, clas
 	return readRandoopGentestResults("gentest/" + className + ".txt")
 }
 
-func compileRandoopTests(dir, output, classpath, cpSep string) bool {
+func compileRandoopTests(source, output, classpath, cpSep string) bool {
 	log.Println("------------------------------------------------ compile randoop tests")
 	fmt.Println("------------------------------------------------ compile randoop tests")
 
 	junitJar := "$JUNITPATH"
-
-	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " -d " + output + " RegressionTest*.java > RegressionTest_compilation.txt"
+	dt := time.Now()
+	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " -d " + output + " RegressionTest*.java > " + getDirectory() + "/compilation/RandoopRegressionTest_compilation_" + dt.String() + ".txt" //RegressionTest_compilation.txt"
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
-	cmdRandoop.Dir = dir
+	cmdRandoop.Dir = source
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdRandoop.Stdout = &out
@@ -169,7 +170,8 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 	fmt.Println("------------------------------------------------ run randoop tests")
 
 	junitJar := "${JUNITPATH}"
-	junitStr := "java -javaagent:jacoco-0.8.6/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > runRT.txt"
+	dt := time.Now()
+	junitStr := "java -javaagent:" + getDirectory() + "jacoco-0.8.6/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > " + getDirectory() + "/run/RandoopRegressionTest_run_" + dt.String() + ".txt" //runRT.txt"
 
 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
