@@ -126,10 +126,10 @@ func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, clas
 	log.Printf("test generation out:\n%s\n", string(output))
 	// fmt.Printf("test generation out:\n%s\n", string(output))
 	if err != nil {
-		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
+		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot generate randoop tests (" + fmt.Sprint(err.Error()) + "): ")
 		log.Println(string(output))
 
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot run randoop gentests (" + fmt.Sprint(err.Error()) + "): ")
+		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot generate randoop tests (" + fmt.Sprint(err.Error()) + "): ")
 		fmt.Println(string(output))
 		return false
 	}
