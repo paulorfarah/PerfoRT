@@ -115,23 +115,23 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				}
 				// fmt.Println("testSuite: ", testSuite)
 
-				errorMsg := ""
-				if test.Error != nil {
-					errorMsg = test.Error.Error()
-				}
+				// errorMsg := ""
+				// if test.Error != nil {
+				// 	errorMsg = test.Error.Error()
+				// }
 				mr := &models.TestCase{
 					MeasurementID: measurement.ID,
 					Type:          "gradle",
 					ClassName:     test.Classname,
 					CommitID:      commitID,
-					Duration:      test.Duration,
-					TestSuiteID:   testSuite.ID,
-					Name:          test.Name,
-					Status:        string(test.Status),
-					Error:         errorMsg,
-					Message:       test.Message,
-					SystemErr:     string(test.SystemErr),
-					SystemOut:     string(test.SystemOut),
+					// Duration:      test.Duration,
+					TestSuiteID: testSuite.ID,
+					Name:        test.Name,
+					// Status:        string(test.Status),
+					// Error:         errorMsg,
+					// Message:       test.Message,
+					// SystemErr:     string(test.SystemErr),
+					// SystemOut:     string(test.SystemOut),
 				}
 				_, errTC := models.CreateTestCase(db, mr)
 				if errTC != nil {
@@ -198,7 +198,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 
 	// gradle-project-example/app/src/test/java
 	dirSourceTest := dir + "src" + string(os.PathSeparator) + "test" + string(os.PathSeparator) + "java" + string(os.PathSeparator)
-	okGen := generateRandoopTests(dirSourceTest, classpath, cpSep, randoopJar, envRandoopJar, className)
+	okGen := generateRandoopTests(db, dirSourceTest, classpath, cpSep, randoopJar, envRandoopJar, className, measurement, commitID)
 
 	// Compile and run the tests. (The classpath should include the code under test, the generated tests, and JUnit files junit.jar and hamcrest-core.jar. Classes in java.util.* are always on the Java classpath, so the myclasspath part is not needed in this particular example, but it is shown because you will usually need to supply it.)
 	// export JUNITPATH=.../junit.jar:.../hamcrest-core.jar
@@ -210,7 +210,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 		dirClassTest := dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "test"
 		okComp := compileRandoopTests(dirSourceTest, dirClassTest, classpath, cpSep)
 		if okComp {
-			testTime, _, perfMetrics, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
+			_, _, perfMetrics, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
 			filename, errF := models.FindFileByEndsWithNameAndCommit(db, path, commitID)
 			if errF != nil {
 				fmt.Println(errF.Error())
@@ -220,7 +220,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					Type:      "randoop",
 					ClassName: file,
 					CommitID:  commitID,
-					Duration:  time.Duration(testTime * float64(time.Second)),
+					// Duration:  time.Duration(testTime * float64(time.Second)),
 					// TestSuiteID: testSuite.ID,
 					FileID: filename.ID,
 					Name:   file,

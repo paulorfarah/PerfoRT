@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"go-repo-downloader/models"
 	"log"
 	"os"
 	"os/exec"
@@ -11,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 // func CollectRandoopMetricsByChange(repoDir, repoName, prevCommit, fileFrom, currCommit, fileTo string, changeID uint) {
@@ -107,7 +110,7 @@ import (
 // 	}
 // }
 
-func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, className string) bool {
+func generateRandoopTests(db *gorm.DB, dir, classpath, cpSep, randoopJar, envRandoopJar, className string, measurement models.Measurement, commitID uint) bool {
 	log.Println("------------------------------------------------ generating Randoop tests for " + className + "...")
 
 	// fmt.Println("dir: ", dir)
@@ -120,10 +123,6 @@ func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, clas
 	cmdRandoop.Dir = dir
 
 	output, err := cmdRandoop.CombinedOutput()
-	if err != nil {
-		log.Printf("GenerateRandoopTests failed with %s\n", err.Error())
-		fmt.Printf("GenerateRandoopTests failed with %s\n", err.Error())
-	}
 	log.Printf("test generation out:\n%s\n", string(output))
 	// fmt.Printf("test generation out:\n%s\n", string(output))
 	if err != nil {
@@ -134,6 +133,7 @@ func generateRandoopTests(dir, classpath, cpSep, randoopJar, envRandoopJar, clas
 		fmt.Println(string(output))
 		return false
 	}
+	saveRandoopTestCases(db, dir, className, measurement, commitID)
 	return readRandoopGentestResults("gentest/" + className + ".txt")
 }
 
@@ -142,8 +142,8 @@ func compileRandoopTests(source, output, classpath, cpSep string) bool {
 	fmt.Println("------------------------------------------------ compile randoop tests")
 
 	junitJar := "$JUNITPATH"
-	dt := time.Now()
-	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " -d " + output + " RegressionTest*.java > " + getDirectory() + "/compilation/RandoopRegressionTest_compilation_" + dt.String() + ".txt" //RegressionTest_compilation.txt"
+	dt := time.Now().Format("01-02-2006_150405")
+	randoopStr := "javac -cp " + classpath + cpSep + os.ExpandEnv(junitJar) + " -d " + output + " RegressionTest*.java > " + getDirectory() + "/compilation/RandoopRegressionTest_compilation_" + dt + ".txt" //RegressionTest_compilation.txt"
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)
 	cmdRandoop := exec.Command("bash", "-c", randoopStr)
@@ -170,8 +170,9 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 	fmt.Println("------------------------------------------------ run randoop tests")
 
 	junitJar := "${JUNITPATH}"
-	dt := time.Now()
-	junitStr := "java -javaagent:" + getDirectory() + "jacoco-0.8.6/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > " + getDirectory() + "/run/RandoopRegressionTest_run_" + dt.String() + ".txt" //runRT.txt"
+	dt := time.Now().Format("01-02-2006_150405")
+	logfile := getDirectory() + "/run/RandoopRegressionTest_run_" + dt + ".txt"
+	junitStr := "java -javaagent:" + getDirectory() + "/jacoco-0.8.6/jacocoagent.jar -cp ." + cpSep + classpath + cpSep + junitJar + " org.junit.runner.JUnitCore RegressionTest > " + logfile
 
 	// java -jar jacoco-0.8.6/lib/jacococli.jar report jacoco.exec --classfiles classes --sourcefiles src --csv <file>
 
@@ -220,7 +221,7 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 		return float64(0.0), 0, []PerfMetrics{}, false
 	}
 
-	testTime, numTests, ok := readRandoopTestResults("runRT.txt")
+	testTime, numTests, ok := readRandoopTestResults(logfile)
 	return testTime, numTests, perfMetrics, ok
 }
 
@@ -326,7 +327,7 @@ func readRandoopGentestResults(path string) bool {
 }
 
 func readRandoopTestResults(path string) (float64, int, bool) {
-	fmt.Println("readRandooTestResults: " + path)
+	fmt.Println("readRandoopTestResults: " + path)
 	ok := false
 	f, err := os.Open(path)
 	if err != nil {
@@ -400,4 +401,60 @@ func getDirectory() string {
 		log.Println(err)
 	}
 	return path
+}
+
+func saveRandoopTestCases(db *gorm.DB, dir, className string, measurement models.Measurement, commitID uint) {
+	//read generated test cases
+	randoopTests, err := walkMatch(dir, "RegressionTest*")
+	if err != nil {
+		fmt.Println("Error reading randoop regresion tests: ", err.Error())
+	}
+	for _, test := range randoopTests {
+		//rename
+		testSuite, err := models.FindFileByEndsWithNameAndCommit(db, test, commitID)
+		if err != nil {
+			fmt.Println("Error trying to find file by name : ", err.Error())
+		}
+		//save
+		mr := &models.TestCase{
+			MeasurementID: measurement.ID,
+			Type:          "randoop",
+			ClassName:     className,
+			CommitID:      commitID,
+			// Duration:      test.Duration,
+			TestSuiteID: testSuite.ID,
+			Name:        test,
+			// Status:        string(test.Status),
+			// Error:         errorMsg,
+			// Message:       test.Message,
+			// SystemErr:     string(test.SystemErr),
+			// SystemOut:     string(test.SystemOut),
+		}
+		_, errTC := models.CreateTestCase(db, mr)
+		if errTC != nil {
+			fmt.Println(errTC.Error())
+		}
+	}
+}
+
+func walkMatch(root, pattern string) ([]string, error) {
+	var matches []string
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if matched, err := filepath.Match("RegressionTest*", filepath.Base(path)); err != nil {
+			return err
+		} else if matched {
+			matches = append(matches, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return matches, nil
 }
