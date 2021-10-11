@@ -438,19 +438,19 @@ func fileExists(path string) (bool, error) {
 }
 
 func checkBuildTool(repoDir string) string {
-	pomExists, err := fileExists(repoDir + "/" + "pom.xml")
-	if err != nil {
-		fmt.Println("ERROR looking for pom.xml...")
-	}
-	if pomExists {
-		return "maven"
-	}
 	gradleExists, err := fileExists(repoDir + "/" + "settings.gradle")
 	if err != nil {
 		fmt.Println("ERROR looking for settings.gradle...")
 	}
 	if gradleExists {
 		return "gradle"
+	}
+	pomExists, err := fileExists(repoDir + "/" + "pom.xml")
+	if err != nil {
+		fmt.Println("ERROR looking for pom.xml...")
+	}
+	if pomExists {
+		return "maven"
 	}
 	return ""
 
