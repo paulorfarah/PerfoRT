@@ -417,13 +417,11 @@ func saveRandoopTestCases(db *gorm.DB, dir, className string, measurement models
 		}
 		//save
 		mr := &models.TestCase{
-			MeasurementID: measurement.ID,
-			Type:          "randoop",
-			ClassName:     className,
-			CommitID:      commitID,
+			Type:      "randoop",
+			ClassName: className,
 			// Duration:      test.Duration,
-			TestSuiteID: testSuite.ID,
-			Name:        test,
+			FileID: testSuite.ID,
+			Name:   test,
 			// Status:        string(test.Status),
 			// Error:         errorMsg,
 			// Message:       test.Message,

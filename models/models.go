@@ -58,7 +58,7 @@ func init() {
 		// &Maven{},
 		// &Randoop{},
 		&TestCase{},
-		&MeasurementResources{},
+		&Run{},
 		// &TestResources{},
 		&Coverage{},
 		&CPUTimes{},
@@ -72,26 +72,16 @@ func init() {
 	db.Model(&Commit{}).AddForeignKey("committer", "accounts(id)", "RESTRICT", "RESTRICT")
 	db.Model(&File{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Change{}).AddForeignKey("file_from_id", "files(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&Issue{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
-	//	db.Model(&Issue{}).AddForeignKey("author", "accounts(id)", "RESTRICT", "RESTRICT")
-	//	db.Model(&Issue{}).AddForeignKey("editor", "accounts(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&RandoopMetrics{}).AddForeignKey("change_id", "changes(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Measurement{}).AddForeignKey("repository_id", "repositories(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&Maven{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&Maven{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&Randoop{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&Randoop{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
-	db.Model(&TestCase{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	db.Model(&TestCase{}).AddForeignKey("commit_id", "commits(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&TestCase{}).AddForeignKey("file_id", "files(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&TestCase{}).AddForeignKey("test_suite_id", "files(id)", "RESTRICT", "RESTRICT")
+	db.Model(&TestCase{}).AddForeignKey("file_id", "files(id)", "RESTRICT", "RESTRICT")
 
-	db.Model(&MeasurementResources{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	// db.Model(&TestResources{}).AddForeignKey("test_id", "tests(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Run{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Run{}).AddForeignKey("test_case_id", "testcases(id)", "RESTRICT", "RESTRICT")
+
 	db.Model(&Coverage{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	db.Model(&CPUTimes{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
-	db.Model(&DiskIOCounters{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
-	db.Model(&NetIOCounters{}).AddForeignKey("measurement_resources_id", "measurementresources(id)", "RESTRICT", "RESTRICT")
+	db.Model(&CPUTimes{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
+	db.Model(&DiskIOCounters{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
+	db.Model(&NetIOCounters{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
 	db.Model(&File{}).Related(&FileLine{})
 }
 

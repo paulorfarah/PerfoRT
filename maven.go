@@ -140,7 +140,7 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, boo
 			case <-stop:
 				//save
 				for _, perfMetric := range perfMetrics {
-					mr := &models.MeasurementResources{
+					mr := &models.Run{
 						MeasurementID: measurementID,
 						Type:          "maven",
 						Resources: models.Resources{
@@ -157,60 +157,60 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, boo
 							// NetIOCounters:     perfMetric.NetIOCounters,
 						},
 					}
-					models.CreateMeasurementResources(db, mr)
+					models.CreateRun(db, mr)
 					for _, cpuTime := range perfMetric.CPUTimes {
 						models.CreateCPUTimes(db, &models.CPUTimes{
-							MeasurementResourcesID: mr.ID,
-							CPU:                    cpuTime.CPU,
-							User:                   cpuTime.User,
-							System:                 cpuTime.System,
-							Idle:                   cpuTime.Idle,
-							Nice:                   cpuTime.Nice,
-							Iowait:                 cpuTime.Iowait,
-							Irq:                    cpuTime.Irq,
-							Softirq:                cpuTime.Softirq,
-							Steal:                  cpuTime.Steal,
-							Guest:                  cpuTime.Guest,
-							GuestNice:              cpuTime.GuestNice,
+							RunID:     mr.ID,
+							CPU:       cpuTime.CPU,
+							User:      cpuTime.User,
+							System:    cpuTime.System,
+							Idle:      cpuTime.Idle,
+							Nice:      cpuTime.Nice,
+							Iowait:    cpuTime.Iowait,
+							Irq:       cpuTime.Irq,
+							Softirq:   cpuTime.Softirq,
+							Steal:     cpuTime.Steal,
+							Guest:     cpuTime.Guest,
+							GuestNice: cpuTime.GuestNice,
 						})
 					}
 
 					for i, diskIOCounter := range perfMetric.DiskIOCounters {
 						models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-							MeasurementResourcesID: mr.ID,
-							Device:                 i,
-							ReadCount:              diskIOCounter.ReadCount,
-							MergedReadCount:        diskIOCounter.MergedReadCount,
-							WriteCount:             diskIOCounter.WriteCount,
-							MergedWriteCount:       diskIOCounter.MergedWriteCount,
-							ReadBytes:              diskIOCounter.ReadBytes,
-							WriteBytes:             diskIOCounter.WriteBytes,
-							ReadTime:               diskIOCounter.ReadTime,
-							WriteTime:              diskIOCounter.WriteTime,
-							IopsInProgress:         diskIOCounter.IopsInProgress,
-							IoTime:                 diskIOCounter.IoTime,
-							WeightedIO:             diskIOCounter.WeightedIO,
-							Name:                   diskIOCounter.Name,
-							SerialNumber:           diskIOCounter.SerialNumber,
-							Label:                  diskIOCounter.Label,
+							RunID:            mr.ID,
+							Device:           i,
+							ReadCount:        diskIOCounter.ReadCount,
+							MergedReadCount:  diskIOCounter.MergedReadCount,
+							WriteCount:       diskIOCounter.WriteCount,
+							MergedWriteCount: diskIOCounter.MergedWriteCount,
+							ReadBytes:        diskIOCounter.ReadBytes,
+							WriteBytes:       diskIOCounter.WriteBytes,
+							ReadTime:         diskIOCounter.ReadTime,
+							WriteTime:        diskIOCounter.WriteTime,
+							IopsInProgress:   diskIOCounter.IopsInProgress,
+							IoTime:           diskIOCounter.IoTime,
+							WeightedIO:       diskIOCounter.WeightedIO,
+							Name:             diskIOCounter.Name,
+							SerialNumber:     diskIOCounter.SerialNumber,
+							Label:            diskIOCounter.Label,
 						})
 					}
 
 					for i, netIOCounter := range perfMetric.NetIOCounters {
 						models.CreateNetIOCounters(db, &models.NetIOCounters{
-							MeasurementResourcesID: mr.ID,
-							NICID:                  uint(i),
-							Name:                   netIOCounter.Name,
-							BytesSent:              netIOCounter.BytesSent,
-							BytesRecv:              netIOCounter.BytesRecv,
-							PacketsSent:            netIOCounter.PacketsSent,
-							PacketsRecv:            netIOCounter.PacketsRecv,
-							Errin:                  netIOCounter.Errin,
-							Errout:                 netIOCounter.Errout,
-							Dropin:                 netIOCounter.Dropin,
-							Dropout:                netIOCounter.Dropout,
-							Fifoin:                 netIOCounter.Fifoin,
-							Fifoout:                netIOCounter.Fifoout,
+							RunID:       mr.ID,
+							NICID:       uint(i),
+							Name:        netIOCounter.Name,
+							BytesSent:   netIOCounter.BytesSent,
+							BytesRecv:   netIOCounter.BytesRecv,
+							PacketsSent: netIOCounter.PacketsSent,
+							PacketsRecv: netIOCounter.PacketsRecv,
+							Errin:       netIOCounter.Errin,
+							Errout:      netIOCounter.Errout,
+							Dropin:      netIOCounter.Dropin,
+							Dropout:     netIOCounter.Dropout,
+							Fifoin:      netIOCounter.Fifoin,
+							Fifoout:     netIOCounter.Fifoout,
 						})
 					}
 				}

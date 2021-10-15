@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/gorm"
+	"github.com/joshdk/go-junit"
 )
 
 type GradleTestResult struct {
@@ -143,7 +144,7 @@ func GradleTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, 
 			case <-stop:
 				//save
 				for _, perfMetric := range perfMetrics {
-					mr := &models.MeasurementResources{
+					mr := &models.Run{
 						MeasurementID: measurementID,
 						Type:          "gradle",
 						Resources: models.Resources{
@@ -160,60 +161,60 @@ func GradleTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, 
 							// NetIOCounters:     perfMetric.NetIOCounters,
 						},
 					}
-					models.CreateMeasurementResources(db, mr)
+					models.CreateRun(db, mr)
 					for _, cpuTime := range perfMetric.CPUTimes {
 						models.CreateCPUTimes(db, &models.CPUTimes{
-							MeasurementResourcesID: mr.ID,
-							CPU:                    cpuTime.CPU,
-							User:                   cpuTime.User,
-							System:                 cpuTime.System,
-							Idle:                   cpuTime.Idle,
-							Nice:                   cpuTime.Nice,
-							Iowait:                 cpuTime.Iowait,
-							Irq:                    cpuTime.Irq,
-							Softirq:                cpuTime.Softirq,
-							Steal:                  cpuTime.Steal,
-							Guest:                  cpuTime.Guest,
-							GuestNice:              cpuTime.GuestNice,
+							RunID:     mr.ID,
+							CPU:       cpuTime.CPU,
+							User:      cpuTime.User,
+							System:    cpuTime.System,
+							Idle:      cpuTime.Idle,
+							Nice:      cpuTime.Nice,
+							Iowait:    cpuTime.Iowait,
+							Irq:       cpuTime.Irq,
+							Softirq:   cpuTime.Softirq,
+							Steal:     cpuTime.Steal,
+							Guest:     cpuTime.Guest,
+							GuestNice: cpuTime.GuestNice,
 						})
 					}
 
 					for i, diskIOCounter := range perfMetric.DiskIOCounters {
 						models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-							MeasurementResourcesID: mr.ID,
-							Device:                 i,
-							ReadCount:              diskIOCounter.ReadCount,
-							MergedReadCount:        diskIOCounter.MergedReadCount,
-							WriteCount:             diskIOCounter.WriteCount,
-							MergedWriteCount:       diskIOCounter.MergedWriteCount,
-							ReadBytes:              diskIOCounter.ReadBytes,
-							WriteBytes:             diskIOCounter.WriteBytes,
-							ReadTime:               diskIOCounter.ReadTime,
-							WriteTime:              diskIOCounter.WriteTime,
-							IopsInProgress:         diskIOCounter.IopsInProgress,
-							IoTime:                 diskIOCounter.IoTime,
-							WeightedIO:             diskIOCounter.WeightedIO,
-							Name:                   diskIOCounter.Name,
-							SerialNumber:           diskIOCounter.SerialNumber,
-							Label:                  diskIOCounter.Label,
+							RunID:            mr.ID,
+							Device:           i,
+							ReadCount:        diskIOCounter.ReadCount,
+							MergedReadCount:  diskIOCounter.MergedReadCount,
+							WriteCount:       diskIOCounter.WriteCount,
+							MergedWriteCount: diskIOCounter.MergedWriteCount,
+							ReadBytes:        diskIOCounter.ReadBytes,
+							WriteBytes:       diskIOCounter.WriteBytes,
+							ReadTime:         diskIOCounter.ReadTime,
+							WriteTime:        diskIOCounter.WriteTime,
+							IopsInProgress:   diskIOCounter.IopsInProgress,
+							IoTime:           diskIOCounter.IoTime,
+							WeightedIO:       diskIOCounter.WeightedIO,
+							Name:             diskIOCounter.Name,
+							SerialNumber:     diskIOCounter.SerialNumber,
+							Label:            diskIOCounter.Label,
 						})
 					}
 
 					for i, netIOCounter := range perfMetric.NetIOCounters {
 						models.CreateNetIOCounters(db, &models.NetIOCounters{
-							MeasurementResourcesID: mr.ID,
-							NICID:                  uint(i),
-							Name:                   netIOCounter.Name,
-							BytesSent:              netIOCounter.BytesSent,
-							BytesRecv:              netIOCounter.BytesRecv,
-							PacketsSent:            netIOCounter.PacketsSent,
-							PacketsRecv:            netIOCounter.PacketsRecv,
-							Errin:                  netIOCounter.Errin,
-							Errout:                 netIOCounter.Errout,
-							Dropin:                 netIOCounter.Dropin,
-							Dropout:                netIOCounter.Dropout,
-							Fifoin:                 netIOCounter.Fifoin,
-							Fifoout:                netIOCounter.Fifoout,
+							RunID:       mr.ID,
+							NICID:       uint(i),
+							Name:        netIOCounter.Name,
+							BytesSent:   netIOCounter.BytesSent,
+							BytesRecv:   netIOCounter.BytesRecv,
+							PacketsSent: netIOCounter.PacketsSent,
+							PacketsRecv: netIOCounter.PacketsRecv,
+							Errin:       netIOCounter.Errin,
+							Errout:      netIOCounter.Errout,
+							Dropin:      netIOCounter.Dropin,
+							Dropout:     netIOCounter.Dropout,
+							Fifoin:      netIOCounter.Fifoin,
+							Fifoout:     netIOCounter.Fifoout,
 						})
 					}
 				}
@@ -314,31 +315,160 @@ func readGradleTestResults(path string) []MvnTestResult {
 	return tests
 }
 
-// func MvnInstall(path string) bool {
-// 	logfile := "maven-install.log"
+func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID uint) {
+	// # Executes a single specified test in SomeTestClass
+	// gradle test --tests SomeTestClass.someSpecificMethod
 
-// 	fmt.Println("------------------------------------------------ mvn install")
-// 	cmd := exec.Command("mvn", "-Drat.skip=true", "clean", "install")
-// 	cmd.Dir = path
-// 	output, err := cmd.CombinedOutput()
-// 	if err != nil {
-// 		log.Printf("mvn -Drat.skip=true clean install failed with %s\n", err)
-// 		fmt.Printf("mvn -Drat.skip=true clean install failed with %s\n", err)
-// 		log.Printf("Compilation out:\n%s\n", string(output))
-// 		fmt.Printf("Compilation out:\n%s\n", string(output))
-// 		return false
-// 	}
-// 	log.Printf("Compilation out:\n%s\n", string(output))
-// 	// fmt.Printf("Compilation out:\n%s\n", string(output))
-// 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
-// 	if err != nil {
-// 		log.Printf(err.Error())
-// 		fmt.Printf(err.Error())
-// 		return false
-// 	}
-// 	if strings.Contains(string(output), "BUILD SUCCESS") {
-// 		return true
-// 	} else {
-// 		return false
-// 	}
-// }
+	// ok := true
+	logfile := "gradle-test.log"
+	testName := pkg + "." + testCase
+
+	log.Println(">>>------------------------------------------------ gradle testcase", path, testName)
+	fmt.Println(">>>------------------------------------------------ gradle testcase", path, testName)
+	fmt.Printf("gradle test --rerun-tasks --tests %s (dir: %s)\n", testName, path)
+	cmd := exec.Command("gradle", "test", "--rerun-tasks", "--tests", testName)
+	cmd.Dir = path
+
+	var output []byte
+	var err error
+	// var mr *models.Run
+
+	// output, err = cmd.CombinedOutput()
+	err = cmd.Start()
+	if err != nil {
+		fmt.Println(err.Error())
+		log.Fatal(err)
+	}
+	pid := cmd.Process.Pid
+
+	stop := make(chan bool)
+	go func() {
+		perfMetrics := []PerfMetrics{}
+		for {
+			select {
+			case <-stop:
+				//save
+				for _, perfMetric := range perfMetrics {
+					mr := &models.Run{
+						MeasurementID: measurementID,
+						Type:          "gradle",
+						Resources: models.Resources{
+							CpuPercent:        perfMetric.CpuPercent,
+							MemPercent:        perfMetric.MemoryPercent,
+							MemoryInfoStat:    *perfMetric.MemoryInfo,
+							IOCountersStat:    *perfMetric.IOCounters,
+							PageFaultsStat:    *perfMetric.PageFaults,
+							AvgStat:           *perfMetric.Load,
+							VirtualMemoryStat: *perfMetric.VirtualMemory,
+							SwapMemory:        *perfMetric.SwapMemory,
+							// DiskIOCounters:    perfMetric.DiskIOCounters,
+							// NetIOCounters:     perfMetric.NetIOCounters,
+						},
+					}
+					models.CreateRun(db, mr)
+					for _, cpuTime := range perfMetric.CPUTimes {
+						models.CreateCPUTimes(db, &models.CPUTimes{
+							RunID:     mr.ID,
+							CPU:       cpuTime.CPU,
+							User:      cpuTime.User,
+							System:    cpuTime.System,
+							Idle:      cpuTime.Idle,
+							Nice:      cpuTime.Nice,
+							Iowait:    cpuTime.Iowait,
+							Irq:       cpuTime.Irq,
+							Softirq:   cpuTime.Softirq,
+							Steal:     cpuTime.Steal,
+							Guest:     cpuTime.Guest,
+							GuestNice: cpuTime.GuestNice,
+						})
+					}
+
+					for i, diskIOCounter := range perfMetric.DiskIOCounters {
+						models.CreateDiskIOCounters(db, &models.DiskIOCounters{
+							RunID:            mr.ID,
+							Device:           i,
+							ReadCount:        diskIOCounter.ReadCount,
+							MergedReadCount:  diskIOCounter.MergedReadCount,
+							WriteCount:       diskIOCounter.WriteCount,
+							MergedWriteCount: diskIOCounter.MergedWriteCount,
+							ReadBytes:        diskIOCounter.ReadBytes,
+							WriteBytes:       diskIOCounter.WriteBytes,
+							ReadTime:         diskIOCounter.ReadTime,
+							WriteTime:        diskIOCounter.WriteTime,
+							IopsInProgress:   diskIOCounter.IopsInProgress,
+							IoTime:           diskIOCounter.IoTime,
+							WeightedIO:       diskIOCounter.WeightedIO,
+							Name:             diskIOCounter.Name,
+							SerialNumber:     diskIOCounter.SerialNumber,
+							Label:            diskIOCounter.Label,
+						})
+					}
+
+					for i, netIOCounter := range perfMetric.NetIOCounters {
+						models.CreateNetIOCounters(db, &models.NetIOCounters{
+							RunID:       mr.ID,
+							NICID:       uint(i),
+							Name:        netIOCounter.Name,
+							BytesSent:   netIOCounter.BytesSent,
+							BytesRecv:   netIOCounter.BytesRecv,
+							PacketsSent: netIOCounter.PacketsSent,
+							PacketsRecv: netIOCounter.PacketsRecv,
+							Errin:       netIOCounter.Errin,
+							Errout:      netIOCounter.Errout,
+							Dropin:      netIOCounter.Dropin,
+							Dropout:     netIOCounter.Dropout,
+							Fifoin:      netIOCounter.Fifoin,
+							Fifoout:     netIOCounter.Fifoout,
+						})
+					}
+				}
+				return
+			default:
+				perfMetric, err := MonitorProcess(pid)
+				if err == nil {
+					perfMetrics = append(perfMetrics, perfMetric)
+				}
+
+			}
+		}
+	}()
+
+	err = cmd.Wait()
+	log.Printf("Command finished with error: %v", err)
+	stop <- true
+
+	if err != nil {
+		fmt.Printf("gradle test failed with %s\n", err)
+	}
+
+	// fmt.Printf("Mvn test out:\n%s\n", string(output))
+	log.Printf("gradle test out:\n%s\n", string(output))
+	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	if err != nil {
+		// ok = false
+		panic(err)
+	}
+
+	resultsPath := path + "/build/test-results/test/TEST-" + pkg + ".xml"
+	// fmt.Println(resultsPath)
+	suites, err := junit.IngestFile(resultsPath)
+	if err != nil {
+		log.Fatalf("failed to ingest JUnit xml %v", err)
+	}
+	for _, suite := range suites {
+		// fmt.Println(suite.Name)
+
+		for _, test := range suite.Tests {
+			if test.Name == testCase {
+				fmt.Printf("  %s\n", test.Name)
+				// if test.Error != nil {
+				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
+				// } else {
+				// 	fmt.Printf("    %s\n", test.Status)
+				// }
+				// mr.TestCaseTime = test.Duration
+
+			}
+		}
+	}
+}

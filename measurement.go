@@ -34,7 +34,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			MvnInstall(repoDir)
 			ok := MvnCompile(repoDir)
 			if ok {
-				MeasureMavenTests(db, repoDir, commitID, measurement)
+				MeasureMavenTests(db, repoDir, measurement)
 				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
 				mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				for _, file := range listJavaFiles(repoDir) {
@@ -49,12 +49,12 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				ok := GradleBuild(buildPath)
 				if ok {
 					MeasureGradleTests(db, buildPath, commitID, measurement)
-					JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
-					gradleClasspath := GetGradleDependenciesClasspath(buildPath)
-					for _, file := range listJavaFiles(buildPath) {
-						MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
-					}
-					JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
+					// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
+					// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
+					// for _, file := range listJavaFiles(buildPath) {
+					// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
+					// }
+					// JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
 				}
 			}
 		}
@@ -62,14 +62,13 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 	}
 }
 
-func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
+func MeasureMavenTests(db *gorm.DB, repoDir string, measurement models.Measurement) {
 	testResults, ok := MvnTest(db, repoDir, measurement.ID)
 	if ok {
 		for ind := range testResults {
-			mr := &models.TestCase{MeasurementID: measurement.ID,
+			mr := &models.TestCase{
 				Type:      "maven",
 				ClassName: testResults[ind].ClassName,
-				CommitID:  commitID,
 				// Duration:  testResults[ind].TimeElapsed,
 				// TestsRun:    testResults[ind].TestsRun,
 				// Failures:    testResults[ind].Failures,
@@ -98,6 +97,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 		// fmt.Println("suites: ", suites)
 		for _, suite := range suites {
 			// fmt.Println(suite.Name)
+			// fmt.Printf("%s\n", suite.Tests)
 			for _, test := range suite.Tests {
 				// fmt.Println(test.Classname + ".java")
 				// fmt.Printf("  %s\n", test.Name)
@@ -119,27 +119,25 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				// if test.Error != nil {
 				// 	errorMsg = test.Error.Error()
 				// }
-				mr := &models.TestCase{
-					MeasurementID: measurement.ID,
-					Type:          "gradle",
-					ClassName:     test.Classname,
-					CommitID:      commitID,
+				tc := &models.TestCase{
+					Type:      "gradle",
+					ClassName: test.Classname,
 					// Duration:      test.Duration,
-					TestSuiteID: testSuite.ID,
-					Name:        test.Name,
+					FileID: testSuite.ID,
+					Name:   test.Name,
 					// Status:        string(test.Status),
 					// Error:         errorMsg,
 					// Message:       test.Message,
 					// SystemErr:     string(test.SystemErr),
 					// SystemOut:     string(test.SystemOut),
 				}
-				_, errTC := models.CreateTestCase(db, mr)
+				_, errTC := models.CreateTestCase(db, tc)
 				if errTC != nil {
 					fmt.Println(errTC.Error())
 				}
 
 				//gradle test --test "com.cloudhadoop.emp.SuiteTest.testTestCaseName"
-				GradleTestCase(repoDir, test.Classname+"."+test.Name)
+				RunGradleTestCase(db, repoDir, test.Classname, test.Name, measurement.ID)
 
 			}
 		}
@@ -219,14 +217,14 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 				fmt.Println(errF.Error())
 			}
 			if okTest {
-				r := &models.TestCase{MeasurementID: measurement.ID,
+				r := &models.TestCase{
 					Type:      "randoop",
 					ClassName: file,
-					CommitID:  commitID,
+
 					// Duration:  time.Duration(testTime * float64(time.Second)),
 					// TestSuiteID: testSuite.ID,
-					FileID: filename.ID,
-					Name:   file,
+					FileTargetID: filename.ID,
+					Name:         file,
 					// Status:    string(test.Status),
 					// Error:     errorMsg,
 					// Message:   test.Message,
@@ -246,9 +244,9 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					fmt.Println("Error creating randoop: " + err.Error())
 				} else {
 					for _, perfMetric := range perfMetrics {
-						rr := &models.TestResources{
-							TestID: testID,
-							Type:   "randoop",
+						rr := &models.Run{
+							TestCaseID: testID,
+							Type:       "randoop",
 							Resources: models.Resources{
 								CpuPercent:        perfMetric.CpuPercent,
 								MemPercent:        perfMetric.MemoryPercent,
@@ -263,61 +261,61 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 								// NetIOCounters:     perfMetric.NetIOCounters,
 							},
 						}
-						models.CreateTestResources(db, rr)
+						models.CreateRun(db, rr)
 						for _, cpuTime := range perfMetric.CPUTimes {
 							models.CreateCPUTimes(db, &models.CPUTimes{
-								MeasurementResourcesID: rr.ID,
-								CPU:                    cpuTime.CPU,
-								User:                   cpuTime.User,
-								System:                 cpuTime.System,
-								Idle:                   cpuTime.Idle,
-								Nice:                   cpuTime.Nice,
-								Iowait:                 cpuTime.Iowait,
-								Irq:                    cpuTime.Irq,
-								Softirq:                cpuTime.Softirq,
-								Steal:                  cpuTime.Steal,
-								Guest:                  cpuTime.Guest,
-								GuestNice:              cpuTime.GuestNice,
+								RunID:     rr.ID,
+								CPU:       cpuTime.CPU,
+								User:      cpuTime.User,
+								System:    cpuTime.System,
+								Idle:      cpuTime.Idle,
+								Nice:      cpuTime.Nice,
+								Iowait:    cpuTime.Iowait,
+								Irq:       cpuTime.Irq,
+								Softirq:   cpuTime.Softirq,
+								Steal:     cpuTime.Steal,
+								Guest:     cpuTime.Guest,
+								GuestNice: cpuTime.GuestNice,
 							})
 
 						}
 
 						for i, diskIOCounter := range perfMetric.DiskIOCounters {
 							models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-								MeasurementResourcesID: rr.ID,
-								Device:                 i,
-								ReadCount:              diskIOCounter.ReadCount,
-								MergedReadCount:        diskIOCounter.MergedReadCount,
-								WriteCount:             diskIOCounter.WriteCount,
-								MergedWriteCount:       diskIOCounter.MergedWriteCount,
-								ReadBytes:              diskIOCounter.ReadBytes,
-								WriteBytes:             diskIOCounter.WriteBytes,
-								ReadTime:               diskIOCounter.ReadTime,
-								WriteTime:              diskIOCounter.WriteTime,
-								IopsInProgress:         diskIOCounter.IopsInProgress,
-								IoTime:                 diskIOCounter.IoTime,
-								WeightedIO:             diskIOCounter.WeightedIO,
-								Name:                   diskIOCounter.Name,
-								SerialNumber:           diskIOCounter.SerialNumber,
-								Label:                  diskIOCounter.Label,
+								RunID:            rr.ID,
+								Device:           i,
+								ReadCount:        diskIOCounter.ReadCount,
+								MergedReadCount:  diskIOCounter.MergedReadCount,
+								WriteCount:       diskIOCounter.WriteCount,
+								MergedWriteCount: diskIOCounter.MergedWriteCount,
+								ReadBytes:        diskIOCounter.ReadBytes,
+								WriteBytes:       diskIOCounter.WriteBytes,
+								ReadTime:         diskIOCounter.ReadTime,
+								WriteTime:        diskIOCounter.WriteTime,
+								IopsInProgress:   diskIOCounter.IopsInProgress,
+								IoTime:           diskIOCounter.IoTime,
+								WeightedIO:       diskIOCounter.WeightedIO,
+								Name:             diskIOCounter.Name,
+								SerialNumber:     diskIOCounter.SerialNumber,
+								Label:            diskIOCounter.Label,
 							})
 						}
 
 						for i, netIOCounter := range perfMetric.NetIOCounters {
 							models.CreateNetIOCounters(db, &models.NetIOCounters{
-								MeasurementResourcesID: rr.ID,
-								NICID:                  uint(i),
-								Name:                   netIOCounter.Name,
-								BytesSent:              netIOCounter.BytesSent,
-								BytesRecv:              netIOCounter.BytesRecv,
-								PacketsSent:            netIOCounter.PacketsSent,
-								PacketsRecv:            netIOCounter.PacketsRecv,
-								Errin:                  netIOCounter.Errin,
-								Errout:                 netIOCounter.Errout,
-								Dropin:                 netIOCounter.Dropin,
-								Dropout:                netIOCounter.Dropout,
-								Fifoin:                 netIOCounter.Fifoin,
-								Fifoout:                netIOCounter.Fifoout,
+								RunID:       rr.ID,
+								NICID:       uint(i),
+								Name:        netIOCounter.Name,
+								BytesSent:   netIOCounter.BytesSent,
+								BytesRecv:   netIOCounter.BytesRecv,
+								PacketsSent: netIOCounter.PacketsSent,
+								PacketsRecv: netIOCounter.PacketsRecv,
+								Errin:       netIOCounter.Errin,
+								Errout:      netIOCounter.Errout,
+								Dropin:      netIOCounter.Dropin,
+								Dropout:     netIOCounter.Dropout,
+								Fifoin:      netIOCounter.Fifoin,
+								Fifoout:     netIOCounter.Fifoout,
 							})
 						}
 					}
