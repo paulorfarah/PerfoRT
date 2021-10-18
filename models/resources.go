@@ -9,20 +9,10 @@ import (
 	"github.com/shirou/gopsutil/v3/process"
 )
 
-type SwapMemoryStat struct {
-	SwapTotal   uint64  `json:"swap-total"`
-	Used        uint64  `json:"used"`
-	Free        uint64  `json:"free"`
-	UsedPercent float64 `json:"usedPercent"`
-	Sin         uint64  `json:"sin"`
-	Sout        uint64  `json:"sout"`
-	PgIn        uint64  `json:"pgIn"`
-	PgOut       uint64  `json:"pgOut"`
-	PgFault     uint64  `json:"pgFault"`
-	PgMajFaults uint64  `json:"pgMajFault"`
-}
-
-type Resources struct {
+type Resource struct {
+	Model
+	RunID      uint
+	Run        Run
 	CpuPercent float64
 	MemPercent float32
 	process.MemoryInfoStat
@@ -36,74 +26,79 @@ type Resources struct {
 	NetIOCounters []net.IOCountersStat
 }
 
+type SwapMemoryStat struct {
+	SwapTotal   uint64  `json:"swap-total"`
+	Used        uint64  `json:"used"`
+	Free        uint64  `json:"free"`
+	UsedPercent float64 `json:"usedPercent"`
+	Sin         uint64  `json:"sin"`
+	Sout        uint64  `json:"sout"`
+	PgIn        uint64  `json:"pgIn"`
+	PgOut       uint64  `json:"pgOut"`
+	PgFault     uint64  `json:"pgFault"`
+	PgMajFaults uint64  `json:"pgMajFault"`
+}
+
 type CPUTimes struct {
 	Model
-	MeasurementResourcesID uint
-	MeasurementResources   MeasurementResources
-	CPUID                  uint
-	CPU                    string  `json:"cpu"`
-	User                   float64 `json:"user"`
-	System                 float64 `json:"system"`
-	Idle                   float64 `json:"idle"`
-	Nice                   float64 `json:"nice"`
-	Iowait                 float64 `json:"iowait"`
-	Irq                    float64 `json:"irq"`
-	Softirq                float64 `json:"softirq"`
-	Steal                  float64 `json:"steal"`
-	Guest                  float64 `json:"guest"`
-	GuestNice              float64 `json:"guestNice"`
+	ResourceID uint
+	Resource   Resource
+	CPUID      uint
+	CPU        string  `json:"cpu"`
+	User       float64 `json:"user"`
+	System     float64 `json:"system"`
+	Idle       float64 `json:"idle"`
+	Nice       float64 `json:"nice"`
+	Iowait     float64 `json:"iowait"`
+	Irq        float64 `json:"irq"`
+	Softirq    float64 `json:"softirq"`
+	Steal      float64 `json:"steal"`
+	Guest      float64 `json:"guest"`
+	GuestNice  float64 `json:"guestNice"`
 }
 
 type DiskIOCounters struct {
 	Model
-	MeasurementResourcesID uint
-	MeasurementResources   MeasurementResources
-	Device                 string
-	ReadCount              uint64 `json:"readCount"`
-	MergedReadCount        uint64 `json:"mergedReadCount"`
-	WriteCount             uint64 `json:"writeCount"`
-	MergedWriteCount       uint64 `json:"mergedWriteCount"`
-	ReadBytes              uint64 `json:"readBytes"`
-	WriteBytes             uint64 `json:"writeBytes"`
-	ReadTime               uint64 `json:"readTime"`
-	WriteTime              uint64 `json:"writeTime"`
-	IopsInProgress         uint64 `json:"iopsInProgress"`
-	IoTime                 uint64 `json:"ioTime"`
-	WeightedIO             uint64 `json:"weightedIO"`
-	Name                   string `json:"name"`
-	SerialNumber           string `json:"serialNumber"`
-	Label                  string `json:"label"`
+	ResourceID       uint
+	Resource         Resource
+	Device           string
+	ReadCount        uint64 `json:"readCount"`
+	MergedReadCount  uint64 `json:"mergedReadCount"`
+	WriteCount       uint64 `json:"writeCount"`
+	MergedWriteCount uint64 `json:"mergedWriteCount"`
+	ReadBytes        uint64 `json:"readBytes"`
+	WriteBytes       uint64 `json:"writeBytes"`
+	ReadTime         uint64 `json:"readTime"`
+	WriteTime        uint64 `json:"writeTime"`
+	IopsInProgress   uint64 `json:"iopsInProgress"`
+	IoTime           uint64 `json:"ioTime"`
+	WeightedIO       uint64 `json:"weightedIO"`
+	Name             string `json:"name"`
+	SerialNumber     string `json:"serialNumber"`
+	Label            string `json:"label"`
 }
 
 type NetIOCounters struct {
 	Model
-	MeasurementResourcesID uint
-	MeasurementResources   MeasurementResources
-	NICID                  uint
-	Name                   string `json:"name"`        // interface name
-	BytesSent              uint64 `json:"bytesSent"`   // number of bytes sent
-	BytesRecv              uint64 `json:"bytesRecv"`   // number of bytes received
-	PacketsSent            uint64 `json:"packetsSent"` // number of packets sent
-	PacketsRecv            uint64 `json:"packetsRecv"` // number of packets received
-	Errin                  uint64 `json:"errin"`       // total number of errors while receiving
-	Errout                 uint64 `json:"errout"`      // total number of errors while sending
-	Dropin                 uint64 `json:"dropin"`      // total number of incoming packets which were dropped
-	Dropout                uint64 `json:"dropout"`     // total number of outgoing packets which were dropped (always 0 on OSX and BSD)
-	Fifoin                 uint64 `json:"fifoin"`      // total number of FIFO buffers errors while receiving
-	Fifoout                uint64 `json:"fifoout"`     // total number of FIFO buffers errors while sending
+	ResourceID  uint
+	Resource    Resource
+	NICID       uint
+	Name        string `json:"name"`        // interface name
+	BytesSent   uint64 `json:"bytesSent"`   // number of bytes sent
+	BytesRecv   uint64 `json:"bytesRecv"`   // number of bytes received
+	PacketsSent uint64 `json:"packetsSent"` // number of packets sent
+	PacketsRecv uint64 `json:"packetsRecv"` // number of packets received
+	Errin       uint64 `json:"errin"`       // total number of errors while receiving
+	Errout      uint64 `json:"errout"`      // total number of errors while sending
+	Dropin      uint64 `json:"dropin"`      // total number of incoming packets which were dropped
+	Dropout     uint64 `json:"dropout"`     // total number of outgoing packets which were dropped (always 0 on OSX and BSD)
+	Fifoin      uint64 `json:"fifoin"`      // total number of FIFO buffers errors while receiving
+	Fifoout     uint64 `json:"fifoout"`     // total number of FIFO buffers errors while sending
 
 }
 
-type MeasurementResources struct {
-	Model
-	MeasurementID uint
-	Measurement   Measurement
-	Type          string
-	Resources
-}
-
-func (r *MeasurementResources) TableName() string {
-	return "measurementresources"
+func (r *Resource) TableName() string {
+	return "resources"
 }
 
 func (r *CPUTimes) TableName() string {
@@ -117,10 +112,11 @@ func (r *DiskIOCounters) TableName() string {
 func (r *NetIOCounters) TableName() string {
 	return "netiocounters"
 }
-func CreateMeasurementResources(db *gorm.DB, mr *MeasurementResources) (uint, error) {
+func CreateResource(db *gorm.DB, mr *Resource) (uint, error) {
 	err := db.Create(mr).Error
 	if err != nil {
 		return 0, err
+
 	}
 	return mr.ID, nil
 }
@@ -149,22 +145,22 @@ func CreateNetIOCounters(db *gorm.DB, nic *NetIOCounters) (uint, error) {
 	return nic.ID, nil
 }
 
-type TestResources struct {
-	Model
-	TestID uint
-	Test   TestCase
-	Type   string
-	Resources
-}
+// type TestResources struct {
+// 	Model
+// 	TestID uint
+// 	Test   TestCase
+// 	Type   string
+// 	Resources
+// }
 
-func (r *TestResources) TableName() string {
-	return "testresources"
-}
+// func (r *TestResources) TableName() string {
+// 	return "testresources"
+// }
 
-func CreateTestResources(db *gorm.DB, tr *TestResources) (uint, error) {
-	err := db.Create(tr).Error
-	if err != nil {
-		return 0, err
-	}
-	return tr.ID, nil
-}
+// func CreateTestResources(db *gorm.DB, tr *TestResources) (uint, error) {
+// 	err := db.Create(tr).Error
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	return tr.ID, nil
+// }

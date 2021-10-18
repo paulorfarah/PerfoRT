@@ -59,7 +59,7 @@ func init() {
 		// &Randoop{},
 		&TestCase{},
 		&Run{},
-		// &TestResources{},
+		&Resource{},
 		&Coverage{},
 		&CPUTimes{},
 		&DiskIOCounters{},
@@ -77,11 +77,12 @@ func init() {
 
 	db.Model(&Run{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
 	db.Model(&Run{}).AddForeignKey("test_case_id", "testcases(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Resource{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&Coverage{}).AddForeignKey("measurement_id", "measurements(id)", "RESTRICT", "RESTRICT")
-	db.Model(&CPUTimes{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
-	db.Model(&DiskIOCounters{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
-	db.Model(&NetIOCounters{}).AddForeignKey("run_id", "runs(id)", "RESTRICT", "RESTRICT")
+	db.Model(&CPUTimes{}).AddForeignKey("resource_id", "resources(id)", "RESTRICT", "RESTRICT")
+	db.Model(&DiskIOCounters{}).AddForeignKey("resource_id", "resources(id)", "RESTRICT", "RESTRICT")
+	db.Model(&NetIOCounters{}).AddForeignKey("resource_id", "resources(id)", "RESTRICT", "RESTRICT")
 	db.Model(&File{}).Related(&FileLine{})
 }
 

@@ -63,21 +63,25 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, measurement models.Measurement) {
-	testResults, ok := MvnTest(db, repoDir, measurement.ID)
+	ok := MvnTest(db, repoDir, measurement.ID)
 	if ok {
-		for ind := range testResults {
-			mr := &models.TestCase{
-				Type:      "maven",
-				ClassName: testResults[ind].ClassName,
-				// Duration:  testResults[ind].TimeElapsed,
-				// TestsRun:    testResults[ind].TestsRun,
-				// Failures:    testResults[ind].Failures,
-				// Errors:      testResults[ind].Errors,
-				// Skipped:     testResults[ind].Skipped,
-				// TimeElapsed: testResults[ind].TimeElapsed
-			}
-			models.CreateTestCase(db, mr)
-		}
+		// for ind := range testResults {
+		// 	mr := &models.TestCase{
+		// 		Type:      "maven",
+		// 		ClassName: testResults[ind].ClassName,
+		// 		// Duration:  testResults[ind].TimeElapsed,
+		// 		// TestsRun:    testResults[ind].TestsRun,
+		// 		// Failures:    testResults[ind].Failures,
+		// 		// Errors:      testResults[ind].Errors,
+		// 		// Skipped:     testResults[ind].Skipped,
+		// 		// TimeElapsed: testResults[ind].TimeElapsed
+		// 	}
+		// 	models.CreateTestCase(db, mr)
+		// }
+
+		// todo: execute each testcase and measure time and resource usage
+		mr := &models.TestCase{Type: "maven"}
+		models.CreateTestCase(db, mr)
 	} else {
 		log.Println("********************** CRITICAL ERROR ***************")
 		log.Println("successAfter is false measuring maven tests")
@@ -85,7 +89,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, measurement models.Measureme
 }
 
 func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	_, ok := GradleTest(db, repoDir, measurement.ID)
+	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
 
 		// read tests xml file
@@ -137,7 +141,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				}
 
 				//gradle test --test "com.cloudhadoop.emp.SuiteTest.testTestCaseName"
-				RunGradleTestCase(db, repoDir, test.Classname, test.Name, measurement.ID)
+				RunGradleTestCase(db, repoDir, tc, measurement.ID)
 
 			}
 		}
@@ -243,46 +247,48 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					log.Println("Error creating randoop: " + err.Error())
 					fmt.Println("Error creating randoop: " + err.Error())
 				} else {
+					rr := &models.Run{
+						TestCaseID: testID,
+						Type:       "randoop",
+					}
 					for _, perfMetric := range perfMetrics {
-						rr := &models.Run{
-							TestCaseID: testID,
-							Type:       "randoop",
-							Resources: models.Resources{
-								CpuPercent:        perfMetric.CpuPercent,
-								MemPercent:        perfMetric.MemoryPercent,
-								MemoryInfoStat:    *perfMetric.MemoryInfo,
-								IOCountersStat:    *perfMetric.IOCounters,
-								PageFaultsStat:    *perfMetric.PageFaults,
-								AvgStat:           *perfMetric.Load,
-								VirtualMemoryStat: *perfMetric.VirtualMemory,
-								// SwapMemoryStat:    *perfMetric.SwapMemory,
-								// CPUTime:           perfMetric.CPUTime,
-								// DiskIOCounters:    perfMetric.DiskIOCounters,
-								// NetIOCounters:     perfMetric.NetIOCounters,
-							},
+
+						resource := models.Resource{
+							RunID:             rr.ID,
+							CpuPercent:        perfMetric.CpuPercent,
+							MemPercent:        perfMetric.MemoryPercent,
+							MemoryInfoStat:    *perfMetric.MemoryInfo,
+							IOCountersStat:    *perfMetric.IOCounters,
+							PageFaultsStat:    *perfMetric.PageFaults,
+							AvgStat:           *perfMetric.Load,
+							VirtualMemoryStat: *perfMetric.VirtualMemory,
+							// SwapMemoryStat:    *perfMetric.SwapMemory,
+							// CPUTime:           perfMetric.CPUTime,
+							// DiskIOCounters:    perfMetric.DiskIOCounters,
+							// NetIOCounters:     perfMetric.NetIOCounters,
 						}
 						models.CreateRun(db, rr)
 						for _, cpuTime := range perfMetric.CPUTimes {
 							models.CreateCPUTimes(db, &models.CPUTimes{
-								RunID:     rr.ID,
-								CPU:       cpuTime.CPU,
-								User:      cpuTime.User,
-								System:    cpuTime.System,
-								Idle:      cpuTime.Idle,
-								Nice:      cpuTime.Nice,
-								Iowait:    cpuTime.Iowait,
-								Irq:       cpuTime.Irq,
-								Softirq:   cpuTime.Softirq,
-								Steal:     cpuTime.Steal,
-								Guest:     cpuTime.Guest,
-								GuestNice: cpuTime.GuestNice,
+								ResourceID: resource.ID,
+								CPU:        cpuTime.CPU,
+								User:       cpuTime.User,
+								System:     cpuTime.System,
+								Idle:       cpuTime.Idle,
+								Nice:       cpuTime.Nice,
+								Iowait:     cpuTime.Iowait,
+								Irq:        cpuTime.Irq,
+								Softirq:    cpuTime.Softirq,
+								Steal:      cpuTime.Steal,
+								Guest:      cpuTime.Guest,
+								GuestNice:  cpuTime.GuestNice,
 							})
 
 						}
 
 						for i, diskIOCounter := range perfMetric.DiskIOCounters {
 							models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-								RunID:            rr.ID,
+								ResourceID:       resource.ID,
 								Device:           i,
 								ReadCount:        diskIOCounter.ReadCount,
 								MergedReadCount:  diskIOCounter.MergedReadCount,
@@ -303,7 +309,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 
 						for i, netIOCounter := range perfMetric.NetIOCounters {
 							models.CreateNetIOCounters(db, &models.NetIOCounters{
-								RunID:       rr.ID,
+								ResourceID:  resource.ID,
 								NICID:       uint(i),
 								Name:        netIOCounter.Name,
 								BytesSent:   netIOCounter.BytesSent,

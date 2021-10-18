@@ -117,7 +117,7 @@ func GradleBuild(path string) bool {
 	}
 }
 
-func GradleTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, bool) {
+func GradleTest(db *gorm.DB, path string, measurementID uint) bool {
 	ok := true
 	logfile := "gradle-test.log"
 
@@ -134,104 +134,104 @@ func GradleTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, 
 	if err != nil {
 		log.Fatal(err)
 	}
-	pid := cmd.Process.Pid
+	// pid := cmd.Process.Pid
 
-	stop := make(chan bool)
-	go func() {
-		perfMetrics := []PerfMetrics{}
-		for {
-			select {
-			case <-stop:
-				//save
-				for _, perfMetric := range perfMetrics {
-					mr := &models.Run{
-						MeasurementID: measurementID,
-						Type:          "gradle",
-						Resources: models.Resources{
-							CpuPercent:        perfMetric.CpuPercent,
-							MemPercent:        perfMetric.MemoryPercent,
-							MemoryInfoStat:    *perfMetric.MemoryInfo,
-							IOCountersStat:    *perfMetric.IOCounters,
-							PageFaultsStat:    *perfMetric.PageFaults,
-							AvgStat:           *perfMetric.Load,
-							VirtualMemoryStat: *perfMetric.VirtualMemory,
-							SwapMemory:        *perfMetric.SwapMemory,
-							// CPUTime:           perfMetric.CPUTime,
-							// DiskIOCounters:    perfMetric.DiskIOCounters,
-							// NetIOCounters:     perfMetric.NetIOCounters,
-						},
-					}
-					models.CreateRun(db, mr)
-					for _, cpuTime := range perfMetric.CPUTimes {
-						models.CreateCPUTimes(db, &models.CPUTimes{
-							RunID:     mr.ID,
-							CPU:       cpuTime.CPU,
-							User:      cpuTime.User,
-							System:    cpuTime.System,
-							Idle:      cpuTime.Idle,
-							Nice:      cpuTime.Nice,
-							Iowait:    cpuTime.Iowait,
-							Irq:       cpuTime.Irq,
-							Softirq:   cpuTime.Softirq,
-							Steal:     cpuTime.Steal,
-							Guest:     cpuTime.Guest,
-							GuestNice: cpuTime.GuestNice,
-						})
-					}
+	// stop := make(chan bool)
+	// go func() {
+	// 	perfMetrics := []PerfMetrics{}
+	// 	for {
+	// 		select {
+	// 		case <-stop:
+	// 			//save
+	// 			for _, perfMetric := range perfMetrics {
+	// 				mr := &models.Run{
+	// 					MeasurementID: measurementID,
+	// 					Type:          "gradle",
+	// 					Resources: models.Resources{
+	// 						CpuPercent:        perfMetric.CpuPercent,
+	// 						MemPercent:        perfMetric.MemoryPercent,
+	// 						MemoryInfoStat:    *perfMetric.MemoryInfo,
+	// 						IOCountersStat:    *perfMetric.IOCounters,
+	// 						PageFaultsStat:    *perfMetric.PageFaults,
+	// 						AvgStat:           *perfMetric.Load,
+	// 						VirtualMemoryStat: *perfMetric.VirtualMemory,
+	// 						SwapMemory:        *perfMetric.SwapMemory,
+	// 						// CPUTime:           perfMetric.CPUTime,
+	// 						// DiskIOCounters:    perfMetric.DiskIOCounters,
+	// 						// NetIOCounters:     perfMetric.NetIOCounters,
+	// 					},
+	// 				}
+	// 				models.CreateRun(db, mr)
+	// 				for _, cpuTime := range perfMetric.CPUTimes {
+	// 					models.CreateCPUTimes(db, &models.CPUTimes{
+	// 						RunID:     mr.ID,
+	// 						CPU:       cpuTime.CPU,
+	// 						User:      cpuTime.User,
+	// 						System:    cpuTime.System,
+	// 						Idle:      cpuTime.Idle,
+	// 						Nice:      cpuTime.Nice,
+	// 						Iowait:    cpuTime.Iowait,
+	// 						Irq:       cpuTime.Irq,
+	// 						Softirq:   cpuTime.Softirq,
+	// 						Steal:     cpuTime.Steal,
+	// 						Guest:     cpuTime.Guest,
+	// 						GuestNice: cpuTime.GuestNice,
+	// 					})
+	// 				}
 
-					for i, diskIOCounter := range perfMetric.DiskIOCounters {
-						models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-							RunID:            mr.ID,
-							Device:           i,
-							ReadCount:        diskIOCounter.ReadCount,
-							MergedReadCount:  diskIOCounter.MergedReadCount,
-							WriteCount:       diskIOCounter.WriteCount,
-							MergedWriteCount: diskIOCounter.MergedWriteCount,
-							ReadBytes:        diskIOCounter.ReadBytes,
-							WriteBytes:       diskIOCounter.WriteBytes,
-							ReadTime:         diskIOCounter.ReadTime,
-							WriteTime:        diskIOCounter.WriteTime,
-							IopsInProgress:   diskIOCounter.IopsInProgress,
-							IoTime:           diskIOCounter.IoTime,
-							WeightedIO:       diskIOCounter.WeightedIO,
-							Name:             diskIOCounter.Name,
-							SerialNumber:     diskIOCounter.SerialNumber,
-							Label:            diskIOCounter.Label,
-						})
-					}
+	// 				for i, diskIOCounter := range perfMetric.DiskIOCounters {
+	// 					models.CreateDiskIOCounters(db, &models.DiskIOCounters{
+	// 						RunID:            mr.ID,
+	// 						Device:           i,
+	// 						ReadCount:        diskIOCounter.ReadCount,
+	// 						MergedReadCount:  diskIOCounter.MergedReadCount,
+	// 						WriteCount:       diskIOCounter.WriteCount,
+	// 						MergedWriteCount: diskIOCounter.MergedWriteCount,
+	// 						ReadBytes:        diskIOCounter.ReadBytes,
+	// 						WriteBytes:       diskIOCounter.WriteBytes,
+	// 						ReadTime:         diskIOCounter.ReadTime,
+	// 						WriteTime:        diskIOCounter.WriteTime,
+	// 						IopsInProgress:   diskIOCounter.IopsInProgress,
+	// 						IoTime:           diskIOCounter.IoTime,
+	// 						WeightedIO:       diskIOCounter.WeightedIO,
+	// 						Name:             diskIOCounter.Name,
+	// 						SerialNumber:     diskIOCounter.SerialNumber,
+	// 						Label:            diskIOCounter.Label,
+	// 					})
+	// 				}
 
-					for i, netIOCounter := range perfMetric.NetIOCounters {
-						models.CreateNetIOCounters(db, &models.NetIOCounters{
-							RunID:       mr.ID,
-							NICID:       uint(i),
-							Name:        netIOCounter.Name,
-							BytesSent:   netIOCounter.BytesSent,
-							BytesRecv:   netIOCounter.BytesRecv,
-							PacketsSent: netIOCounter.PacketsSent,
-							PacketsRecv: netIOCounter.PacketsRecv,
-							Errin:       netIOCounter.Errin,
-							Errout:      netIOCounter.Errout,
-							Dropin:      netIOCounter.Dropin,
-							Dropout:     netIOCounter.Dropout,
-							Fifoin:      netIOCounter.Fifoin,
-							Fifoout:     netIOCounter.Fifoout,
-						})
-					}
-				}
-				return
-			default:
-				perfMetric, err := MonitorProcess(pid)
-				if err == nil {
-					perfMetrics = append(perfMetrics, perfMetric)
-				}
+	// 				for i, netIOCounter := range perfMetric.NetIOCounters {
+	// 					models.CreateNetIOCounters(db, &models.NetIOCounters{
+	// 						RunID:       mr.ID,
+	// 						NICID:       uint(i),
+	// 						Name:        netIOCounter.Name,
+	// 						BytesSent:   netIOCounter.BytesSent,
+	// 						BytesRecv:   netIOCounter.BytesRecv,
+	// 						PacketsSent: netIOCounter.PacketsSent,
+	// 						PacketsRecv: netIOCounter.PacketsRecv,
+	// 						Errin:       netIOCounter.Errin,
+	// 						Errout:      netIOCounter.Errout,
+	// 						Dropin:      netIOCounter.Dropin,
+	// 						Dropout:     netIOCounter.Dropout,
+	// 						Fifoin:      netIOCounter.Fifoin,
+	// 						Fifoout:     netIOCounter.Fifoout,
+	// 					})
+	// 				}
+	// 			}
+	// 			return
+	// 		default:
+	// 			perfMetric, err := MonitorProcess(pid)
+	// 			if err == nil {
+	// 				perfMetrics = append(perfMetrics, perfMetric)
+	// 			}
 
-			}
-		}
-	}()
+	// 		}
+	// 	}
+	// }()
 
 	err = cmd.Wait()
 	log.Printf("Command finished with error: %v", err)
-	stop <- true
+	// stop <- true
 
 	if err != nil {
 		fmt.Printf("gradle test failed with %s\n", err)
@@ -254,7 +254,8 @@ func GradleTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, 
 	// fmt.Printf("%s\n", out.String())
 	// fmt.Println("^^^ out ^^^ - vvv error vvv")
 	// fmt.Printf("%s\n", stderr.String())
-	return readMavenTestResults(path), ok
+	// return readMavenTestResults(path), ok
+	return ok
 }
 
 func readGradleTestResults(path string) []MvnTestResult {
@@ -315,13 +316,14 @@ func readGradleTestResults(path string) []MvnTestResult {
 	return tests
 }
 
-func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID uint) {
+func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measurementID uint) {
 	// # Executes a single specified test in SomeTestClass
 	// gradle test --tests SomeTestClass.someSpecificMethod
+	// fmt.Println("TC: ", tc.ID)
 
 	// ok := true
 	logfile := "gradle-test.log"
-	testName := pkg + "." + testCase
+	testName := tc.ClassName + "." + tc.Name
 
 	log.Println(">>>------------------------------------------------ gradle testcase", path, testName)
 	fmt.Println(">>>------------------------------------------------ gradle testcase", path, testName)
@@ -331,9 +333,14 @@ func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID ui
 
 	var output []byte
 	var err error
-	// var mr *models.Run
 
-	// output, err = cmd.CombinedOutput()
+	mr := &models.Run{
+		MeasurementID: measurementID,
+		Type:          "gradle",
+		TestCaseID:    tc.ID,
+	}
+	models.CreateRun(db, mr)
+
 	err = cmd.Start()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -343,49 +350,65 @@ func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID ui
 
 	stop := make(chan bool)
 	go func() {
+		LOG_FILE := "/tmp/myapp_log"
+		// open log file
+		logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			log.Panic(err)
+			return
+		}
+		defer logFile.Close()
+
+		// Set log out put and enjoy :)
+		log.SetOutput(logFile)
+
+		// optional: log date-time, filename, and line number
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
+
+		log.Println("measurementID: ", measurementID)
+
 		perfMetrics := []PerfMetrics{}
 		for {
 			select {
 			case <-stop:
 				//save
+				log.Println("entrou no stop: ", len(perfMetrics))
 				for _, perfMetric := range perfMetrics {
-					mr := &models.Run{
-						MeasurementID: measurementID,
-						Type:          "gradle",
-						Resources: models.Resources{
-							CpuPercent:        perfMetric.CpuPercent,
-							MemPercent:        perfMetric.MemoryPercent,
-							MemoryInfoStat:    *perfMetric.MemoryInfo,
-							IOCountersStat:    *perfMetric.IOCounters,
-							PageFaultsStat:    *perfMetric.PageFaults,
-							AvgStat:           *perfMetric.Load,
-							VirtualMemoryStat: *perfMetric.VirtualMemory,
-							SwapMemory:        *perfMetric.SwapMemory,
-							// DiskIOCounters:    perfMetric.DiskIOCounters,
-							// NetIOCounters:     perfMetric.NetIOCounters,
-						},
+					resource := &models.Resource{
+						RunID:             mr.ID,
+						CpuPercent:        perfMetric.CpuPercent,
+						MemPercent:        perfMetric.MemoryPercent,
+						MemoryInfoStat:    *perfMetric.MemoryInfo,
+						IOCountersStat:    *perfMetric.IOCounters,
+						PageFaultsStat:    *perfMetric.PageFaults,
+						AvgStat:           *perfMetric.Load,
+						VirtualMemoryStat: *perfMetric.VirtualMemory,
+						SwapMemory:        *perfMetric.SwapMemory,
+						// DiskIOCounters:    perfMetric.DiskIOCounters,
+						// NetIOCounters:     perfMetric.NetIOCounters,
+
 					}
-					models.CreateRun(db, mr)
+
 					for _, cpuTime := range perfMetric.CPUTimes {
 						models.CreateCPUTimes(db, &models.CPUTimes{
-							RunID:     mr.ID,
-							CPU:       cpuTime.CPU,
-							User:      cpuTime.User,
-							System:    cpuTime.System,
-							Idle:      cpuTime.Idle,
-							Nice:      cpuTime.Nice,
-							Iowait:    cpuTime.Iowait,
-							Irq:       cpuTime.Irq,
-							Softirq:   cpuTime.Softirq,
-							Steal:     cpuTime.Steal,
-							Guest:     cpuTime.Guest,
-							GuestNice: cpuTime.GuestNice,
+							ResourceID: resource.ID,
+							CPU:        cpuTime.CPU,
+							User:       cpuTime.User,
+							System:     cpuTime.System,
+							Idle:       cpuTime.Idle,
+							Nice:       cpuTime.Nice,
+							Iowait:     cpuTime.Iowait,
+							Irq:        cpuTime.Irq,
+							Softirq:    cpuTime.Softirq,
+							Steal:      cpuTime.Steal,
+							Guest:      cpuTime.Guest,
+							GuestNice:  cpuTime.GuestNice,
 						})
 					}
 
 					for i, diskIOCounter := range perfMetric.DiskIOCounters {
 						models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-							RunID:            mr.ID,
+							ResourceID:       resource.ID,
 							Device:           i,
 							ReadCount:        diskIOCounter.ReadCount,
 							MergedReadCount:  diskIOCounter.MergedReadCount,
@@ -406,7 +429,7 @@ func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID ui
 
 					for i, netIOCounter := range perfMetric.NetIOCounters {
 						models.CreateNetIOCounters(db, &models.NetIOCounters{
-							RunID:       mr.ID,
+							ResourceID:  resource.ID,
 							NICID:       uint(i),
 							Name:        netIOCounter.Name,
 							BytesSent:   netIOCounter.BytesSent,
@@ -424,10 +447,12 @@ func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID ui
 				}
 				return
 			default:
+				log.Println("entrou no default...")
 				perfMetric, err := MonitorProcess(pid)
 				if err == nil {
 					perfMetrics = append(perfMetrics, perfMetric)
 				}
+				// log.Println(perfMetric)
 
 			}
 		}
@@ -449,7 +474,7 @@ func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID ui
 		panic(err)
 	}
 
-	resultsPath := path + "/build/test-results/test/TEST-" + pkg + ".xml"
+	resultsPath := path + "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
 	// fmt.Println(resultsPath)
 	suites, err := junit.IngestFile(resultsPath)
 	if err != nil {
@@ -459,8 +484,14 @@ func RunGradleTestCase(db *gorm.DB, path, pkg, testCase string, measurementID ui
 		// fmt.Println(suite.Name)
 
 		for _, test := range suite.Tests {
-			if test.Name == testCase {
+			if test.Name == tc.Name {
 				fmt.Printf("  %s\n", test.Name)
+				mr.TestCaseTime = test.Duration
+				err := models.SaveRun(db, mr)
+				if err != nil {
+					fmt.Println("ERROR saving run: ", err.Error())
+				}
+
 				// if test.Error != nil {
 				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
 				// } else {

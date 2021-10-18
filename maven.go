@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"go-repo-downloader/models"
 	"io/ioutil"
 	"log"
 	"os"
@@ -113,7 +112,7 @@ func MvnCompile(path string) bool {
 	}
 }
 
-func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, bool) {
+func MvnTest(db *gorm.DB, path string, measurementID uint) bool {
 	ok := true
 	logfile := "maven-test.log"
 
@@ -130,104 +129,104 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, boo
 	if err != nil {
 		log.Fatal(err)
 	}
-	pid := cmd.Process.Pid
+	// pid := cmd.Process.Pid
 
-	stop := make(chan bool)
-	go func() {
-		perfMetrics := []PerfMetrics{}
-		for {
-			select {
-			case <-stop:
-				//save
-				for _, perfMetric := range perfMetrics {
-					mr := &models.Run{
-						MeasurementID: measurementID,
-						Type:          "maven",
-						Resources: models.Resources{
-							CpuPercent:        perfMetric.CpuPercent,
-							MemPercent:        perfMetric.MemoryPercent,
-							MemoryInfoStat:    *perfMetric.MemoryInfo,
-							IOCountersStat:    *perfMetric.IOCounters,
-							PageFaultsStat:    *perfMetric.PageFaults,
-							AvgStat:           *perfMetric.Load,
-							VirtualMemoryStat: *perfMetric.VirtualMemory,
-							SwapMemory:        *perfMetric.SwapMemory,
-							// CPUTime:           perfMetric.CPUTime,
-							// DiskIOCounters:    perfMetric.DiskIOCounters,
-							// NetIOCounters:     perfMetric.NetIOCounters,
-						},
-					}
-					models.CreateRun(db, mr)
-					for _, cpuTime := range perfMetric.CPUTimes {
-						models.CreateCPUTimes(db, &models.CPUTimes{
-							RunID:     mr.ID,
-							CPU:       cpuTime.CPU,
-							User:      cpuTime.User,
-							System:    cpuTime.System,
-							Idle:      cpuTime.Idle,
-							Nice:      cpuTime.Nice,
-							Iowait:    cpuTime.Iowait,
-							Irq:       cpuTime.Irq,
-							Softirq:   cpuTime.Softirq,
-							Steal:     cpuTime.Steal,
-							Guest:     cpuTime.Guest,
-							GuestNice: cpuTime.GuestNice,
-						})
-					}
+	// stop := make(chan bool)
+	// go func() {
+	// 	perfMetrics := []PerfMetrics{}
+	// 	for {
+	// 		select {
+	// 		case <-stop:
+	// 			//save
+	// 			for _, perfMetric := range perfMetrics {
+	// 				mr := &models.Run{
+	// 					MeasurementID: measurementID,
+	// 					Type:          "maven",
+	// 					Resources: models.Resources{
+	// 						CpuPercent:        perfMetric.CpuPercent,
+	// 						MemPercent:        perfMetric.MemoryPercent,
+	// 						MemoryInfoStat:    *perfMetric.MemoryInfo,
+	// 						IOCountersStat:    *perfMetric.IOCounters,
+	// 						PageFaultsStat:    *perfMetric.PageFaults,
+	// 						AvgStat:           *perfMetric.Load,
+	// 						VirtualMemoryStat: *perfMetric.VirtualMemory,
+	// 						SwapMemory:        *perfMetric.SwapMemory,
+	// 						// CPUTime:           perfMetric.CPUTime,
+	// 						// DiskIOCounters:    perfMetric.DiskIOCounters,
+	// 						// NetIOCounters:     perfMetric.NetIOCounters,
+	// 					},
+	// 				}
+	// 				models.CreateRun(db, mr)
+	// 				for _, cpuTime := range perfMetric.CPUTimes {
+	// 					models.CreateCPUTimes(db, &models.CPUTimes{
+	// 						RunID:     mr.ID,
+	// 						CPU:       cpuTime.CPU,
+	// 						User:      cpuTime.User,
+	// 						System:    cpuTime.System,
+	// 						Idle:      cpuTime.Idle,
+	// 						Nice:      cpuTime.Nice,
+	// 						Iowait:    cpuTime.Iowait,
+	// 						Irq:       cpuTime.Irq,
+	// 						Softirq:   cpuTime.Softirq,
+	// 						Steal:     cpuTime.Steal,
+	// 						Guest:     cpuTime.Guest,
+	// 						GuestNice: cpuTime.GuestNice,
+	// 					})
+	// 				}
 
-					for i, diskIOCounter := range perfMetric.DiskIOCounters {
-						models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-							RunID:            mr.ID,
-							Device:           i,
-							ReadCount:        diskIOCounter.ReadCount,
-							MergedReadCount:  diskIOCounter.MergedReadCount,
-							WriteCount:       diskIOCounter.WriteCount,
-							MergedWriteCount: diskIOCounter.MergedWriteCount,
-							ReadBytes:        diskIOCounter.ReadBytes,
-							WriteBytes:       diskIOCounter.WriteBytes,
-							ReadTime:         diskIOCounter.ReadTime,
-							WriteTime:        diskIOCounter.WriteTime,
-							IopsInProgress:   diskIOCounter.IopsInProgress,
-							IoTime:           diskIOCounter.IoTime,
-							WeightedIO:       diskIOCounter.WeightedIO,
-							Name:             diskIOCounter.Name,
-							SerialNumber:     diskIOCounter.SerialNumber,
-							Label:            diskIOCounter.Label,
-						})
-					}
+	// 				for i, diskIOCounter := range perfMetric.DiskIOCounters {
+	// 					models.CreateDiskIOCounters(db, &models.DiskIOCounters{
+	// 						RunID:            mr.ID,
+	// 						Device:           i,
+	// 						ReadCount:        diskIOCounter.ReadCount,
+	// 						MergedReadCount:  diskIOCounter.MergedReadCount,
+	// 						WriteCount:       diskIOCounter.WriteCount,
+	// 						MergedWriteCount: diskIOCounter.MergedWriteCount,
+	// 						ReadBytes:        diskIOCounter.ReadBytes,
+	// 						WriteBytes:       diskIOCounter.WriteBytes,
+	// 						ReadTime:         diskIOCounter.ReadTime,
+	// 						WriteTime:        diskIOCounter.WriteTime,
+	// 						IopsInProgress:   diskIOCounter.IopsInProgress,
+	// 						IoTime:           diskIOCounter.IoTime,
+	// 						WeightedIO:       diskIOCounter.WeightedIO,
+	// 						Name:             diskIOCounter.Name,
+	// 						SerialNumber:     diskIOCounter.SerialNumber,
+	// 						Label:            diskIOCounter.Label,
+	// 					})
+	// 				}
 
-					for i, netIOCounter := range perfMetric.NetIOCounters {
-						models.CreateNetIOCounters(db, &models.NetIOCounters{
-							RunID:       mr.ID,
-							NICID:       uint(i),
-							Name:        netIOCounter.Name,
-							BytesSent:   netIOCounter.BytesSent,
-							BytesRecv:   netIOCounter.BytesRecv,
-							PacketsSent: netIOCounter.PacketsSent,
-							PacketsRecv: netIOCounter.PacketsRecv,
-							Errin:       netIOCounter.Errin,
-							Errout:      netIOCounter.Errout,
-							Dropin:      netIOCounter.Dropin,
-							Dropout:     netIOCounter.Dropout,
-							Fifoin:      netIOCounter.Fifoin,
-							Fifoout:     netIOCounter.Fifoout,
-						})
-					}
-				}
-				return
-			default:
-				perfMetric, err := MonitorProcess(pid)
-				if err == nil {
-					perfMetrics = append(perfMetrics, perfMetric)
-				}
+	// 				for i, netIOCounter := range perfMetric.NetIOCounters {
+	// 					models.CreateNetIOCounters(db, &models.NetIOCounters{
+	// 						RunID:       mr.ID,
+	// 						NICID:       uint(i),
+	// 						Name:        netIOCounter.Name,
+	// 						BytesSent:   netIOCounter.BytesSent,
+	// 						BytesRecv:   netIOCounter.BytesRecv,
+	// 						PacketsSent: netIOCounter.PacketsSent,
+	// 						PacketsRecv: netIOCounter.PacketsRecv,
+	// 						Errin:       netIOCounter.Errin,
+	// 						Errout:      netIOCounter.Errout,
+	// 						Dropin:      netIOCounter.Dropin,
+	// 						Dropout:     netIOCounter.Dropout,
+	// 						Fifoin:      netIOCounter.Fifoin,
+	// 						Fifoout:     netIOCounter.Fifoout,
+	// 					})
+	// 				}
+	// 			}
+	// 			return
+	// 		default:
+	// 			perfMetric, err := MonitorProcess(pid)
+	// 			if err == nil {
+	// 				perfMetrics = append(perfMetrics, perfMetric)
+	// 			}
 
-			}
-		}
-	}()
+	// 		}
+	// 	}
+	// }()
 
 	err = cmd.Wait()
 	log.Printf("Command finished with error: %v", err)
-	stop <- true
+	// stop <- true
 
 	if err != nil {
 		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err)
@@ -250,7 +249,8 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) ([]MvnTestResult, boo
 	// fmt.Printf("%s\n", out.String())
 	// fmt.Println("^^^ out ^^^ - vvv error vvv")
 	// fmt.Printf("%s\n", stderr.String())
-	return readMavenTestResults(path), ok
+	// return readMavenTestResults(path), ok
+	return ok
 }
 
 func readMavenTestResults(path string) []MvnTestResult {
