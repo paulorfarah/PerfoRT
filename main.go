@@ -28,7 +28,8 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	url := "https://github.com/paulorfarah/gradle-project-example"
+	url := "https://github.com/ReactiveX/RxJava"
+	// "https://github.com/paulorfarah/gradle-project-example"
 	// "https://github.com/dev9com/gradle-example"
 	//"https://github.com/ReactiveX/RxJava"
 	//  "https://github.com/zxing/zxing"
@@ -144,7 +145,7 @@ func main() {
 
 				if prevCommit != nil {
 					// fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
-					//fmt.Println(currCommit.Hash)
+					fmt.Printf("currCommit: %s\n", currCommit.Hash)
 					//fmt.Println(currCommit.Author.Email)
 					//fmt.Println(currCommit.Committer)
 					//fmt.Println(currCommit.Message)
@@ -179,6 +180,7 @@ func main() {
 						commit, err := models.FindCommitByHash(db, currCommit.Hash.String())
 						if err != nil {
 							log.Println("create new commit: " + currCommit.Hash.String())
+							fmt.Println("create new commit: " + currCommit.Hash.String())
 							parent, errj := json.Marshal(currCommit.ParentHashes)
 							if errj != nil {
 								log.Println("Error Marshalling parent hashes: " + errj.Error())
@@ -194,15 +196,19 @@ func main() {
 								CommitterDate:      currCommit.Committer.When,
 								Subject:            currCommit.Message,
 								Branch:             branch.Name().String()}
-							models.CreateCommit(db, commit)
+							_, err = models.CreateCommit(db, commit)
+							if err != nil {
+								fmt.Printf("Error creating new commit %s\n", err.Error())
+							}
+
 						}
 
 						//files
 						currTree.Files().ForEach(func(f *object.File) error {
 							contents := ""
-							if !(strings.HasSuffix(f.Name, ".class") || strings.HasSuffix(f.Name, ".jar")) {
-								contents, _ = f.Contents()
-							}
+							// if !(strings.HasSuffix(f.Name, ".class") || strings.HasSuffix(f.Name, ".jar")) {
+							// 	contents, _ = f.Contents()
+							// }
 							isBin, _ := f.IsBinary()
 							lines, _ := f.Lines()
 							// fmt.Printf("%d	%s\n", commit.ID, f.Name)
@@ -211,6 +217,7 @@ func main() {
 							for _, l := range lines {
 								ls = append(ls, models.FileLine{Line: l})
 							}
+							fmt.Printf("Commit: %d - %s\n", commit.ID, commit.CommitHash)
 							fl := &models.File{
 								CommitID:   commit.ID,
 								Hash:       f.Hash.String(),
