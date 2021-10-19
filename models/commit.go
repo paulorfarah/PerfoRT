@@ -22,7 +22,7 @@ type Commit struct {
 	AuthorDate         time.Time `gorm:"not null"`
 	Committer          uint      `gorm:"not null"`
 	CommitterDate      time.Time `gorm:"not null"`
-	Subject            string    `gorm:"not_null"`
+	Subject            string    `gorm:"type:text;not_null"`
 	Branch             string    `gorm:"not_null"`
 	Changes            []Change
 }
