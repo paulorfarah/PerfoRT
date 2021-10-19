@@ -217,7 +217,7 @@ func main() {
 							for _, l := range lines {
 								ls = append(ls, models.FileLine{Line: l})
 							}
-							fmt.Printf("Commit: %d - %s\n", commit.ID, commit.CommitHash)
+							// fmt.Printf("Commit: %d - %s\n", commit.ID, commit.CommitHash)
 							fl := &models.File{
 								CommitID:   commit.ID,
 								Hash:       f.Hash.String(),
