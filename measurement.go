@@ -43,9 +43,11 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 			}
 		case "gradle":
+			fmt.Println("entrou no gradle...")
 			projectPaths := getProjectPaths(repoDir)
-			for _, projectPath := range projectPaths {
-				buildPath := repoDir + string(os.PathSeparator) + projectPath
+			fmt.Printf("projectPaths: %s\n", projectPaths)
+			if len(projectPaths) == 0 {
+				buildPath := repoDir + string(os.PathSeparator)
 				ok := GradleBuild(buildPath)
 				if ok {
 					MeasureGradleTests(db, buildPath, commitID, measurement)
@@ -55,6 +57,21 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 					// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
 					// }
 					// JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
+				}
+
+			} else {
+				for _, projectPath := range projectPaths {
+					buildPath := repoDir + string(os.PathSeparator) + projectPath
+					ok := GradleBuild(buildPath)
+					if ok {
+						MeasureGradleTests(db, buildPath, commitID, measurement)
+						// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
+						// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
+						// for _, file := range listJavaFiles(buildPath) {
+						// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
+						// }
+						// JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
+					}
 				}
 			}
 		}
@@ -89,6 +106,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, measurement models.Measureme
 }
 
 func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
+	fmt.Println("MeasureGradleTests...")
 	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
 
@@ -126,7 +144,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				tc := &models.TestCase{
 					Type:      "gradle",
 					ClassName: test.Classname,
-					// Duration:      test.Duration,
+					// Duration :      test.Duration,
 					FileID: testSuite.ID,
 					Name:   test.Name,
 					// Status:        string(test.Status),
@@ -137,7 +155,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				}
 				_, errTC := models.CreateTestCase(db, tc)
 				if errTC != nil {
-					fmt.Println(errTC.Error())
+					fmt.Println("Error creating test case: ", errTC.Error())
 				}
 
 				//gradle test --test "com.cloudhadoop.emp.SuiteTest.testTestCaseName"

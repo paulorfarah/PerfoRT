@@ -86,7 +86,6 @@ func getGradleClasspath(path string) string {
 }
 
 func GradleBuild(path string) bool {
-	fmt.Println("GradleBuild...")
 	logfile := "gradle-compiler.log"
 
 	fmt.Println("------------------------------------------------ gradle build")
