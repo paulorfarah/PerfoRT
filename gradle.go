@@ -349,7 +349,7 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 
 	stop := make(chan bool)
 	go func() {
-		LOG_FILE := "/tmp/myapp_log"
+		LOG_FILE := "/tmp/gorepodownloader_log"
 		// open log file
 		logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 		if err != nil {
@@ -458,7 +458,7 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 	}()
 
 	err = cmd.Wait()
-	log.Printf("Command finished with error: %v", err)
+	log.Printf("Command finished with error: %v", err.Error())
 	stop <- true
 
 	if err != nil {
