@@ -442,7 +442,7 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 				// 			Fifoin:      netIOCounter.Fifoin,
 				// 			Fifoout:     netIOCounter.Fifoout,
 				// 		})
-				// 	}
+				//
 				// }
 				return
 			default:
@@ -460,11 +460,12 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 	}()
 
 	err = cmd.Wait()
-	log.Printf("Command finished with error: %v", err.Error())
+
 	stop <- true
 
 	if err != nil {
-		fmt.Printf("gradle test failed with %s\n", err)
+		fmt.Printf("gradle test failed with %s\n", err.Error())
+		log.Printf("Command finished with error: %s", err.Error())
 	}
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
