@@ -524,6 +524,7 @@ func getProjectPaths(repoDir string) []string {
 }
 
 func CopyDirectory(scrDir, dest string) error {
+	deleteDir(dest)
 	entries, err := ioutil.ReadDir(scrDir)
 	if err != nil {
 		return err
@@ -622,4 +623,24 @@ func CopySymLink(source, dest string) error {
 		return err
 	}
 	return os.Symlink(link, dest)
+}
+
+func deleteDir(dir string) error {
+	fmt.Println("deleting directory: " + dir)
+	d, err := os.Open(dir)
+	if err != nil {
+		return err
+	}
+	defer d.Close()
+	names, err := d.Readdirnames(-1)
+	if err != nil {
+		return err
+	}
+	for _, name := range names {
+		err = os.RemoveAll(filepath.Join(dir, name))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
