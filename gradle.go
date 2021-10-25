@@ -521,6 +521,10 @@ func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
 		// NetIOCounters:     perfMetric.NetIOCounters,
 
 	}
+	_, err := models.CreateResource(db, resource)
+	if err != nil {
+		fmt.Printf("Error saving resource: %s\n", err.Error())
+	}
 
 	for _, cpuTime := range perfMetric.CPUTimes {
 		models.CreateCPUTimes(db, &models.CPUTimes{

@@ -523,14 +523,17 @@ func getProjectPaths(repoDir string) []string {
 	return includes
 }
 
-func CopyDirectory(scrDir, dest string) error {
+func CopyDirectory(srcDir, dest string) error {
 	deleteDir(dest)
-	entries, err := ioutil.ReadDir(scrDir)
+	fmt.Println("Copying directory")
+	fmt.Println(srcDir)
+	fmt.Println(dest)
+	entries, err := ioutil.ReadDir(srcDir)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		sourcePath := filepath.Join(scrDir, entry.Name())
+		sourcePath := filepath.Join(srcDir, entry.Name())
 		destPath := filepath.Join(dest, entry.Name())
 
 		fileInfo, err := os.Stat(sourcePath)
