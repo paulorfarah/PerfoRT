@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	billy "github.com/go-git/go-billy/v5"
 	memfs "github.com/go-git/go-billy/v5/memfs"
@@ -54,8 +55,9 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 }
 
 func Checkout(repoName, hash string) error {
-	// fmt.Println("################################################ checkout " + hash)
-	// log.Println("################################################ checkout " + hash)
+	dt := time.Now()
+	fmt.Println("################################################ checkout " + hash + " " + dt.String())
+	log.Println("################################################ checkout " + hash)
 
 	dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	cmd := exec.Command("git", "checkout", "-f", hash)

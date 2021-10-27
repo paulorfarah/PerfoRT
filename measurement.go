@@ -21,19 +21,19 @@ import (
 )
 
 func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
-	dt := time.Now()
-	fmt.Println(currCommit.Hash.String() + " - " + dt.String())
+	// dt := time.Now()
+	// fmt.Println(currCommit.Hash.String() + " - " + dt.String())
 
-	src := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repository.Name
-	dst := "copy" + string(os.PathSeparator) + repository.Name
+	// src := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repository.Name
+	// dst := "copy" + string(os.PathSeparator) + repository.Name
 
-	err := CopyDirectory(src, dst)
-	if err != nil {
-		fmt.Println("Error copying commit directory: ", err.Error())
-		log.Println("Error copying commit directory: ", err.Error())
-	}
+	// err := CopyDirectory(src, dst)
+	// if err != nil {
+	// 	fmt.Println("Error copying commit directory: ", err.Error())
+	// 	log.Println("Error copying commit directory: ", err.Error())
+	// }
 
-	err = Checkout(repository.Name, currCommit.Hash.String())
+	err := Checkout(repository.Name, currCommit.Hash.String())
 	if err != nil {
 		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 		log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
@@ -55,9 +55,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 			}
 		case "gradle":
-			fmt.Println("entrou no gradle...")
 			projectPaths := getProjectPaths(repoDir)
-			fmt.Printf("projectPaths: %s\n", projectPaths)
 			if len(projectPaths) == 0 {
 				buildPath := repoDir + string(os.PathSeparator)
 				ok := GradleBuild(buildPath)
@@ -118,7 +116,6 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, measurement models.Measureme
 }
 
 func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	fmt.Println("MeasureGradleTests...")
 	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
 
@@ -134,7 +131,8 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 			// fmt.Printf("%s\n", suite.Tests)
 			for _, test := range suite.Tests {
 				// fmt.Println(test.Classname + ".java")
-				// fmt.Printf("  %s\n", test.Name)
+				dt := time.Now()
+				fmt.Printf("  %s %s\n", test.Name, dt.String())
 				// if test.Error != nil {
 				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
 				// } else {
