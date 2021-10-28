@@ -169,7 +169,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				}
 
 				//gradle test --test "com.cloudhadoop.emp.SuiteTest.testTestCaseName"
-				RunGradleTestCase(db, repoDir, tc, measurement.ID)
+				go RunGradleTestCase(db, repoDir, tc, measurement.ID)
 
 			}
 		}

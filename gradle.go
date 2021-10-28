@@ -349,108 +349,35 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 
 	stop := make(chan bool)
 	go func() {
-		LOG_FILE := "/tmp/gorepodownloader_log"
-		// open log file
-		logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-		if err != nil {
-			log.Panic(err)
-			return
-		}
-		defer logFile.Close()
-
-		// Set log out put and enjoy :)
-		log.SetOutput(logFile)
+		// LOG_FILE := "/tmp/gorepodownloader_log"
+		// // open log file
+		// logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+		// if err != nil {
+		// 	log.Panic(err)
+		// 	return
+		// }
+		// defer logFile.Close()
+		// log.SetOutput(logFile)
 
 		// optional: log date-time, filename, and line number
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
+		// log.SetFlags(log.Lshortfile | log.LstdFlags)
 
-		log.Println("measurementID: ", measurementID)
+		// log.Println("measurementID: ", measurementID)
 
-		// perfMetrics := []PerfMetrics{}
+		perfMetrics := []PerfMetrics{}
 		for {
 			select {
 			case <-stop:
 				// //save
-				// log.Println("entrou no stop: ", len(perfMetrics))
-				// for _, perfMetric := range perfMetrics {
-				// 	resource := &models.Resource{
-				// 		RunID:             mr.ID,
-				// 		CpuPercent:        perfMetric.CpuPercent,
-				// 		MemPercent:        perfMetric.MemoryPercent,
-				// 		MemoryInfoStat:    *perfMetric.MemoryInfo,
-				// 		IOCountersStat:    *perfMetric.IOCounters,
-				// 		PageFaultsStat:    *perfMetric.PageFaults,
-				// 		AvgStat:           *perfMetric.Load,
-				// 		VirtualMemoryStat: *perfMetric.VirtualMemory,
-				// 		SwapMemory:        *perfMetric.SwapMemory,
-				// 		// DiskIOCounters:    perfMetric.DiskIOCounters,
-				// 		// NetIOCounters:     perfMetric.NetIOCounters,
-
-				// 	}
-
-				// 	for _, cpuTime := range perfMetric.CPUTimes {
-				// 		models.CreateCPUTimes(db, &models.CPUTimes{
-				// 			ResourceID: resource.ID,
-				// 			CPU:        cpuTime.CPU,
-				// 			User:       cpuTime.User,
-				// 			System:     cpuTime.System,
-				// 			Idle:       cpuTime.Idle,
-				// 			Nice:       cpuTime.Nice,
-				// 			Iowait:     cpuTime.Iowait,
-				// 			Irq:        cpuTime.Irq,
-				// 			Softirq:    cpuTime.Softirq,
-				// 			Steal:      cpuTime.Steal,
-				// 			Guest:      cpuTime.Guest,
-				// 			GuestNice:  cpuTime.GuestNice,
-				// 		})
-				// 	}
-
-				// 	for i, diskIOCounter := range perfMetric.DiskIOCounters {
-				// 		models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-				// 			ResourceID:       resource.ID,
-				// 			Device:           i,
-				// 			ReadCount:        diskIOCounter.ReadCount,
-				// 			MergedReadCount:  diskIOCounter.MergedReadCount,
-				// 			WriteCount:       diskIOCounter.WriteCount,
-				// 			MergedWriteCount: diskIOCounter.MergedWriteCount,
-				// 			ReadBytes:        diskIOCounter.ReadBytes,
-				// 			WriteBytes:       diskIOCounter.WriteBytes,
-				// 			ReadTime:         diskIOCounter.ReadTime,
-				// 			WriteTime:        diskIOCounter.WriteTime,
-				// 			IopsInProgress:   diskIOCounter.IopsInProgress,
-				// 			IoTime:           diskIOCounter.IoTime,
-				// 			WeightedIO:       diskIOCounter.WeightedIO,
-				// 			Name:             diskIOCounter.Name,
-				// 			SerialNumber:     diskIOCounter.SerialNumber,
-				// 			Label:            diskIOCounter.Label,
-				// 		})
-				// 	}
-
-				// 	for i, netIOCounter := range perfMetric.NetIOCounters {
-				// 		models.CreateNetIOCounters(db, &models.NetIOCounters{
-				// 			ResourceID:  resource.ID,
-				// 			NICID:       uint(i),
-				// 			Name:        netIOCounter.Name,
-				// 			BytesSent:   netIOCounter.BytesSent,
-				// 			BytesRecv:   netIOCounter.BytesRecv,
-				// 			PacketsSent: netIOCounter.PacketsSent,
-				// 			PacketsRecv: netIOCounter.PacketsRecv,
-				// 			Errin:       netIOCounter.Errin,
-				// 			Errout:      netIOCounter.Errout,
-				// 			Dropin:      netIOCounter.Dropin,
-				// 			Dropout:     netIOCounter.Dropout,
-				// 			Fifoin:      netIOCounter.Fifoin,
-				// 			Fifoout:     netIOCounter.Fifoout,
-				// 		})
-				//
-				// }
+				for _, perfMetric := range perfMetrics {
+					saveMetrics(db, mr.ID, perfMetric)
+				}
 				return
 			default:
-				log.Println("entrou no default...")
 				perfMetric, err := MonitorProcess(pid)
 				if err == nil {
-					// perfMetrics = append(perfMetrics, perfMetric)
-					saveMetrics(db, mr.ID, perfMetric)
+					perfMetrics = append(perfMetrics, perfMetric)
+					// saveMetrics(db, mr.ID, perfMetric)
 
 				}
 				// log.Println(perfMetric)
@@ -469,7 +396,7 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 	}
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
-	log.Printf("gradle test out:\n%s\n", string(output))
+	// log.Printf("gradle test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		// ok = false
