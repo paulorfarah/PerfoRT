@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/xml"
 	"fmt"
 	"go-repo-downloader/models"
 	"io"
@@ -15,6 +16,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/creekorful/mvnparser"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/jinzhu/gorm"
 	"github.com/joshdk/go-junit"
@@ -43,16 +45,37 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 		case "":
 			fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
 		case "maven":
-			MvnInstall(repoDir)
-			ok := MvnCompile(repoDir)
-			if ok {
-				MeasureMavenTests(db, repoDir, measurement)
-				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
-				mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-				for _, file := range listJavaFiles(repoDir) {
-					MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			projectModules := getProjectModules(repoDir)
+			if len(projectModules) == 0 {
+				buildPath := repoDir + string(os.PathSeparator)
+
+				MvnInstall(buildPath)
+				ok := MvnCompile(buildPath)
+				if ok {
+					MeasureMavenTests(db, buildPath, measurement)
+					JacocoTestCoverage(db, buildPath, "maven", "maven", measurement.ID)
+					mavenClasspath := GetMavenDependenciesClasspath(buildPath)
+					for _, file := range listJavaFiles(buildPath) {
+						MeasureRandoopTests(db, buildPath, file, "maven", mavenClasspath, commitID, measurement)
+					}
+					JacocoTestCoverage(db, buildPath, "randoop", "maven", measurement.ID)
 				}
-				JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+			} else {
+				for _, projectPath := range projectModules {
+					buildPath := repoDir + string(os.PathSeparator) + projectPath
+					MvnInstall(buildPath)
+					ok := MvnCompile(buildPath)
+					if ok {
+						MeasureMavenTests(db, buildPath, measurement)
+						JacocoTestCoverage(db, buildPath, "maven", "maven", measurement.ID)
+						mavenClasspath := GetMavenDependenciesClasspath(buildPath)
+						for _, file := range listJavaFiles(buildPath) {
+							MeasureRandoopTests(db, buildPath, file, "maven", mavenClasspath, commitID, measurement)
+						}
+						JacocoTestCoverage(db, buildPath, "randoop", "maven", measurement.ID)
+
+					}
+				}
 			}
 		case "gradle":
 			projectPaths := getProjectPaths(repoDir)
@@ -489,6 +512,28 @@ func checkBuildTool(repoDir string) string {
 	}
 	return ""
 
+}
+
+func getProjectModules(repoDir string) []string {
+	var includes []string
+	file, err := os.Open(repoDir + "/settings.gradle")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	pomStr := "..."
+
+	// Load project from string
+	var project mvnparser.MavenProject
+	if err := xml.Unmarshal([]byte(pomStr), &project); err != nil {
+		log.Fatalf("unable to unmarshal pom file. Reason: %s", err)
+	}
+
+	for _, m := range project.Modules {
+		fmt.Println(m)
+	}
+	return includes
 }
 
 func getProjectPaths(repoDir string) []string {
