@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/xml"
 	"fmt"
 	"go-repo-downloader/models"
 	"io"
@@ -16,10 +15,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/creekorful/mvnparser"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/jinzhu/gorm"
 	"github.com/joshdk/go-junit"
+	"github.com/vifraa/gopom"
 )
 
 func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
@@ -45,6 +44,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 		case "":
 			fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
 		case "maven":
+			fmt.Println("maven")
 			projectModules := getProjectModules(repoDir)
 			if len(projectModules) == 0 {
 				buildPath := repoDir + string(os.PathSeparator)
@@ -516,22 +516,24 @@ func checkBuildTool(repoDir string) string {
 
 func getProjectModules(repoDir string) []string {
 	var includes []string
-	file, err := os.Open(repoDir + "/settings.gradle")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 
-	pomStr := "..."
+	pomPath := repoDir + "/pom.xml"
+	fmt.Println(pomPath)
 
 	// Load project from string
-	var project mvnparser.MavenProject
-	if err := xml.Unmarshal([]byte(pomStr), &project); err != nil {
-		log.Fatalf("unable to unmarshal pom file. Reason: %s", err)
+	parsedPom, err := gopom.Parse(pomPath)
+	if err != nil {
+		fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
 	}
+	// if err := xml.Unmarshal([]byte(pomStr), &project); err != nil {
+	// 	fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
+	// }
+	fmt.Println("Modules:")
+	fmt.Println(parsedPom)
 
-	for _, m := range project.Modules {
+	for _, m := range parsedPom.Modules {
 		fmt.Println(m)
+		includes = append(includes, m)
 	}
 	return includes
 }

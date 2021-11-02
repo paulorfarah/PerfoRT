@@ -29,7 +29,8 @@ func main() {
 	log.Println("starting...")
 
 	// url := "https://github.com/paulorfarah/gradle-project-example"
-	url := "https://github.com/ReactiveX/RxJava"
+	// url := "https://github.com/ReactiveX/RxJava"
+	url := "https://github.com/apache/pdfbox"
 	// "https://github.com/dev9com/gradle-example"
 	//"https://github.com/ReactiveX/RxJava"
 	//  "https://github.com/zxing/zxing"
