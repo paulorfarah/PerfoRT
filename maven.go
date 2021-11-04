@@ -385,7 +385,7 @@ func ParseMavenTestResults(f string) MavenTestSuite {
 	return testSuite
 }
 
-func RunMavenTestCase(db *gorm.DB, path string, tc *models.TestCase, measurementID uint) {
+func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurementID uint) {
 	// # Executes a single specified test in SomeTestClass
 	// Test only a certain testcase inside test class with
 	// “mvn -Dtest=TestSurefire#testcaseFirst test“
@@ -397,11 +397,16 @@ func RunMavenTestCase(db *gorm.DB, path string, tc *models.TestCase, measurement
 
 	log.Println(">>>------------------------------------------------ maven testcase", path, testName)
 	fmt.Println(">>>------------------------------------------------ maven testcase", path, testName)
-	// fmt.Printf("gradle test --rerun-tasks --tests %s (dir: %s)\n", testName, path)
-	fmt.Printf("mvn test -Dtest="+tc.ClassName+"#"+testName+"\n", testName, path)
-	// cmd := exec.Command("gradle", "test", "--rerun-tasks", "--tests", testName)
-	// mvn test -Dtest=AppTest#testAppHasAGreeting
-	cmd := exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
+
+	var cmd *exec.Cmd
+
+	if module != "" {
+		fmt.Printf("mvn test -Dtest= %s#%s -pl %s\n ", tc.ClassName, testName, module)
+		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName, "-pl", module)
+	} else {
+		fmt.Printf("mvn test -Dtest="+tc.ClassName+"#"+testName+"\n", testName, path)
+		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
+	}
 	cmd.Dir = path
 
 	var output []byte

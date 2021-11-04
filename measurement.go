@@ -124,7 +124,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 				path = repoDir + "/target/surefire-reports/"
 			}
 
-			fmt.Println("path: ", path)
+			// fmt.Println("path: ", path)
 			files, err := ioutil.ReadDir(path)
 
 			if err != nil {
@@ -158,7 +158,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 						if errTC != nil {
 							fmt.Println("Error creating test case: ", errTC.Error())
 						}
-						RunMavenTestCase(db, repoDir, tc, measurement.ID)
+						RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
 					}
 
 				}
