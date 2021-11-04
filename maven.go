@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/xml"
 	"fmt"
+	"go-repo-downloader/models"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/gorm"
+	"github.com/joshdk/go-junit"
 )
 
 type MvnTestResult struct {
@@ -225,11 +228,14 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) bool {
 	// }()
 
 	err = cmd.Wait()
-	log.Printf("Command finished with error: %v", err)
+	if err != nil {
+		log.Printf("Command finished with error: %v\n", err)
+		fmt.Printf("Command finished with error: %v\n", err)
+	}
 	// stop <- true
 
 	if err != nil {
-		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err)
+		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err.Error())
 	}
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
@@ -337,5 +343,168 @@ func MvnInstall(path string) bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// type MavenTestSuites struct {
+// 	// XMLName    xml.Name         `xml:"name"`
+// 	TestSuites []MavenTestSuite `xml:"testsuites"`
+// }
+
+type MavenTestSuite struct {
+	XMLName xml.Name `xml:"testsuite"`
+	// Properties []MavenTestProperty `xml:"properties"`
+	TestCases []MavenTestCase `xml:"testcase"`
+}
+
+// type MavenTestProperty struct {
+// 	// XMLName xml.Name `xml:"property"`
+// 	Name  string `xml:"name,attr"`
+// 	Value string `xml:"value,attr"`
+// }
+
+type MavenTestCase struct {
+	XMLName   xml.Name `xml:"testcase"`
+	Name      string   `xml:"name,attr"`
+	ClassName string   `xml:"classname,attr"`
+	Time      string   `xml:"time,attr"`
+}
+
+func ParseMavenTestResults(f string) MavenTestSuite {
+	// fmt.Println("ParseMavenTestResults: ", f)
+	xmlFile, err := os.Open(f)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer xmlFile.Close()
+
+	rawData, _ := ioutil.ReadAll(xmlFile)
+
+	var testSuite MavenTestSuite
+	xml.Unmarshal(rawData, &testSuite)
+	fmt.Println(testSuite)
+
+	return testSuite
+}
+
+func RunMavenTestCase(db *gorm.DB, path string, tc *models.TestCase, measurementID uint) {
+	// # Executes a single specified test in SomeTestClass
+	// Test only a certain testcase inside test class with
+	// “mvn -Dtest=TestSurefire#testcaseFirst test“
+	// This command will execute only single test case method i.e. testcaseFirst().
+
+	// ok := true
+	logfile := "maven-test.log"
+	testName := tc.ClassName + "." + tc.Name
+
+	log.Println(">>>------------------------------------------------ maven testcase", path, testName)
+	fmt.Println(">>>------------------------------------------------ maven testcase", path, testName)
+	// fmt.Printf("gradle test --rerun-tasks --tests %s (dir: %s)\n", testName, path)
+	fmt.Printf("mvn test -Dtest="+tc.ClassName+"#"+testName+"\n", testName, path)
+	// cmd := exec.Command("gradle", "test", "--rerun-tasks", "--tests", testName)
+	// mvn test -Dtest=AppTest#testAppHasAGreeting
+	cmd := exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
+	cmd.Dir = path
+
+	var output []byte
+	var err error
+
+	mr := &models.Run{
+		MeasurementID: measurementID,
+		Type:          "maven",
+		TestCaseID:    tc.ID,
+	}
+	models.CreateRun(db, mr)
+
+	err = cmd.Start()
+	if err != nil {
+		fmt.Println(err.Error())
+		log.Fatal(err)
+	}
+	pid := cmd.Process.Pid
+
+	stop := make(chan bool)
+	go func() {
+		// LOG_FILE := "/tmp/gorepodownloader_log"
+		// // open log file
+		// logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+		// if err != nil {
+		// 	log.Panic(err)
+		// 	return
+		// }
+		// defer logFile.Close()
+		// log.SetOutput(logFile)
+
+		// optional: log date-time, filename, and line number
+		// log.SetFlags(log.Lshortfile | log.LstdFlags)
+
+		// log.Println("measurementID: ", measurementID)
+
+		perfMetrics := []PerfMetrics{}
+		for {
+			select {
+			case <-stop:
+				// //save
+				for _, perfMetric := range perfMetrics {
+					saveMetrics(db, mr.ID, perfMetric)
+				}
+				return
+			default:
+				perfMetric, err := MonitorProcess(pid)
+				if err == nil {
+					perfMetrics = append(perfMetrics, perfMetric)
+					// saveMetrics(db, mr.ID, perfMetric)
+
+				}
+				// log.Println(perfMetric)
+
+			}
+		}
+	}()
+
+	err = cmd.Wait()
+
+	stop <- true
+
+	if err != nil {
+		fmt.Printf("gradle test failed with %s\n", err.Error())
+		log.Printf("Command finished with error: %s", err.Error())
+	}
+
+	// fmt.Printf("Mvn test out:\n%s\n", string(output))
+	// log.Printf("gradle test out:\n%s\n", string(output))
+	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	if err != nil {
+		// ok = false
+		panic(err)
+	}
+
+	resultsPath := path + "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
+	// fmt.Println(resultsPath)
+	suites, err := junit.IngestFile(resultsPath)
+	if err != nil {
+		log.Fatalf("failed to ingest JUnit xml %v", err)
+	}
+	for _, suite := range suites {
+		// fmt.Println(suite.Name)
+
+		for _, test := range suite.Tests {
+			if test.Name == tc.Name {
+				fmt.Printf("  %s\n", test.Name)
+				mr.TestCaseTime = test.Duration
+				err := models.SaveRun(db, mr)
+				if err != nil {
+					fmt.Println("ERROR saving run: ", err.Error())
+				}
+
+				// if test.Error != nil {
+				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
+				// } else {
+				// 	fmt.Printf("    %s\n", test.Status)
+				// }
+				// mr.TestCaseTime = test.Duration
+
+			}
+		}
 	}
 }

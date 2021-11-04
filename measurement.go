@@ -45,38 +45,38 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
 		case "maven":
 			fmt.Println("maven")
-			projectModules := getProjectModules(repoDir)
-			if len(projectModules) == 0 {
-				buildPath := repoDir + string(os.PathSeparator)
+			// projectModules := getProjectModules(repoDir)
+			// if len(projectModules) == 0 {
+			// buildPath := repoDir + string(os.PathSeparator)
 
-				MvnInstall(buildPath)
-				ok := MvnCompile(buildPath)
-				if ok {
-					MeasureMavenTests(db, buildPath, measurement)
-					JacocoTestCoverage(db, buildPath, "maven", "maven", measurement.ID)
-					mavenClasspath := GetMavenDependenciesClasspath(buildPath)
-					for _, file := range listJavaFiles(buildPath) {
-						MeasureRandoopTests(db, buildPath, file, "maven", mavenClasspath, commitID, measurement)
-					}
-					JacocoTestCoverage(db, buildPath, "randoop", "maven", measurement.ID)
-				}
-			} else {
-				for _, projectPath := range projectModules {
-					buildPath := repoDir + string(os.PathSeparator) + projectPath
-					MvnInstall(buildPath)
-					ok := MvnCompile(buildPath)
-					if ok {
-						MeasureMavenTests(db, buildPath, measurement)
-						JacocoTestCoverage(db, buildPath, "maven", "maven", measurement.ID)
-						mavenClasspath := GetMavenDependenciesClasspath(buildPath)
-						for _, file := range listJavaFiles(buildPath) {
-							MeasureRandoopTests(db, buildPath, file, "maven", mavenClasspath, commitID, measurement)
-						}
-						JacocoTestCoverage(db, buildPath, "randoop", "maven", measurement.ID)
-
-					}
-				}
+			MvnInstall(repoDir)
+			ok := MvnCompile(repoDir)
+			if ok {
+				MeasureMavenTests(db, repoDir, commitID, measurement)
+				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+				// for _, file := range listJavaFiles(repoDir) {
+				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+				// }
+				// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 			}
+			// } else {
+			// 	MvnInstall(repoDir)
+			// 	ok := MvnCompile(repoDir)
+			// 	if ok {
+			// 		for _, projectPath := range projectModules {
+			// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
+			// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
+			// 			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+			// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+			// 			// for _, file := range listJavaFiles(repoDir) {
+			// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			// 			// }
+			// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+
+			// 		}
+			// 	}
+			// }
 		case "gradle":
 			projectPaths := getProjectPaths(repoDir)
 			if len(projectPaths) == 0 {
@@ -112,29 +112,85 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 	}
 }
 
-func MeasureMavenTests(db *gorm.DB, repoDir string, measurement models.Measurement) {
+func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
 	ok := MvnTest(db, repoDir, measurement.ID)
 	if ok {
-		// for ind := range testResults {
-		// 	mr := &models.TestCase{
-		// 		Type:      "maven",
-		// 		ClassName: testResults[ind].ClassName,
-		// 		// Duration:  testResults[ind].TimeElapsed,
-		// 		// TestsRun:    testResults[ind].TestsRun,
-		// 		// Failures:    testResults[ind].Failures,
-		// 		// Errors:      testResults[ind].Errors,
-		// 		// Skipped:     testResults[ind].Skipped,
-		// 		// TimeElapsed: testResults[ind].TimeElapsed
-		// 	}
-		// 	models.CreateTestCase(db, mr)
-		// }
+		projectModules := getProjectModules(repoDir)
+		// path := repoDir
+		var path string
+		for _, module := range projectModules {
+			if module != "" {
+				path = repoDir + "/" + module + "/target/surefire-reports/"
+			} else {
+				path = repoDir + "/target/surefire-reports/"
+			}
 
-		// todo: execute each testcase and measure time and resource usage
-		mr := &models.TestCase{Type: "maven"}
-		models.CreateTestCase(db, mr)
+			fmt.Println("path: ", path)
+			files, err := ioutil.ReadDir(path)
+
+			if err != nil {
+				log.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
+				fmt.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
+			}
+
+			for _, file := range files {
+				fmt.Println(file.Name(), file.IsDir())
+				if !file.IsDir() {
+					suites := ParseMavenTestResults(path + file.Name())
+					for _, test := range suites.TestCases {
+						// for _, test := range suite.TestCase {
+						fmt.Println(test.Name)
+						// mr := &models.TestCase{Type: "maven"}
+						// models.CreateTestCase(db, mr)
+						classname := strings.Replace(test.ClassName, ".", "/", -1)
+						filename := classname + ".java"
+						// fmt.Println(filename)
+						testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
+						if errF != nil {
+							fmt.Println("error finding file: ", test.ClassName, commitID)
+						}
+						// fmt.Println("testSuite: ", testSuite)
+
+						// errorMsg := ""
+						// if test.Error != nil {
+						// 	errorMsg = test.Error.Error()
+						// }
+						tc := &models.TestCase{
+							Type:      "maven",
+							ClassName: test.ClassName,
+							// Duration :      test.Duration,
+							FileID: testSuite.ID,
+							Name:   test.Name,
+							// Status:        string(test.Status),
+							// Error:         errorMsg,
+							// Message:       test.Message,
+							// SystemErr:     string(test.SystemErr),
+							// SystemOut:     string(test.SystemOut),
+						}
+						_, errTC := models.CreateTestCase(db, tc)
+						if errTC != nil {
+							fmt.Println("Error creating test case: ", errTC.Error())
+						}
+						// RunGradleTestCase(db, repoDir, tc, measurement.ID)
+						// }
+					}
+
+				}
+			}
+		}
+		// read testcases
+		//
+		// if module != "" {
+		//
+		// }
+		// path = path + "/target/surefire-reports/"
+		// fmt.Println("surefire results: ", path)
+
 	} else {
 		log.Println("********************** CRITICAL ERROR ***************")
 		log.Println("successAfter is false measuring maven tests")
+		fmt.Println("********************** CRITICAL ERROR ***************")
+		fmt.Println("successAfter is false measuring maven tests")
 	}
 }
 
@@ -192,7 +248,7 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				}
 
 				//gradle test --test "com.cloudhadoop.emp.SuiteTest.testTestCaseName"
-				go RunGradleTestCase(db, repoDir, tc, measurement.ID)
+				RunGradleTestCase(db, repoDir, tc, measurement.ID)
 
 			}
 		}
@@ -517,22 +573,14 @@ func checkBuildTool(repoDir string) string {
 func getProjectModules(repoDir string) []string {
 	var includes []string
 
+	includes = append(includes, "")
 	pomPath := repoDir + "/pom.xml"
-	fmt.Println(pomPath)
-
-	// Load project from string
 	parsedPom, err := gopom.Parse(pomPath)
 	if err != nil {
 		fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
 	}
-	// if err := xml.Unmarshal([]byte(pomStr), &project); err != nil {
-	// 	fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
-	// }
-	fmt.Println("Modules:")
-	fmt.Println(parsedPom)
 
 	for _, m := range parsedPom.Modules {
-		fmt.Println(m)
 		includes = append(includes, m)
 	}
 	return includes

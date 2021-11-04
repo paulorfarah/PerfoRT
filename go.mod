@@ -3,6 +3,7 @@ module go-repo-downloader
 go 1.13
 
 require (
+	github.com/creekorful/mvnparser v1.4.0 // indirect
 	github.com/go-echarts/go-echarts/v2 v2.0.0
 	github.com/go-git/go-billy/v5 v5.0.0
 	github.com/go-git/go-git v4.7.0+incompatible
@@ -18,6 +19,7 @@ require (
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
 	github.com/shurcool/githubv4 v0.0.0-20200627185320-e003124d66e4
 	github.com/tdewolff/canvas v0.0.0-20210210144621-f73efe64c447
+	github.com/vifraa/gopom v0.1.0 // indirect
 	github.com/waigani/diffparser v0.0.0-20190828052634-7391f219313d
 	github.com/wcharczuk/go-chart v2.0.2-0.20191206192251-962b9abdec2b+incompatible
 	github.com/wcharczuk/go-chart/v2 v2.1.0
