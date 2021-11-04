@@ -393,16 +393,18 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	// ok := true
 	logfile := "maven-test.log"
-	testName := tc.ClassName + "." + tc.Name
+	// testName := tc.ClassName + "." + tc.Name
 
-	log.Println(">>>------------------------------------------------ maven testcase", path, testName)
-	fmt.Println(">>>------------------------------------------------ maven testcase", path, testName)
+	className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
+	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
+
+	log.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
+	fmt.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
 
 	var cmd *exec.Cmd
-
 	if module != "" {
-		fmt.Printf("mvn test -Dtest= %s#%s -pl %s\n ", tc.ClassName, testName, module)
-		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName, "-pl", module)
+		fmt.Printf("mvn test -Dtest= %s#%s -pl %s\n ", className, testName, module)
+		cmd = exec.Command("mvn", "test", "-Dtest="+className+"#"+testName, "-pl", module)
 	} else {
 		fmt.Printf("mvn test -Dtest=%s#%s\n", tc.ClassName, testName)
 		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
