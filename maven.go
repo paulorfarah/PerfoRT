@@ -382,8 +382,6 @@ func ParseMavenTestResults(f string) MavenTestSuite {
 
 	var testSuite MavenTestSuite
 	xml.Unmarshal(rawData, &testSuite)
-	fmt.Println(testSuite)
-
 	return testSuite
 }
 

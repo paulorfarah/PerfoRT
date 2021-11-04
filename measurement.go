@@ -44,7 +44,6 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 		case "":
 			fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
 		case "maven":
-			fmt.Println("maven")
 			// projectModules := getProjectModules(repoDir)
 			// if len(projectModules) == 0 {
 			// buildPath := repoDir + string(os.PathSeparator)
@@ -134,27 +133,15 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 			}
 
 			for _, file := range files {
-				fmt.Println(file.Name(), file.IsDir())
 				if !file.IsDir() {
 					suites := ParseMavenTestResults(path + file.Name())
 					for _, test := range suites.TestCases {
-						// for _, test := range suite.TestCase {
-						fmt.Println(test.Name)
-						// mr := &models.TestCase{Type: "maven"}
-						// models.CreateTestCase(db, mr)
 						classname := strings.Replace(test.ClassName, ".", "/", -1)
 						filename := classname + ".java"
-						// fmt.Println(filename)
 						testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
 						if errF != nil {
 							fmt.Println("error finding file: ", test.ClassName, commitID)
 						}
-						// fmt.Println("testSuite: ", testSuite)
-
-						// errorMsg := ""
-						// if test.Error != nil {
-						// 	errorMsg = test.Error.Error()
-						// }
 						tc := &models.TestCase{
 							Type:      "maven",
 							ClassName: test.ClassName,
@@ -171,8 +158,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 						if errTC != nil {
 							fmt.Println("Error creating test case: ", errTC.Error())
 						}
-						// RunGradleTestCase(db, repoDir, tc, measurement.ID)
-						// }
+						RunMavenTestCase(db, repoDir, tc, measurement.ID)
 					}
 
 				}
