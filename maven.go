@@ -404,7 +404,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		fmt.Printf("mvn test -Dtest= %s#%s -pl %s\n ", tc.ClassName, testName, module)
 		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName, "-pl", module)
 	} else {
-		fmt.Printf("mvn test -Dtest="+tc.ClassName+"#"+testName+"\n", testName, path)
+		fmt.Printf("mvn test -Dtest=%s#%s\n", tc.ClassName, testName)
 		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
 	}
 	cmd.Dir = path

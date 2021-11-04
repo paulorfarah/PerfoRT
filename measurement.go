@@ -159,6 +159,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 							fmt.Println("Error creating test case: ", errTC.Error())
 						}
 						RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
+
 					}
 
 				}
