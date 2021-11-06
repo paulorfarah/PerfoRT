@@ -95,9 +95,9 @@ func MvnCompile(path string) bool {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("mvn -Drat.skip=true clean compile failed with %s\n", err)
-		fmt.Printf("cmd.Run() failed with %s\n", err)
+		fmt.Printf("cmd.Run() failed with %v\n", err)
 		log.Printf("Compilation out:\n%s\n", string(output))
-		fmt.Printf("Compilation out:\n%s\n", string(output))
+		// fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
 	log.Printf("Compilation out:\n%s\n", string(output))
@@ -328,7 +328,7 @@ func MvnInstall(path string) bool {
 		log.Printf("mvn -Drat.skip=true clean install failed with %s\n", err)
 		fmt.Printf("mvn -Drat.skip=true clean install failed with %s\n", err)
 		log.Printf("Compilation out:\n%s\n", string(output))
-		fmt.Printf("Compilation out:\n%s\n", string(output))
+		// fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
 	log.Printf("Compilation out:\n%s\n", string(output))
@@ -402,13 +402,21 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	fmt.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
 
 	var cmd *exec.Cmd
+	var cmdStr string
 	if module != "" {
-		fmt.Printf("mvn test -Dtest= %s#%s -pl %s\n ", className, testName, module)
-		cmd = exec.Command("mvn", "test", "-Dtest="+className+"#"+testName, "-pl", module)
+		// fmt.Printf("mvn", "test", "-Dtest="+className+"#"+testName, " -pl ", module)
+		// cmd = exec.Command("mvn", "test", "-Dtest="+className+"#"+testName, "-pl", module)
+		cmdStr = "bash mvn test -Dtest=" + className + "#" + testName + " -pl " + module
+		fmt.Println(cmdStr)
+		cmd = exec.Command("bash", "mvn", "test", "-Dtest="+className+"#"+testName, "-pl", module)
 	} else {
-		fmt.Printf("mvn test -Dtest=%s#%s\n", tc.ClassName, testName)
-		cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
+		// fmt.Printf("mvn test -Dtest=%s#%s\n", tc.ClassName, testName)
+		// cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
+		cmdStr = "bash mvn test -Dtest=" + className + "#" + testName
+		fmt.Println(cmdStr)
+		cmd = exec.Command("bash", "mvn", "test", "-Dtest="+className+"#"+testName)
 	}
+	// cmd = exec.Command(cmdStr)
 	cmd.Dir = path
 
 	var output []byte
@@ -472,7 +480,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	stop <- true
 
 	if err != nil {
-		fmt.Printf("gradle test failed with %s\n", err.Error())
+		fmt.Printf("maven test failed with %s\n", err.Error())
 		log.Printf("Command finished with error: %s", err.Error())
 	}
 

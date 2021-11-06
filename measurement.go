@@ -112,73 +112,73 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	ok := MvnTest(db, repoDir, measurement.ID)
-	if ok {
-		projectModules := getProjectModules(repoDir)
-		// path := repoDir
-		var path string
-		for _, module := range projectModules {
-			if module != "" {
-				path = repoDir + "/" + module + "/target/surefire-reports/"
-			} else {
-				path = repoDir + "/target/surefire-reports/"
-			}
+	MvnTest(db, repoDir, measurement.ID)
+	// if ok {
+	projectModules := getProjectModules(repoDir)
+	// path := repoDir
+	var path string
+	for _, module := range projectModules {
+		if module != "" {
+			path = repoDir + "/" + module + "/target/surefire-reports/"
+		} else {
+			path = repoDir + "/target/surefire-reports/"
+		}
 
-			// fmt.Println("path: ", path)
-			files, err := ioutil.ReadDir(path)
+		// fmt.Println("path: ", path)
+		files, err := ioutil.ReadDir(path)
 
-			if err != nil {
-				log.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
-				fmt.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
-			}
+		if err != nil {
+			log.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
+			fmt.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
+		}
 
-			for _, file := range files {
-				if !file.IsDir() {
-					suites := ParseMavenTestResults(path + file.Name())
-					for _, test := range suites.TestCases {
-						classname := strings.Replace(test.ClassName, ".", "/", -1)
-						filename := classname + ".java"
-						testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
-						if errF != nil {
-							fmt.Println("error finding file: ", test.ClassName, commitID)
-						}
-						tc := &models.TestCase{
-							Type:      "maven",
-							ClassName: test.ClassName,
-							// Duration :      test.Duration,
-							FileID: testSuite.ID,
-							Name:   test.Name,
-							// Status:        string(test.Status),
-							// Error:         errorMsg,
-							// Message:       test.Message,
-							// SystemErr:     string(test.SystemErr),
-							// SystemOut:     string(test.SystemOut),
-						}
-						_, errTC := models.CreateTestCase(db, tc)
-						if errTC != nil {
-							fmt.Println("Error creating test case: ", errTC.Error())
-						}
-						RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
-
+		for _, file := range files {
+			if !file.IsDir() {
+				suites := ParseMavenTestResults(path + file.Name())
+				for _, test := range suites.TestCases {
+					classname := strings.Replace(test.ClassName, ".", "/", -1)
+					filename := classname + ".java"
+					testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
+					if errF != nil {
+						fmt.Println("error finding file: ", test.ClassName, commitID)
 					}
+					tc := &models.TestCase{
+						Type:      "maven",
+						ClassName: test.ClassName,
+						// Duration :      test.Duration,
+						FileID: testSuite.ID,
+						Name:   test.Name,
+						// Status:        string(test.Status),
+						// Error:         errorMsg,
+						// Message:       test.Message,
+						// SystemErr:     string(test.SystemErr),
+						// SystemOut:     string(test.SystemOut),
+					}
+					_, errTC := models.CreateTestCase(db, tc)
+					if errTC != nil {
+						fmt.Println("Error creating test case: ", errTC.Error())
+					}
+					RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
 
 				}
+
 			}
 		}
-		// read testcases
-		//
-		// if module != "" {
-		//
-		// }
-		// path = path + "/target/surefire-reports/"
-		// fmt.Println("surefire results: ", path)
-
-	} else {
-		log.Println("********************** CRITICAL ERROR ***************")
-		log.Println("successAfter is false measuring maven tests")
-		fmt.Println("********************** CRITICAL ERROR ***************")
-		fmt.Println("successAfter is false measuring maven tests")
 	}
+	// read testcases
+	//
+	// if module != "" {
+	//
+	// }
+	// path = path + "/target/surefire-reports/"
+	// fmt.Println("surefire results: ", path)
+
+	// } else {
+	// 	log.Println("********************** CRITICAL ERROR ***************")
+	// 	log.Println("successAfter is false measuring maven tests")
+	// 	fmt.Println("********************** CRITICAL ERROR ***************")
+	// 	fmt.Println("successAfter is false measuring maven tests")
+	// }
 }
 
 func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
