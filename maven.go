@@ -13,9 +13,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jinzhu/gorm"
-	"github.com/joshdk/go-junit"
 )
 
 type MvnTestResult struct {
@@ -388,12 +388,13 @@ func ParseMavenTestResults(f string) MavenTestSuite {
 func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurementID uint) {
 	// # Executes a single specified test in SomeTestClass
 	// Test only a certain testcase inside test class with
-	// “mvn -Dtest=TestSurefire#testcaseFirst test“
+	// “mvn  -Dtest=TestSurefire#testcaseFirst test“ (-pl module)
 	// This command will execute only single test case method i.e. testcaseFirst().
 
 	// ok := true
 	logfile := "maven-test.log"
 	// testName := tc.ClassName + "." + tc.Name
+	resultsPath := path //+ "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
 
 	className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
@@ -403,20 +404,21 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	var cmd *exec.Cmd
 	var cmdStr string
+	param := "-Dtest=" + className + "#" + testName
 	if module != "" {
-		// fmt.Printf("mvn", "test", "-Dtest="+className+"#"+testName, " -pl ", module)
-		// cmd = exec.Command("mvn", "test", "-Dtest="+className+"#"+testName, "-pl", module)
-		cmdStr = "bash mvn test -Dtest=" + className + "#" + testName + " -pl " + module
+		cmdStr = "mvn test  -pl " + module + " " + param
 		fmt.Println(cmdStr)
-		cmd = exec.Command("bash", "mvn", "test", "-Dtest="+className+"#"+testName, "-pl", module)
+
+		cmd = exec.Command("mvn", "test", "-pl", module, param)
+		resultsPath += "/" + module
 	} else {
-		// fmt.Printf("mvn test -Dtest=%s#%s\n", tc.ClassName, testName)
-		// cmd = exec.Command("mvn", "test", "-Dtest="+tc.ClassName+"#"+testName)
-		cmdStr = "bash mvn test -Dtest=" + className + "#" + testName
+		cmdStr = "bash mvn test " + param
 		fmt.Println(cmdStr)
-		cmd = exec.Command("bash", "mvn", "test", "-Dtest="+className+"#"+testName)
+		cmd = exec.Command("bash", "mvn", "test", param)
 	}
-	// cmd = exec.Command(cmdStr)
+
+	resultsPath += "/target/surefire-reports/TEST-" + tc.ClassName + ".xml"
+	fmt.Println("resultsPath: ", resultsPath)
 	cmd.Dir = path
 
 	var output []byte
@@ -489,35 +491,64 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		// ok = false
+		fmt.Println("ERROR writing logfile: ", err.Error())
 		panic(err)
 	}
-
-	resultsPath := path + "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
-	// fmt.Println(resultsPath)
-	suites, err := junit.IngestFile(resultsPath)
-	if err != nil {
-		log.Fatalf("failed to ingest JUnit xml %v", err)
-	}
-	for _, suite := range suites {
-		// fmt.Println(suite.Name)
-
-		for _, test := range suite.Tests {
-			if test.Name == tc.Name {
-				fmt.Printf("  %s\n", test.Name)
-				mr.TestCaseTime = test.Duration
-				err := models.SaveRun(db, mr)
-				if err != nil {
-					fmt.Println("ERROR saving run: ", err.Error())
-				}
-
-				// if test.Error != nil {
-				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
-				// } else {
-				// 	fmt.Printf("    %s\n", test.Status)
-				// }
-				// mr.TestCaseTime = test.Duration
-
+	suite := ParseMavenTestResults(resultsPath)
+	for _, test := range suite.TestCases {
+		if test.Name == tc.Name {
+			fmt.Printf("  %s\n", test.Name)
+			fmt.Printf("time:  %s\n", test.Time)
+			// t, _ := strconv.ParseFloat(test.Time, 32)
+			// fmt.Printf("float: %f\n", t)
+			dur, errD := time.ParseDuration(test.Time + "s")
+			if errD != nil {
+				fmt.Println("ERROR parsing test time to duration: ", errD.Error())
 			}
+			fmt.Printf("duration: %s\n", dur)
+			mr.TestCaseTime = dur
+			err := models.SaveRun(db, mr)
+			if err != nil {
+				fmt.Println("ERROR saving run: ", err.Error())
+			}
+
+			// if test.Error != nil {
+			// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
+			// } else {
+			// 	fmt.Printf("    %s\n", test.Status)
+			// }
+			// mr.TestCaseTime = test.Duration
+
 		}
 	}
+	// resultsPath := path + "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
+	// // fmt.Println(resultsPath)
+	// suites, err := junit.IngestFile(resultsPath)
+	// if err != nil {
+	// 	fmt.Printf("failed to ingest JUnit xml %v", err)
+	// 	log.Fatalf("failed to ingest JUnit xml %v", err)
+	// }
+	// for _, suite := range suites {
+	// 	// fmt.Println(suite.Name)
+
+	// 	for _, test := range suite.Tests {
+	// 		if test.Name == tc.Name {
+	// 			fmt.Printf("  %s\n", test.Name)
+	// 			mr.TestCaseTime = test.Duration
+	// 			err := models.SaveRun(db, mr)
+	// 			if err != nil {
+	// 				fmt.Println("ERROR saving run: ", err.Error())
+	// 			}
+
+	// 			// if test.Error != nil {
+	// 			// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
+	// 			// } else {
+	// 			// 	fmt.Printf("    %s\n", test.Status)
+	// 			// }
+	// 			// mr.TestCaseTime = test.Duration
+
+	// 		}
+	// 	}
+	// }
+
 }
