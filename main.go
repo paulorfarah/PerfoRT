@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -278,8 +279,10 @@ func main() {
 								models.CreateChange(db, ch)
 							}
 						}
-
-						Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit)
+						var wg sync.WaitGroup
+						wg.Add(8)
+						go Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit, &wg)
+						wg.Wait()
 
 						//codeanalysis.Understand(cs.Name)
 						// models.BarChart()

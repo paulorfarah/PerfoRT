@@ -497,15 +497,15 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	suite := ParseMavenTestResults(resultsPath)
 	for _, test := range suite.TestCases {
 		if test.Name == tc.Name {
-			fmt.Printf("  %s\n", test.Name)
-			fmt.Printf("time:  %s\n", test.Time)
+			// fmt.Printf("  %s\n", test.Name)
+			// fmt.Printf("time:  %s\n", test.Time)
 			// t, _ := strconv.ParseFloat(test.Time, 32)
 			// fmt.Printf("float: %f\n", t)
 			dur, errD := time.ParseDuration(test.Time + "s")
 			if errD != nil {
 				fmt.Println("ERROR parsing test time to duration: ", errD.Error())
 			}
-			fmt.Printf("duration: %s\n", dur)
+			// fmt.Printf("duration: %s\n", dur)
 			mr.TestCaseTime = dur
 			err := models.SaveRun(db, mr)
 			if err != nil {

@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -21,7 +22,8 @@ import (
 	"github.com/vifraa/gopom"
 )
 
-func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) {
+func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit, wg *sync.WaitGroup) {
+	defer wg.Done()
 	// dt := time.Now()
 	// fmt.Println(currCommit.Hash.String() + " - " + dt.String())
 
