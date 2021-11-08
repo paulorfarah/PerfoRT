@@ -26,6 +26,6 @@ func CreateAccount(db *gorm.DB, account *Account) (uint, error) {
 
 func FindAccountByEmail(db *gorm.DB, email string) (*Account, error) {
 	var account Account
-	res := db.Find(&account, &Account{Email: email})
+	res := db.Where("email = ?", email).First(&account)
 	return &account, res.Error
 }

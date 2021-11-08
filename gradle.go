@@ -453,59 +453,59 @@ func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
 		fmt.Printf("Error saving resource: %s\n", err.Error())
 	}
 
-	for _, cpuTime := range perfMetric.CPUTimes {
-		models.CreateCPUTimes(db, &models.CPUTimes{
-			ResourceID: resource.ID,
-			CPU:        cpuTime.CPU,
-			User:       cpuTime.User,
-			System:     cpuTime.System,
-			Idle:       cpuTime.Idle,
-			Nice:       cpuTime.Nice,
-			Iowait:     cpuTime.Iowait,
-			Irq:        cpuTime.Irq,
-			Softirq:    cpuTime.Softirq,
-			Steal:      cpuTime.Steal,
-			Guest:      cpuTime.Guest,
-			GuestNice:  cpuTime.GuestNice,
-		})
-	}
+	// for _, cpuTime := range perfMetric.CPUTimes {
+	// 	models.CreateCPUTimes(db, &models.CPUTimes{
+	// 		ResourceID: resource.ID,
+	// 		CPU:        cpuTime.CPU,
+	// 		User:       cpuTime.User,
+	// 		System:     cpuTime.System,
+	// 		Idle:       cpuTime.Idle,
+	// 		Nice:       cpuTime.Nice,
+	// 		Iowait:     cpuTime.Iowait,
+	// 		Irq:        cpuTime.Irq,
+	// 		Softirq:    cpuTime.Softirq,
+	// 		Steal:      cpuTime.Steal,
+	// 		Guest:      cpuTime.Guest,
+	// 		GuestNice:  cpuTime.GuestNice,
+	// 	})
+	// }
 
-	for i, diskIOCounter := range perfMetric.DiskIOCounters {
-		models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-			ResourceID:       resource.ID,
-			Device:           i,
-			ReadCount:        diskIOCounter.ReadCount,
-			MergedReadCount:  diskIOCounter.MergedReadCount,
-			WriteCount:       diskIOCounter.WriteCount,
-			MergedWriteCount: diskIOCounter.MergedWriteCount,
-			ReadBytes:        diskIOCounter.ReadBytes,
-			WriteBytes:       diskIOCounter.WriteBytes,
-			ReadTime:         diskIOCounter.ReadTime,
-			WriteTime:        diskIOCounter.WriteTime,
-			IopsInProgress:   diskIOCounter.IopsInProgress,
-			IoTime:           diskIOCounter.IoTime,
-			WeightedIO:       diskIOCounter.WeightedIO,
-			Name:             diskIOCounter.Name,
-			SerialNumber:     diskIOCounter.SerialNumber,
-			Label:            diskIOCounter.Label,
-		})
-	}
+	// for i, diskIOCounter := range perfMetric.DiskIOCounters {
+	// 	models.CreateDiskIOCounters(db, &models.DiskIOCounters{
+	// 		ResourceID:       resource.ID,
+	// 		Device:           i,
+	// 		ReadCount:        diskIOCounter.ReadCount,
+	// 		MergedReadCount:  diskIOCounter.MergedReadCount,
+	// 		WriteCount:       diskIOCounter.WriteCount,
+	// 		MergedWriteCount: diskIOCounter.MergedWriteCount,
+	// 		ReadBytes:        diskIOCounter.ReadBytes,
+	// 		WriteBytes:       diskIOCounter.WriteBytes,
+	// 		ReadTime:         diskIOCounter.ReadTime,
+	// 		WriteTime:        diskIOCounter.WriteTime,
+	// 		IopsInProgress:   diskIOCounter.IopsInProgress,
+	// 		IoTime:           diskIOCounter.IoTime,
+	// 		WeightedIO:       diskIOCounter.WeightedIO,
+	// 		Name:             diskIOCounter.Name,
+	// 		SerialNumber:     diskIOCounter.SerialNumber,
+	// 		Label:            diskIOCounter.Label,
+	// 	})
+	// }
 
-	for i, netIOCounter := range perfMetric.NetIOCounters {
-		models.CreateNetIOCounters(db, &models.NetIOCounters{
-			ResourceID:  resource.ID,
-			NICID:       uint(i),
-			Name:        netIOCounter.Name,
-			BytesSent:   netIOCounter.BytesSent,
-			BytesRecv:   netIOCounter.BytesRecv,
-			PacketsSent: netIOCounter.PacketsSent,
-			PacketsRecv: netIOCounter.PacketsRecv,
-			Errin:       netIOCounter.Errin,
-			Errout:      netIOCounter.Errout,
-			Dropin:      netIOCounter.Dropin,
-			Dropout:     netIOCounter.Dropout,
-			Fifoin:      netIOCounter.Fifoin,
-			Fifoout:     netIOCounter.Fifoout,
-		})
-	}
+	// for i, netIOCounter := range perfMetric.NetIOCounters {
+	// 	models.CreateNetIOCounters(db, &models.NetIOCounters{
+	// 		ResourceID:  resource.ID,
+	// 		NICID:       uint(i),
+	// 		Name:        netIOCounter.Name,
+	// 		BytesSent:   netIOCounter.BytesSent,
+	// 		BytesRecv:   netIOCounter.BytesRecv,
+	// 		PacketsSent: netIOCounter.PacketsSent,
+	// 		PacketsRecv: netIOCounter.PacketsRecv,
+	// 		Errin:       netIOCounter.Errin,
+	// 		Errout:      netIOCounter.Errout,
+	// 		Dropin:      netIOCounter.Dropin,
+	// 		Dropout:     netIOCounter.Dropout,
+	// 		Fifoin:      netIOCounter.Fifoin,
+	// 		Fifoout:     netIOCounter.Fifoout,
+	// 	})
+	// }
 }

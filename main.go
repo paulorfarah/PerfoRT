@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -76,7 +75,13 @@ func main() {
 		if err != nil {
 			log.Println("Create new platform: " + "github")
 			platform = &models.Platform{Name: "github"}
-			models.CreatePlatform(db, platform)
+			platformID, err := models.CreatePlatform(db, platform)
+			if err != nil {
+				fmt.Println("ERROR creating github platform: ", err.Error())
+
+			}
+			platform.ID = platformID
+
 		}
 
 		//search representative repositories
@@ -183,21 +188,21 @@ func main() {
 						if err != nil {
 							log.Println("create new commit: " + currCommit.Hash.String())
 							fmt.Println("create new commit: " + currCommit.Hash.String())
-							parent, errj := json.Marshal(currCommit.ParentHashes)
-							if errj != nil {
-								log.Println("Error Marshalling parent hashes: " + errj.Error())
-							}
+							// parent, errj := json.Marshal(currCommit.ParentHashes)
+							// if errj != nil {
+							// 	log.Println("Error Marshalling parent hashes: " + errj.Error())
+							// }
 							commit = &models.Commit{CommitHash: currCommit.Hash.String(),
 								PreviousCommitHash: prevCommit.Hash.String(),
 								RepositoryID:       repository.ID,
 								TreeHash:           currCommit.TreeHash.String(),
-								ParentHashes:       parent,
-								AuthorID:           author.ID,
-								AuthorDate:         currCommit.Author.When,
-								CommitterID:        committer.ID,
-								CommitterDate:      currCommit.Committer.When,
-								Subject:            currCommit.Message,
-								Branch:             branch.Name().String()}
+								// ParentHashes:       parent,
+								AuthorID:      author.ID,
+								AuthorDate:    currCommit.Author.When,
+								CommitterID:   committer.ID,
+								CommitterDate: currCommit.Committer.When,
+								Subject:       currCommit.Message,
+								Branch:        branch.Name().String()}
 							_, err = models.CreateCommit(db, commit)
 							if err != nil {
 								fmt.Printf("Error creating new commit %s\n", err.Error())
@@ -221,13 +226,13 @@ func main() {
 							}
 							// fmt.Printf("Commit: %d - %s\n", commit.ID, commit.CommitHash)
 							fl := &models.File{
-								CommitID:   commit.ID,
-								Hash:       f.Hash.String(),
-								Name:       f.Name,
-								Size:       f.Size,
-								Contents:   contents,
-								IsBinary:   isBin,
-								Lines:      ls,
+								CommitID: commit.ID,
+								Hash:     f.Hash.String(),
+								Name:     f.Name,
+								Size:     f.Size,
+								Contents: contents,
+								IsBinary: isBin,
+								// Lines:      ls,
 								HasChanged: false}
 							models.CreateFile(db, fl)
 							return nil

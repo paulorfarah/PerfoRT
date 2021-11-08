@@ -27,6 +27,7 @@ func CreatePlatform(db *gorm.DB, platform *Platform) (uint, error) {
 
 func FindPlatformByName(db *gorm.DB, name string) (*Platform, error) {
 	var platform Platform
-	res := db.Find(&platform, &Platform{Name: name})
+	res := db.Where("name = ?", name).First(&platform)
+	fmt.Println(platform)
 	return &platform, res.Error
 }

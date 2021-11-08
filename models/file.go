@@ -10,14 +10,14 @@ import (
 //https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type File struct {
 	Model
-	CommitID    uint
-	Commit      Commit
-	Hash        string `gorm:"not null;idx_commit"`
-	Name        string `gorm:"not null"`
-	Size        int64
-	Contents    string `gorm:"type:text"`
-	IsBinary    bool   `gorm:"not null;default: false"`
-	Lines       []FileLine
+	CommitID uint
+	Commit   Commit
+	Hash     string `gorm:"not null;idx_commit"`
+	Name     string `gorm:"not null"`
+	Size     int64
+	Contents string `gorm:"type:text"`
+	IsBinary bool   `gorm:"not null;default: false"`
+	// Lines       []FileLine
 	IsMalformed bool `gorm:"not null;default: false"`
 	HasChanged  bool `gorm:"not null;default: false"`
 }

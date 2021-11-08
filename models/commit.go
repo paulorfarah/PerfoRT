@@ -41,7 +41,8 @@ func CreateCommit(db *gorm.DB, commit *Commit) (uint, error) {
 
 func FindCommitByHash(db *gorm.DB, hash string) (*Commit, error) {
 	var commit Commit
-	res := db.Find(&commit, &Commit{CommitHash: hash})
+	// res := db.Find(&commit, &Commit{CommitHash: hash})
+	res := db.Where("commit_hash = ?", hash).First(&commit)
 	return &commit, res.Error
 }
 

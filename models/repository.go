@@ -33,7 +33,7 @@ func CreateRepository(db *gorm.DB, repository *Repository) (uint, error) {
 
 func FindRepositoryByName(db *gorm.DB, name string) (*Repository, error) {
 	var repository Repository
-	res := db.Find(&repository, &Repository{Name: name})
+	res := db.Where("name = ?", name).First(&repository)
 	return &repository, res.Error
 }
 
