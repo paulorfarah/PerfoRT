@@ -1,14 +1,16 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
+
 type Account struct {
 	Model
-	Name	string	`gorm:"not null" json:"name"	validate:"required"`
-	Email	string	`gorm:"not null" json:"email"	validate:"required,email"`
+	Name             string   `gorm:"not null" json:"name"	validate:"required"`
+	Email            string   `gorm:"not null" json:"email"	validate:"required,email"`
+	CommitsAuthor    []Commit `gorm:"foreignKey:AuthorID"`
+	CommitsCommitter []Commit `gorm:"foreignKey:CommitterID"`
 }
-
 
 func (u *Account) TableName() string {
 	return "accounts"

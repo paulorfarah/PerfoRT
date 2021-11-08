@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/gorm"
 )
 
 type JSON []byte
@@ -18,13 +18,13 @@ type Commit struct {
 	PreviousCommitHash string
 	TreeHash           string    `gorm:"not null"`
 	ParentHashes       JSON      `sql:"type:json" json:"parent_hashes,omitempty"`
-	Author             uint      `gorm:"not null"`
+	AuthorID           uint      `gorm:"not null"`
 	AuthorDate         time.Time `gorm:"not null"`
-	Committer          uint      `gorm:"not null"`
+	CommitterID        uint      `gorm:"not null"`
 	CommitterDate      time.Time `gorm:"not null"`
 	Subject            string    `gorm:"type:text;not_null"`
 	Branch             string    `gorm:"not_null"`
-	Changes            []Change
+	// Changes            []Change
 }
 
 func (r *Commit) TableName() string {

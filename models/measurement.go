@@ -1,16 +1,16 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/gorm"
 )
 
 //https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type Measurement struct {
 	Model
 	RepositoryID uint //   `gorm:"not null"`
-	Repository   Repository
-	Executions   int `gorm:"default:1"`
+	// Repository   Repository
+	Executions int `gorm:"default:1"`
 	// Maven        []Maven
 	// Randoop      []Randoop
 }

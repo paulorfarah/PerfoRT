@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/gorm"
 )
 
 //https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
@@ -10,14 +10,14 @@ type Change struct {
 	Model
 	// FileID         uint //   `gorm:"not null"`
 	// File           File
-	ChangeHash     string `gorm:"not null"`
-	FileFromID     uint   `gorm:"not null"`
-	FileFrom       File
-	FileToID       uint `gorm:"not null"`
-	FileTo         File
-	Action         string `gorm:"not null"`
-	Patch          string `gorm:"type:text;not null"`
-	RandoopMetrics []RandoopMetrics
+	ChangeHash string `gorm:"not null"`
+	FileFromID uint   `gorm:"not null"`
+	FileFrom   File
+	FileToID   uint `gorm:"not null"`
+	FileTo     File
+	Action     string `gorm:"not null"`
+	Patch      string `gorm:"type:text;not null"`
+	// RandoopMetrics []RandoopMetrics
 }
 
 func (r *Change) TableName() string {

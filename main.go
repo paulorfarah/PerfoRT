@@ -192,9 +192,9 @@ func main() {
 								RepositoryID:       repository.ID,
 								TreeHash:           currCommit.TreeHash.String(),
 								ParentHashes:       parent,
-								Author:             author.ID,
+								AuthorID:           author.ID,
 								AuthorDate:         currCommit.Author.When,
-								Committer:          committer.ID,
+								CommitterID:        committer.ID,
 								CommitterDate:      currCommit.Committer.When,
 								Subject:            currCommit.Message,
 								Branch:             branch.Name().String()}

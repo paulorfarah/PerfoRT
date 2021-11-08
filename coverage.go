@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measurementID uint) error {

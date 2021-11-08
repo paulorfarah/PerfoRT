@@ -8,9 +8,9 @@ import (
 
 	"database/sql"
 
-	"github.com/jinzhu/gorm"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
+	"gorm.io/gorm"
 )
 
 type RandoopMetrics struct {

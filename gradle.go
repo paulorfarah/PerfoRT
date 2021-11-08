@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jinzhu/gorm"
 	"github.com/joshdk/go-junit"
+	"gorm.io/gorm"
 )
 
 type GradleTestResult struct {
@@ -443,7 +443,7 @@ func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
 		PageFaultsStat:    *perfMetric.PageFaults,
 		AvgStat:           *perfMetric.Load,
 		VirtualMemoryStat: *perfMetric.VirtualMemory,
-		SwapMemory:        *perfMetric.SwapMemory,
+		SwapMemoryStat:    *perfMetric.SwapMemory,
 		// DiskIOCounters:    perfMetric.DiskIOCounters,
 		// NetIOCounters:     perfMetric.NetIOCounters,
 

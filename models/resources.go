@@ -1,12 +1,11 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
-	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
+	"gorm.io/gorm"
 )
 
 type Resource struct {
@@ -20,23 +19,23 @@ type Resource struct {
 	process.PageFaultsStat
 	load.AvgStat
 	mem.VirtualMemoryStat
-	SwapMemory SwapMemoryStat
+	SwapMemoryStat
 	// CPUTimes   []CPUTimes
 	// DiskIOCounters map[string]disk.IOCountersStat
-	NetIOCounters []net.IOCountersStat
+	// NetIOCounters []net.IOCountersStat
 }
 
 type SwapMemoryStat struct {
-	SwapTotal   uint64  `json:"swap-total"`
-	Used        uint64  `json:"used"`
-	Free        uint64  `json:"free"`
-	UsedPercent float64 `json:"usedPercent"`
-	Sin         uint64  `json:"sin"`
-	Sout        uint64  `json:"sout"`
-	PgIn        uint64  `json:"pgIn"`
-	PgOut       uint64  `json:"pgOut"`
-	PgFault     uint64  `json:"pgFault"`
-	PgMajFaults uint64  `json:"pgMajFault"`
+	SwapTotal       uint64
+	SwapUsed        uint64
+	SwapFree        uint64
+	SwapUsedPercent float64
+	Sin             uint64
+	Sout            uint64
+	PgIn            uint64
+	PgOut           uint64
+	PgFault         uint64
+	PgMajFaults     uint64
 }
 
 type CPUTimes struct {

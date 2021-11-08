@@ -3,12 +3,12 @@ package models
 import (
 	"fmt"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Platform struct {
 	Model
-	Repositories []Repository `gorm:"foreignkey:PlatformFK"`
+	Repositories []Repository //`gorm:"foreignkey:PlatformFK"`
 	Name         string       `gorm:"unique_index;not null"`
 }
 

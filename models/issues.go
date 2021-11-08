@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"github.com/shurcool/githubv4"
+	"gorm.io/gorm"
 )
 
 type Issue struct {

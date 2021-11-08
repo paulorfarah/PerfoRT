@@ -17,9 +17,9 @@ import (
 	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/jinzhu/gorm"
 	"github.com/joshdk/go-junit"
 	"github.com/vifraa/gopom"
+	"gorm.io/gorm"
 )
 
 func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit, wg *sync.WaitGroup) {

@@ -65,16 +65,16 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 
 	swap, _ := mem.SwapMemory()
 	sm := &models.SwapMemoryStat{
-		SwapTotal:   swap.Total,
-		Used:        swap.Used,
-		Free:        swap.Free,
-		UsedPercent: swap.UsedPercent,
-		Sin:         swap.Sin,
-		Sout:        swap.Sout,
-		PgIn:        swap.PgIn,
-		PgOut:       swap.PgOut,
-		PgFault:     swap.PgFault,
-		PgMajFaults: swap.PgMajFault,
+		SwapTotal:       swap.Total,
+		SwapUsed:        swap.Used,
+		SwapFree:        swap.Free,
+		SwapUsedPercent: swap.UsedPercent,
+		Sin:             swap.Sin,
+		Sout:            swap.Sout,
+		PgIn:            swap.PgIn,
+		PgOut:           swap.PgOut,
+		PgFault:         swap.PgFault,
+		PgMajFaults:     swap.PgMajFault,
 	}
 
 	mem.SwapMemory()
