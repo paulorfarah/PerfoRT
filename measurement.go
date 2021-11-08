@@ -12,7 +12,6 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 
@@ -22,8 +21,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit, wg *sync.WaitGroup) {
-	defer wg.Done()
+func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) { //}, wg *sync.WaitGroup) {
+	// defer wg.Done()
 	// dt := time.Now()
 	// fmt.Println(currCommit.Hash.String() + " - " + dt.String())
 
@@ -50,17 +49,17 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// if len(projectModules) == 0 {
 			// buildPath := repoDir + string(os.PathSeparator)
 
-			MvnInstall(repoDir)
-			ok := MvnCompile(repoDir)
-			if ok {
-				MeasureMavenTests(db, repoDir, commitID, measurement)
-				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
-				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-				// for _, file := range listJavaFiles(repoDir) {
-				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
-				// }
-				// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
-			}
+			// MvnInstall(repoDir)
+			// ok := MvnCompile(repoDir)
+			// if ok {
+			MeasureMavenTests(db, repoDir, commitID, measurement)
+			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+			// for _, file := range listJavaFiles(repoDir) {
+			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			// }
+			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+			// }
 			// } else {
 			// 	MvnInstall(repoDir)
 			// 	ok := MvnCompile(repoDir)
@@ -117,9 +116,11 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 	MvnTest(db, repoDir, measurement.ID)
 	// if ok {
 	projectModules := getProjectModules(repoDir)
+	// fmt.Println(projectModules)
 	// path := repoDir
 	var path string
 	for _, module := range projectModules {
+		fmt.Println("module: ", module)
 		if module != "" {
 			path = repoDir + "/" + module + "/target/surefire-reports/"
 		} else {
@@ -127,45 +128,49 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 		}
 
 		// fmt.Println("path: ", path)
+		fmt.Println("will read files")
 		files, err := ioutil.ReadDir(path)
+		fmt.Println("read files")
 
 		if err != nil {
 			log.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
 			fmt.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
-		}
+		} else {
 
-		for _, file := range files {
-			if !file.IsDir() {
-				suites := ParseMavenTestResults(path + file.Name())
-				for _, test := range suites.TestCases {
-					classname := strings.Replace(test.ClassName, ".", "/", -1)
-					filename := classname + ".java"
-					testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
-					if errF != nil {
-						fmt.Println("error finding file: ", test.ClassName, commitID)
+			for _, file := range files {
+				if !file.IsDir() {
+					suites := ParseMavenTestResults(path + file.Name())
+					for _, test := range suites.TestCases {
+						classname := strings.Replace(test.ClassName, ".", "/", -1)
+						filename := classname + ".java"
+						testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
+						if errF != nil {
+							fmt.Println("error finding file: ", test.ClassName, commitID)
+						}
+						tc := &models.TestCase{
+							Type:      "maven",
+							ClassName: test.ClassName,
+							// Duration :      test.Duration,
+							FileID: testSuite.ID,
+							Name:   test.Name,
+							// Status:        string(test.Status),
+							// Error:         errorMsg,
+							// Message:       test.Message,
+							// SystemErr:     string(test.SystemErr),
+							// SystemOut:     string(test.SystemOut),
+						}
+						_, errTC := models.CreateTestCase(db, tc)
+						if errTC != nil {
+							fmt.Println("Error creating test case: ", errTC.Error())
+						}
+						RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
+
 					}
-					tc := &models.TestCase{
-						Type:      "maven",
-						ClassName: test.ClassName,
-						// Duration :      test.Duration,
-						FileID: testSuite.ID,
-						Name:   test.Name,
-						// Status:        string(test.Status),
-						// Error:         errorMsg,
-						// Message:       test.Message,
-						// SystemErr:     string(test.SystemErr),
-						// SystemOut:     string(test.SystemOut),
-					}
-					_, errTC := models.CreateTestCase(db, tc)
-					if errTC != nil {
-						fmt.Println("Error creating test case: ", errTC.Error())
-					}
-					RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
 
 				}
-
 			}
 		}
+		fmt.Println("finished MeasureMavenTests")
 	}
 	// read testcases
 	//

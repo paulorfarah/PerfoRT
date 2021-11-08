@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -28,9 +27,10 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
+	url := "https://github.com/apache/commons-math"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/ReactiveX/RxJava"
-	url := "https://github.com/apache/pdfbox"
+	// url := "https://github.com/apache/pdfbox"
 	// "https://github.com/dev9com/gradle-example"
 	//"https://github.com/ReactiveX/RxJava"
 	//  "https://github.com/zxing/zxing"
@@ -284,10 +284,12 @@ func main() {
 								models.CreateChange(db, ch)
 							}
 						}
-						var wg sync.WaitGroup
-						wg.Add(8)
-						go Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit, &wg)
-						wg.Wait()
+						// var wg sync.WaitGroup
+						// wg.Add(8)
+						Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit)
+						fmt.Println("finished Measure")
+						// wg.Wait()
+						fmt.Println("finished wait group")
 
 						//codeanalysis.Understand(cs.Name)
 						// models.BarChart()
