@@ -27,7 +27,7 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	url := "https://github.com/apache/commons-math"
+	url := "https://github.com/apache/commons-io"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/ReactiveX/RxJava"
 	// url := "https://github.com/apache/pdfbox"
@@ -287,9 +287,9 @@ func main() {
 						// var wg sync.WaitGroup
 						// wg.Add(8)
 						Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit)
-						fmt.Println("finished Measure")
+						// fmt.Println("finished Measure")
 						// wg.Wait()
-						fmt.Println("finished wait group")
+						// fmt.Println("finished wait group")
 
 						//codeanalysis.Understand(cs.Name)
 						// models.BarChart()

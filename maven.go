@@ -121,7 +121,8 @@ func MvnTest(db *gorm.DB, path string, measurementID uint) bool {
 
 	log.Println("------------------------------------------------ mvn test")
 	fmt.Println("------------------------------------------------ mvn test")
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile=jacoco.exec", "clean", "org.jacoco:jacoco-maven-plugin:0.7.8:prepare-agent", "test")
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile=jacoco.exec", "clean", "org.jacoco:jacoco-maven-plugin:0.7.8:prepare-agent", "test")
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
 	cmd.Dir = path
 
 	var output []byte

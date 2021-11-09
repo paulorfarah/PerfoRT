@@ -116,21 +116,19 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 	MvnTest(db, repoDir, measurement.ID)
 	// if ok {
 	projectModules := getProjectModules(repoDir)
-	// fmt.Println(projectModules)
+	fmt.Println("modules: ", projectModules)
 	// path := repoDir
 	var path string
 	for _, module := range projectModules {
-		fmt.Println("module: ", module)
+		fmt.Println(module)
 		if module != "" {
 			path = repoDir + "/" + module + "/target/surefire-reports/"
 		} else {
 			path = repoDir + "/target/surefire-reports/"
 		}
 
-		// fmt.Println("path: ", path)
-		fmt.Println("will read files")
+		fmt.Println("path: ", path)
 		files, err := ioutil.ReadDir(path)
-		fmt.Println("read files")
 
 		if err != nil {
 			log.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
@@ -170,7 +168,6 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 				}
 			}
 		}
-		fmt.Println("finished MeasureMavenTests")
 	}
 	// read testcases
 	//
