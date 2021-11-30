@@ -53,7 +53,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// ok := MvnCompile(repoDir)
 			// if ok {
 			MeasureMavenTests(db, repoDir, commitID, measurement)
-			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+			JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 			// for _, file := range listJavaFiles(repoDir) {
 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
@@ -84,7 +84,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				ok := GradleBuild(buildPath)
 				if ok {
 					MeasureGradleTests(db, buildPath, commitID, measurement)
-					// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
+					JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
 					// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 					// for _, file := range listJavaFiles(buildPath) {
 					// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)

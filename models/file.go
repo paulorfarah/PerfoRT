@@ -15,8 +15,8 @@ type File struct {
 	Hash     string `gorm:"not null;idx_commit"`
 	Name     string `gorm:"not null"`
 	Size     int64
-	Contents string `gorm:"type:text"`
-	IsBinary bool   `gorm:"not null;default: false"`
+	// Contents string `gorm:"type:text"`
+	IsBinary bool `gorm:"not null;default: false"`
 	// Lines       []FileLine
 	IsMalformed bool `gorm:"not null;default: false"`
 	HasChanged  bool `gorm:"not null;default: false"`

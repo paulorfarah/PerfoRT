@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gorm.io/gorm"
 )
@@ -32,7 +30,7 @@ func (r *TestCase) TableName() string {
 }
 
 func CreateTestCase(db *gorm.DB, t *TestCase) (uint, error) {
-	fmt.Println("creating testcase...")
+	// fmt.Println("creating testcase...")
 	err := db.Create(t).Error
 	if err != nil {
 		return 0, err

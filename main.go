@@ -27,14 +27,15 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	url := "https://github.com/apache/commons-io"
+	// url := "https://github.com/apaches/commons-io"
+	url := "https://github.com/apache/kafka"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/ReactiveX/RxJava"
 	// url := "https://github.com/apache/pdfbox"
 	// "https://github.com/dev9com/gradle-example"
 	//"https://github.com/ReactiveX/RxJava"
 	//  "https://github.com/zxing/zxing"
-	//  "https://github.com/junit-team/junit4"
+	// url := "https://github.com/junit-team/junit4"
 	//  "https://github.com/paulorfarah/TestProject"
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
@@ -212,7 +213,7 @@ func main() {
 
 						//files
 						currTree.Files().ForEach(func(f *object.File) error {
-							contents := ""
+							// contents := ""
 							// if !(strings.HasSuffix(f.Name, ".class") || strings.HasSuffix(f.Name, ".jar")) {
 							// 	contents, _ = f.Contents()
 							// }
@@ -230,7 +231,7 @@ func main() {
 								Hash:     f.Hash.String(),
 								Name:     f.Name,
 								Size:     f.Size,
-								Contents: contents,
+								// Contents: contents,
 								IsBinary: isBin,
 								// Lines:      ls,
 								HasChanged: false}
