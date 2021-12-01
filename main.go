@@ -27,16 +27,18 @@ func main() {
 	log.SetOutput(logFile)
 	log.Println("starting...")
 
-	// url := "https://github.com/apaches/commons-io"
-	url := "https://github.com/apache/kafka"
+	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
-	// url := "https://github.com/ReactiveX/RxJava"
+	// url := "https://github.com/apaches/commons-io" //ok
+	// url := "https://github.com/junit-team/junit4" //ok
+	url := "https://github.com/igniterealtime/Openfire"
+
 	// url := "https://github.com/apache/pdfbox"
-	// "https://github.com/dev9com/gradle-example"
-	//"https://github.com/ReactiveX/RxJava"
-	//  "https://github.com/zxing/zxing"
-	// url := "https://github.com/junit-team/junit4"
-	//  "https://github.com/paulorfarah/TestProject"
+
+	// url := "https://github.com/apache/kafka" // too slow
+	// url := "https://github.com/ReactiveX/RxJava" //too slow
+	// url := "https://github.com/zxing/zxing" //do not generate test case results report
+
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
 	//	fmt.Printf("%s -> %s\n", k, v)
