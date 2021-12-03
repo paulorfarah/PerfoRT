@@ -12,7 +12,7 @@ type File struct {
 	Model
 	CommitID uint
 	Commit   Commit
-	Hash     string `gorm:"not null;idx_commit"`
+	Hash     string `gorm:"not null"`
 	Name     string `gorm:"not null"`
 	Size     int64
 	// Contents string `gorm:"type:text"`

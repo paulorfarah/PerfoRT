@@ -31,13 +31,14 @@ func main() {
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/apaches/commons-io" //ok
 	// url := "https://github.com/junit-team/junit4" //ok
-	url := "https://github.com/igniterealtime/Openfire"
-
+	// url := "https://github.com/igniterealtime/Openfire"//ok
+	url := "https://github.com/apache/groovy"
 	// url := "https://github.com/apache/pdfbox"
 
 	// url := "https://github.com/apache/kafka" // too slow
 	// url := "https://github.com/ReactiveX/RxJava" //too slow
 	// url := "https://github.com/zxing/zxing" //do not generate test case results report
+	// url := "https://github.com/apache/systemml" //do not generate test case results report
 
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
