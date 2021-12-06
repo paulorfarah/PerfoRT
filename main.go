@@ -26,13 +26,13 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
+	url := "https://github.com/jenkinsci/jenkins"
 
 	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/apaches/commons-io" //ok
 	// url := "https://github.com/junit-team/junit4" //ok
 	// url := "https://github.com/igniterealtime/Openfire"//ok
-	url := "https://github.com/google/guava"
 	// url := "https://github.com/apache/pdfbox"
 
 	// url := "https://github.com/apache/kafka" // too slow
@@ -40,6 +40,7 @@ func main() {
 	// url := "https://github.com/zxing/zxing" //do not generate test case results report
 	// url := "https://github.com/apache/systemml" //do not generate test case results report
 	// url := "https://github.com/apache/groovy"
+	// url := "https://github.com/google/guava" //error
 
 	urlSplit := strings.Split(url, "/")
 	//for k, v := range urlSplit {
