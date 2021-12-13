@@ -115,13 +115,15 @@ func MvnCompile(path string) bool {
 	}
 }
 
-func MvnTest(db *gorm.DB, path string, measurementID uint) bool {
+func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	ok := true
 	logfile := "maven-test.log"
 
 	log.Println("------------------------------------------------ mvn test")
 	fmt.Println("------------------------------------------------ mvn test")
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile=jacoco.exec", "clean", "org.jacoco:jacoco-maven-plugin:0.7.8:prepare-agent", "test")
+	jacoco_exec := "coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
+	fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
 	cmd.Dir = path
 

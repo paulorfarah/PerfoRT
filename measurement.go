@@ -53,7 +53,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// ok := MvnCompile(repoDir)
 			// if ok {
 			MeasureMavenTests(db, repoDir, commitID, measurement)
-			JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 			// for _, file := range listJavaFiles(repoDir) {
 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
@@ -84,7 +84,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				ok := GradleBuild(buildPath)
 				if ok {
 					MeasureGradleTests(db, buildPath, commitID, measurement)
-					JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
+					// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID, commitID)
 					// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 					// for _, file := range listJavaFiles(buildPath) {
 					// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
@@ -113,7 +113,8 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	MvnTest(db, repoDir, measurement.ID)
+	MvnTest(db, repoDir, measurement.ID, commitID)
+	JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
 	// if ok {
 	projectModules := getProjectModules(repoDir)
 	fmt.Println("modules: ", projectModules)
@@ -188,7 +189,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
 	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
-
+		JacocoTestCoverage(db, repoDir, "gradle", "gradle", measurement.ID, commitID)
 		// read tests xml file
 		// fmt.Printf("repoDir gradle tests: %s\n", repoDir)
 		suites, err := junit.IngestDir(repoDir + "/build/test-results/test/")
@@ -554,6 +555,16 @@ func checkBuildTool(repoDir string) string {
 	if gradleExists {
 		return "gradle"
 	}
+
+	gradleExists, err = fileExists(repoDir + "/" + "build.gradle")
+	if err != nil {
+		fmt.Println("ERROR looking for settings.gradle...")
+	}
+	if gradleExists {
+		fmt.Println("build.gradle found...")
+		return "gradle"
+	}
+
 	pomExists, err := fileExists(repoDir + "/" + "pom.xml")
 	if err != nil {
 		fmt.Println("ERROR looking for pom.xml...")
@@ -585,7 +596,7 @@ func getProjectPaths(repoDir string) []string {
 	var includes []string
 	file, err := os.Open(repoDir + "/settings.gradle")
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("cannot find settings.gradle file: %s\n", err)
 	}
 	defer file.Close()
 

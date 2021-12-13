@@ -9,6 +9,8 @@ type Coverage struct {
 	Model
 	MeasurementID      uint
 	Measurement        Measurement
+	CommitID           uint
+	Commit             Commit
 	Type               string
 	Group              string
 	Package            string

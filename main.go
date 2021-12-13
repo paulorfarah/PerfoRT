@@ -26,14 +26,15 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
-	url := "https://github.com/jenkinsci/jenkins"
+	// url := "https://github.com/TooTallNate/Java-WebSocket"
 
 	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/apaches/commons-io" //ok
-	// url := "https://github.com/junit-team/junit4" //ok
+	url := "https://github.com/junit-team/junit4" //ok
 	// url := "https://github.com/igniterealtime/Openfire"//ok
 	// url := "https://github.com/apache/pdfbox"
+	// url := "https://github.com/jenkinsci/jenkins" ok
 
 	// url := "https://github.com/apache/kafka" // too slow
 	// url := "https://github.com/ReactiveX/RxJava" //too slow
@@ -134,13 +135,13 @@ func main() {
 				}
 			}
 			branchCounter++
-			//		fmt.Println("branch -->: ", branch.Name())
+			//fmt.Println("branch -->: ", branch.Name())
 
 			//commits
-			var prevCommit *object.Commit
-			prevCommit = nil
-			var prevTree *object.Tree
-			prevTree = nil
+			var cCommit *object.Commit
+			cCommit = nil
+			var cTree *object.Tree
+			cTree = nil
 
 			//filter by dates
 			// since := time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)
@@ -154,60 +155,59 @@ func main() {
 			//		fmt.Println("---- commits ----")
 			i := 0
 
-			err = commits.ForEach(func(currCommit *object.Commit) error {
+			err = commits.ForEach(func(pCommit *object.Commit) error {
 
-				if prevCommit != nil {
+				if cCommit != nil {
 					// fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
-					fmt.Printf("currCommit: %s\n", currCommit.Hash)
+					fmt.Printf("###>  commit: %s <###\n", cCommit.Hash)
 					//fmt.Println(currCommit.Author.Email)
 					//fmt.Println(currCommit.Committer)
 					//fmt.Println(currCommit.Message)
 					//fmt.Printf("\nfile: %v\n", cs.Name)
 
-					currTree, err := currCommit.Tree()
+					pTree, err := pCommit.Tree()
 					if err != nil {
 						return err
 					}
-					if prevTree != nil {
-						changes, err := currTree.Diff(prevTree)
-						// _, err := currTree.Diff(prevTree)
+					if cTree != nil {
+						changes, err := pTree.Diff(cTree)
 						if err != nil {
 							return err
 						}
 						//Author
-						author, err := models.FindAccountByEmail(db, currCommit.Author.Email)
+						author, err := models.FindAccountByEmail(db, cCommit.Author.Email)
 						if err != nil {
-							log.Println("create new author: " + currCommit.Author.Name)
-							author = &models.Account{Email: currCommit.Author.Email, Name: currCommit.Author.Name}
+							log.Println("create new author: " + cCommit.Author.Name)
+							author = &models.Account{Email: cCommit.Author.Email, Name: cCommit.Author.Name}
 							models.CreateAccount(db, author)
 						}
 						//Committer
-						committer, err := models.FindAccountByEmail(db, currCommit.Committer.Email)
+						committer, err := models.FindAccountByEmail(db, cCommit.Committer.Email)
 						if err != nil {
-							log.Println("create new committer: " + currCommit.Committer.Name)
-							committer = &models.Account{Email: currCommit.Committer.Email, Name: currCommit.Committer.Name}
+							log.Println("create new committer: " + cCommit.Committer.Name)
+							committer = &models.Account{Email: cCommit.Committer.Email, Name: cCommit.Committer.Name}
 							models.CreateAccount(db, committer)
 						}
 
 						//Commit
-						commit, err := models.FindCommitByHash(db, currCommit.Hash.String())
+						commit, err := models.FindCommitByHash(db, cCommit.Hash.String())
 						if err != nil {
-							log.Println("create new commit: " + currCommit.Hash.String())
-							fmt.Println("create new commit: " + currCommit.Hash.String())
+							log.Println("create new commit: " + cCommit.Hash.String())
+							fmt.Println("#  create new commit: " + cCommit.Hash.String())
 							// parent, errj := json.Marshal(currCommit.ParentHashes)
 							// if errj != nil {
 							// 	log.Println("Error Marshalling parent hashes: " + errj.Error())
 							// }
-							commit = &models.Commit{CommitHash: currCommit.Hash.String(),
-								PreviousCommitHash: prevCommit.Hash.String(),
+							commit = &models.Commit{CommitHash: cCommit.Hash.String(),
+								PreviousCommitHash: pCommit.Hash.String(),
 								RepositoryID:       repository.ID,
-								TreeHash:           currCommit.TreeHash.String(),
+								TreeHash:           cCommit.TreeHash.String(),
 								// ParentHashes:       parent,
 								AuthorID:      author.ID,
-								AuthorDate:    currCommit.Author.When,
+								AuthorDate:    cCommit.Author.When,
 								CommitterID:   committer.ID,
-								CommitterDate: currCommit.Committer.When,
-								Subject:       currCommit.Message,
+								CommitterDate: cCommit.Committer.When,
+								Subject:       cCommit.Message,
 								Branch:        branch.Name().String()}
 							_, err = models.CreateCommit(db, commit)
 							if err != nil {
@@ -217,7 +217,8 @@ func main() {
 						}
 
 						//files
-						currTree.Files().ForEach(func(f *object.File) error {
+						// currTree.Files().ForEach(func(f *object.File) error {
+						cTree.Files().ForEach(func(f *object.File) error {
 							// contents := ""
 							// if !(strings.HasSuffix(f.Name, ".class") || strings.HasSuffix(f.Name, ".jar")) {
 							// 	contents, _ = f.Contents()
@@ -231,6 +232,7 @@ func main() {
 								ls = append(ls, models.FileLine{Line: l})
 							}
 							// fmt.Printf("Commit: %d - %s\n", commit.ID, commit.CommitHash)
+
 							fl := &models.File{
 								CommitID: commit.ID,
 								Hash:     f.Hash.String(),
@@ -246,19 +248,29 @@ func main() {
 
 						//changes
 
-						// changes.ForEach(func(change *object.Change) error {
-						// 	fmt.Println(change.From.Name)
-						// })
 						for _, change := range changes {
-							// fmt.Println(change.To.Name)
-							// 		// fmt.Println(change.Action())
-							// 		// fmt.Println(change.Files())
-							// 		// fmt.Println("------------------- start")
-							// 		// fmt.Println(change.Patch())
+							// fmt.Println("change.From.Name: ", change.From.Name)
+							// fmt.Println("change.To.Name: ", change.To.Name)
+							// fmt.Println(change.Action())
+							// fmt.Println(change.Files())
+							// fmt.Println("------------------- start")
+							// fmt.Println(change.Patch())
+							// fmt.Println("-------------------")
 
 							// fmt.Printf("(change) file: %s - commit: %d\n", change.From.Name, commit.ID)
-							fileFrom, err := models.FindFileByEndsWithNameAndCommit(db, change.From.Name, commit.ID)
+
+							var fileFrom *models.File
+							var fileFromID uint
+							if len(change.From.Name) > 0 {
+								fileFrom, err = models.FindFileByEndsWithNameAndCommit(db, change.From.Name, commit.ID)
+								fileFromID = fileFrom.ID
+								// fmt.Println("File From: ", fileFrom.ID, fileFrom.Name)
+							} else {
+								fileFrom = nil
+								fileFromID = 0
+							}
 							var fileTo *models.File
+							var fileToID uint
 							if err != nil {
 								log.Println("Cannot find file: " + change.From.Name)
 								log.Println(err.Error())
@@ -267,9 +279,18 @@ func main() {
 							} else {
 								if change.From.Name == change.To.Name {
 									fileTo = fileFrom
+									fileToID = fileFromID
 								} else {
 									var err2 error
-									fileTo, err2 = models.FindFileByEndsWithNameAndCommit(db, change.To.Name, commit.ID)
+									if len(change.To.Name) > 0 {
+										fileTo, err2 = models.FindFileByEndsWithNameAndCommit(db, change.To.Name, commit.ID)
+										fileToID = fileTo.ID
+										// fmt.Println("File To: ", fileTo.ID, fileTo.Name)
+									} else {
+										fileTo = nil
+										fileToID = 0
+									}
+
 									if err2 != nil {
 										log.Println("Cannot find file: " + change.From.Name)
 										log.Println(err2.Error())
@@ -282,8 +303,8 @@ func main() {
 
 								ch := &models.Change{
 									// ChangeHash:
-									FileFromID: fileFrom.ID,
-									FileToID:   fileTo.ID,
+									FileFromID: fileFromID,
+									FileToID:   fileToID,
 									Action:     act.String(),
 									Patch:      patch.String(),
 								}
@@ -292,7 +313,7 @@ func main() {
 						}
 						// var wg sync.WaitGroup
 						// wg.Add(8)
-						Measure(db, *measurement, repoDir, *repository, commit.ID, currCommit)
+						Measure(db, *measurement, repoDir, *repository, commit.ID, cCommit)
 						// fmt.Println("finished Measure")
 						// wg.Wait()
 						// fmt.Println("finished wait group")
@@ -303,8 +324,8 @@ func main() {
 						boxplot.Examples()
 					}
 				}
-				prevCommit = currCommit
-				prevTree, _ = currCommit.Tree()
+				cCommit = pCommit
+				cTree, _ = pCommit.Tree()
 
 				i = i + 1
 

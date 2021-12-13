@@ -88,6 +88,8 @@ func getGradleClasspath(path string) string {
 func GradleBuild(path string) bool {
 	logfile := "gradle-compiler.log"
 
+	addIgnoreTestErrosGradle()
+
 	fmt.Println("------------------------------------------------ gradle build")
 	cmd := exec.Command("gradle", "build")
 	cmd.Dir = path
@@ -508,4 +510,33 @@ func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
 	// 		Fifoout:     netIOCounter.Fifoout,
 	// 	})
 	// }
+}
+
+func addIgnoreTestErrosGradle() {
+	input, err := ioutil.ReadFile("build.gradle")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	lines := strings.Split(string(input), "\n")
+
+	found := false
+	index := -1
+	for i, line := range lines {
+		if strings.Contains(line, "test {") {
+			found = true
+			index = i + 1
+		}
+	}
+	if found {
+		lines = append(lines[:index+1], lines[index:]...)
+		lines[index] = "ignore test fault"
+	} else {
+		lines = append(lines, "test {\nignore tst fault\n}")
+	}
+	output := strings.Join(lines, "\n")
+	err = ioutil.WriteFile("build.gradle", []byte(output), 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

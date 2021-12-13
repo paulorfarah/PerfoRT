@@ -14,11 +14,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measurementID uint) error {
+func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measurementID, commitID uint) error {
 	log.Println("------------------------------------------------ test coverage")
 	fmt.Println("------------------------------------------------ test coverage")
 
-	filename := "coverage/" + strings.ReplaceAll(repoDir, "/", "_") + ".csv"
+	filename := "coverage/" + strings.ReplaceAll(repoDir, "/", "_") + "-" + strconv.Itoa(int(commitID)) + ".csv"
 
 	// classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 	classpath := ""
@@ -44,8 +44,9 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 	// 	}
 	// }
 	// log.Println(folderInfo)
+	jacoco_exec := "coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
 
-	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report jacoco.exec --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv " + filename
+	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report " + jacoco_exec + " --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv " + filename
 
 	log.Println(jacocoStr)
 	fmt.Println(jacocoStr)
@@ -63,7 +64,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 		fmt.Println(out)
 	}
 
-	err = saveCoverage(db, filename, testtype, measurementID)
+	err = saveCoverage(db, filename, testtype, measurementID, commitID)
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot save JaCoCo coverage: " + err.Error())
 		log.Println(out)
@@ -75,7 +76,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 	return err
 }
 
-func saveCoverage(db *gorm.DB, filename string, testType string, measurementID uint) error {
+func saveCoverage(db *gorm.DB, filename string, testType string, measurementID, commitID uint) error {
 
 	// Open CSV file
 	f, err := os.Open(filename)
@@ -148,6 +149,7 @@ func saveCoverage(db *gorm.DB, filename string, testType string, measurementID u
 
 			cov := &models.Coverage{
 				MeasurementID:      measurementID,
+				CommitID:           commitID,
 				Type:               testType,
 				Group:              line[0],
 				Package:            line[1],

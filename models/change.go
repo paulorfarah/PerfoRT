@@ -11,12 +11,13 @@ type Change struct {
 	// FileID         uint //   `gorm:"not null"`
 	// File           File
 	ChangeHash string `gorm:"not null"`
-	FileFromID uint   `gorm:"not null"`
+	FileFromID uint
 	FileFrom   File
-	FileToID   uint `gorm:"not null"`
+	FileToID   uint
 	FileTo     File
 	Action     string `gorm:"not null"`
 	Patch      string `gorm:"type:text;not null"`
+	Length     int
 	// RandoopMetrics []RandoopMetrics
 }
 

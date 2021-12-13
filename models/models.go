@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
@@ -37,13 +38,14 @@ func init() {
 	log.Println(msql)
 
 	strConn := username + ":" + password + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
-	db, err = gorm.Open(mysql.Open(strConn), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(strConn), &gorm.Config{
+		Logger:                                   logger.Default.LogMode(logger.Error),
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	// db.LogMode(false)
 
 	db.Debug().Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
 		&Account{},
