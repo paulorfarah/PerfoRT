@@ -118,17 +118,24 @@ func MvnCompile(path string) bool {
 func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	ok := true
 	logfile := "maven-test.log"
+	var output []byte
+	var err error
 
 	log.Println("------------------------------------------------ mvn test")
 	fmt.Println("------------------------------------------------ mvn test")
-	jacoco_exec := "coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
+	localpath, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+		fmt.Println("error getting current path: ", err.Error())
+	}
+	jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
+	testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
+	cmd := exec.Command("bash", "-c", testStr)
 	fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	fmt.Println("path: ", path)
 	cmd.Dir = path
-
-	var output []byte
-	var err error
 
 	// output, err = cmd.CombinedOutput()
 	err = cmd.Start()
