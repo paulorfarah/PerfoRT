@@ -120,7 +120,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 	fmt.Println("modules: ", projectModules)
 	path := repoDir
 	for _, module := range projectModules {
-		fmt.Println(module)
+		fmt.Println("module: ", module)
 		if module != "" {
 			path = repoDir + "/" + module //+ "/target/surefire-reports/"
 		} //else {
@@ -587,6 +587,11 @@ func getProjectModules(repoDir string) []string {
 
 	for _, m := range parsedPom.Modules {
 		includes = append(includes, m)
+	}
+	for _, p := range parsedPom.Profiles {
+		for _, m := range p.Modules {
+			includes = append(includes, m)
+		}
 	}
 	return includes
 }
