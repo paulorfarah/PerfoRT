@@ -114,31 +114,30 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
 	MvnTest(db, repoDir, measurement.ID, commitID)
-	JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
+
 	// if ok {
 	projectModules := getProjectModules(repoDir)
 	fmt.Println("modules: ", projectModules)
-	// path := repoDir
-	var path string
+	path := repoDir
 	for _, module := range projectModules {
 		fmt.Println(module)
 		if module != "" {
-			path = repoDir + "/" + module + "/target/surefire-reports/"
-		} else {
-			path = repoDir + "/target/surefire-reports/"
-		}
+			path = repoDir + "/" + module //+ "/target/surefire-reports/"
+		} //else {
+		// 	path = repoDir + "/target/surefire-reports/"
+		// }
 
-		fmt.Println("path: ", path)
-		files, err := ioutil.ReadDir(path)
+		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commitID)
+		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {
-			log.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
-			fmt.Printf("cannot find surefire results in path: %s - %s\n", path, err.Error())
+			log.Printf("cannot find surefire results in path: %s - %s\n", path+"/target/surefire-reports/", err.Error())
+			fmt.Printf("cannot find surefire results in path: %s - %s\n", path+"/target/surefire-reports/", err.Error())
 		} else {
 
 			for _, file := range files {
 				if !file.IsDir() {
-					suites := ParseMavenTestResults(path + file.Name())
+					suites := ParseMavenTestResults(path + "/target/surefire-reports/" + file.Name())
 					for _, test := range suites.TestCases {
 						classname := strings.Replace(test.ClassName, ".", "/", -1)
 						filename := classname + ".java"
