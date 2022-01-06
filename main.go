@@ -26,15 +26,17 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
+	url := "https://github.com/paulorfarah/maven-project"
 	// url := "https://github.com/TooTallNate/Java-WebSocket"
 
 	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/apaches/commons-io" //ok
-	url := "https://github.com/junit-team/junit4" //ok
+	// url := "https://github.com/junit-team/junit4" //ok
 	// url := "https://github.com/igniterealtime/Openfire"//ok
 	// url := "https://github.com/apache/pdfbox"
 	// url := "https://github.com/jenkinsci/jenkins" ok
+	// url := "https://github.com/grpc/grpc-java"
 
 	// url := "https://github.com/apache/kafka" // too slow
 	// url := "https://github.com/ReactiveX/RxJava" //too slow
@@ -88,7 +90,6 @@ func main() {
 
 			}
 			platform.ID = platformID
-
 		}
 
 		//search representative repositories
@@ -135,7 +136,7 @@ func main() {
 				}
 			}
 			branchCounter++
-			//fmt.Println("branch -->: ", branch.Name())
+			// fmt.Println("branch -->: ", branch.Name())
 
 			//commits
 			var cCommit *object.Commit
@@ -152,14 +153,14 @@ func main() {
 				log.Println("Error in git log: " + err.Error())
 			}
 			defer commits.Close()
-			//		fmt.Println("---- commits ----")
+			// fmt.Println("---- commits ----")
 			i := 0
 
 			err = commits.ForEach(func(pCommit *object.Commit) error {
 
 				if cCommit != nil {
 					// fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
-					fmt.Printf("###>  commit: %s <###\n", cCommit.Hash)
+					// fmt.Printf("###>  commit: %s <###\n", cCommit.Hash)
 					//fmt.Println(currCommit.Author.Email)
 					//fmt.Println(currCommit.Committer)
 					//fmt.Println(currCommit.Message)
@@ -393,6 +394,14 @@ func createDirs() {
 	_, errd = os.Stat("run")
 	if os.IsNotExist(errd) {
 		err := os.Mkdir("run", 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	_, errd = os.Stat("profiler")
+	if os.IsNotExist(errd) {
+		err := os.Mkdir("profiler", 0755)
 		if err != nil {
 			log.Fatal(err)
 		}

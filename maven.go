@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"gorm.io/gorm"
@@ -116,6 +117,7 @@ func MvnCompile(path string) bool {
 }
 
 func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
+	//mvn -fn -Drat.skip=true -Djacoco.destFile=coverage/jacoco-1.exec clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test
 	ok := true
 	logfile := "maven-test.log"
 	var output []byte
@@ -134,7 +136,7 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	cmd := exec.Command("bash", "-c", testStr)
 	fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	fmt.Println("path: ", path)
+	// fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -395,25 +397,41 @@ func ParseMavenTestResults(f string) MavenTestSuite {
 	return testSuite
 }
 
-func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurementID uint) {
+func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurementID, commitID uint) {
 	// # Executes a single specified test in SomeTestClass
 	// Test only a certain testcase inside test class with
 	// “mvn  -Dtest=TestSurefire#testcaseFirst test“ (-pl module)
 	// This command will execute only single test case method i.e. testcaseFirst().
 
-	// ok := true
 	logfile := "maven-test.log"
-	// testName := tc.ClassName + "." + tc.Name
-	resultsPath := path //+ "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
+	resultsPath := path
 
 	className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
+
+	//set environment variable to activate profiler during testcases execution
+	localpath, errPath := os.Getwd()
+	if errPath != nil {
+		log.Println(errPath)
+		fmt.Println("error getting current path: ", errPath.Error())
+	}
+	// profiler_output := localpath + string(os.PathSeparator) + "profiler" + string(os.PathSeparator) + module + "_" + className + "_" + testName + ".txt"
+	// os.Setenv("MAVEN_OPTS", "-agentpath:async-profiler-2.5.1-linux-x64/build/libasyncProfiler.so=start,event=wall,file="+profiler_output)
+	// fmt.Println("export MAVEN_OPTS=-agentpath:" + localpath + string(os.PathSeparator) + "async-profiler-2.5.1-linux-x64/build/libasyncProfiler.so=start,event=wall,file=" + profiler_output)
+	// cmdEnv := exec.Command("bash", "-c", "export", "MAVEN_OPTS=-agentpath:"+localpath+string(os.PathSeparator)+"async-profiler-2.5.1-linux-x64/build/libasyncProfiler.so=start,event=wall,file="+profiler_output)
+	// _, errEnv := cmdEnv.Output()
+
+	// if errEnv != nil {
+	// 	fmt.Println("Error exporting environment variable MAVEN_OPTS: ", errEnv.Error())
+	// 	return
+	// }
 
 	log.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
 	fmt.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
 
 	var cmd *exec.Cmd
 	var cmdStr string
+	// fmt.Println(path)
 	param := "-Dtest=" + className + "#" + testName
 	if module != "" {
 		cmdStr = "mvn test  -pl " + module + " " + param
@@ -422,14 +440,15 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		cmd = exec.Command("mvn", "test", "-pl", module, param)
 		resultsPath += "/" + module
 	} else {
-		cmdStr = "bash mvn test " + param
+		cmdStr = "mvn test " + param
 		fmt.Println(cmdStr)
-		cmd = exec.Command("bash", "mvn", "test", param)
+		cmd = exec.Command("mvn", "test", param)
 	}
 
 	resultsPath += "/target/surefire-reports/TEST-" + tc.ClassName + ".xml"
 	fmt.Println("resultsPath: ", resultsPath)
 	cmd.Dir = path
+	fmt.Println("path: ", path)
 
 	var output []byte
 	var err error
@@ -443,7 +462,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	err = cmd.Start()
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Error starting command: ", err.Error())
 		log.Fatal(err)
 	}
 	pid := cmd.Process.Pid
@@ -492,9 +511,24 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	stop <- true
 
 	if err != nil {
-		fmt.Printf("maven test failed with %s\n", err.Error())
-		log.Printf("Command finished with error: %s", err.Error())
+		pid = cmd.Process.Pid
+		// fmt.Println(pid)
+		process, err := os.FindProcess(int(pid))
+		if err != nil {
+			fmt.Printf("Failed to find process: %s\n", err)
+		} else {
+			errPid := process.Signal(syscall.Signal(0))
+			fmt.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
+			resPid := fmt.Sprintf("%v", errPid)
+			if resPid != "os: process already finished" {
+				fmt.Printf("maven test failed with %s\n", err.Error())
+				log.Printf("Command finished with error: %s", err.Error())
+			}
+		}
 	}
+
+	profiler_output := localpath + string(os.PathSeparator) + "profiler" + string(os.PathSeparator) + fmt.Sprint(commitID) + "_" + module + "_" + className + "_" + testName + ".txt"
+	ParseProfilingWallClock(db, commitID, *tc, profiler_output)
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
@@ -507,7 +541,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	suite := ParseMavenTestResults(resultsPath)
 	for _, test := range suite.TestCases {
 		if test.Name == tc.Name {
-			// fmt.Printf("  %s\n", test.Name)
+			fmt.Printf("  %s\n", test.Name)
 			// fmt.Printf("time:  %s\n", test.Time)
 			// t, _ := strconv.ParseFloat(test.Time, 32)
 			// fmt.Printf("float: %f\n", t)

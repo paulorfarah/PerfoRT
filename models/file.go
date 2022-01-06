@@ -20,6 +20,7 @@ type File struct {
 	// Lines       []FileLine
 	IsMalformed bool `gorm:"not null;default: false"`
 	HasChanged  bool `gorm:"not null;default: false"`
+	Methods     []Method
 }
 
 type FileLine struct {

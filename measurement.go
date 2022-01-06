@@ -117,10 +117,10 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 
 	// if ok {
 	projectModules := getProjectModules(repoDir)
-	fmt.Println("modules: ", projectModules)
+	// fmt.Println("modules: ", projectModules)
 	path := repoDir
 	for _, module := range projectModules {
-		fmt.Println("module: ", module)
+		// fmt.Println("module: ", module)
 		if module != "" {
 			path = repoDir + "/" + module //+ "/target/surefire-reports/"
 		} //else {
@@ -161,7 +161,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 						if errTC != nil {
 							fmt.Println("Error creating test case: ", errTC.Error())
 						}
-						RunMavenTestCase(db, repoDir, module, tc, measurement.ID)
+						RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commitID)
 
 					}
 
