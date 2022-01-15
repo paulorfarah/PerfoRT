@@ -527,8 +527,67 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 	}
 
-	profiler_output := localpath + string(os.PathSeparator) + "profiler" + string(os.PathSeparator) + fmt.Sprint(commitID) + "_" + module + "_" + className + "_" + testName + ".txt"
-	ParseProfilingWallClock(db, commitID, *tc, profiler_output)
+	profiler_output := localpath + string(os.PathSeparator) + "profiler" + string(os.PathSeparator) + fmt.Sprint(commitID) + "_" + module + "_" + className + "_" + testName //+ ".jfr"
+
+	// jcmd 56822 JFR.start filename=teste.jfr
+
+	// strPid := fmt.Sprintf("%s", pid)
+	// cmdJCMD := exec.Command("jcmd", strPid, "JFR.start", "filename=/home/farah/go-work/src/github.com/paulorfarah/go-repo-downloader/profiler/test.jfr") //+profiler_output)
+
+	// if err := cmdJCMD.Run(); err != nil {
+	// 	log.Printf("Failed to start cmd: %v", err)
+	// 	return
+	// }
+
+	// stop2 := make(chan bool)
+	// go func() {
+
+	// 	for {
+	// 		select {
+	// 		case <-stop2:
+	// 			strPid := fmt.Sprintf("%s", pid)
+	// 			cmd := exec.Command("jcmd", fmt.Sprintf("%s", strPid), "JFR.stop")
+
+	// 			if err := cmd.Run(); err != nil {
+	// 				log.Printf("Failed to stop cmd: %v", err)
+	// 				return
+	// 			}
+	// 			return
+	// 		default:
+	// 			// jcmd 7060 JFR.start name=MyRecording settings=profile delay=20s duration=2m filename=C:\TEMP\myrecording.jfr
+	// 			strPid := fmt.Sprintf("%s", pid)
+	// 			cmd := exec.Command("jcmd", strPid, "JFR.start", "name=teste", "settings=profile", "delay=1s", "filename=/home/farah/go-work/src/github.com/paulorfarah/go-repo-downloader/profiler/test.jfr") //+profiler_output)
+
+	// 			if err := cmd.Run(); err != nil {
+	// 				log.Printf("Failed to start cmd: %v", err)
+	// 				return
+	// 			}
+	// 		}
+	// 	}
+	// }()
+
+	// err2 := cmd.Wait()
+
+	// stop2 <- true
+
+	// if err2 != nil {
+	// 	pid = cmd.Process.Pid
+	// 	// fmt.Println(pid)
+	// 	process, err := os.FindProcess(int(pid))
+	// 	if err != nil {
+	// 		fmt.Printf("Failed to find process: %s\n", err)
+	// 	} else {
+	// 		errPid := process.Signal(syscall.Signal(0))
+	// 		fmt.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
+	// 		resPid := fmt.Sprintf("%v", errPid)
+	// 		if resPid != "os: process already finished" {
+	// 			fmt.Printf("maven test failed with %s\n", err.Error())
+	// 			log.Printf("Command finished with error: %s", err.Error())
+	// 		}
+	// 	}
+	// }
+
+	ParseProfilingClock(db, commitID, *tc, profiler_output)
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))

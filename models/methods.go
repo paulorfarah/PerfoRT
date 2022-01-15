@@ -23,6 +23,11 @@ type Method struct {
 	TotalCalls         int
 	CallsPercent       float64
 	Error              bool
+	OwnSize            int
+	CumulativeSize     int
+	AllocCalls         int
+	TotalAllocCalls    int
+	AllocCallsPercent  float64
 }
 
 func (m *Method) TableName() string {
