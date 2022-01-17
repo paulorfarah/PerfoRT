@@ -15,8 +15,8 @@ import (
 )
 
 func ParseProfilingClock(db *gorm.DB, commitID uint, testcase models.TestCase, output string) {
-
-	e := os.Rename("profiler/wall.txt", output+"-wall.txt")
+	output += "-wall.txt"
+	e := os.Rename("profiler/wall.txt", output)
 	if e != nil {
 		fmt.Println("Error renaming profile file: ", e.Error())
 		fmt.Println("FATAL: Check if MAVEN_OPTS is exported!")
@@ -150,7 +150,7 @@ func ParseProfilingClock(db *gorm.DB, commitID uint, testcase models.TestCase, o
 					// fmt.Println("call: ", call)
 					if len(call) > 1 {
 						elements := strings.Split(call[1], ".")
-						fmt.Println(elements)
+						// fmt.Println(elements)
 						if len(elements) > 1 {
 							element := elements[0]
 							method := &models.Method{Name: elements[len(elements)-1], TestCaseID: testcase.ID}
@@ -194,7 +194,8 @@ func ParseProfilingClock(db *gorm.DB, commitID uint, testcase models.TestCase, o
 }
 
 func ParseProfilingAlloc(db *gorm.DB, commitID uint, testcase models.TestCase, output string) {
-	e := os.Rename("profiler/alloc.txt", output+"-alloc.txt")
+	output += "-alloc.txt"
+	e := os.Rename("profiler/alloc.txt", output)
 	if e != nil {
 		fmt.Println("Error renaming profile file: ", e.Error())
 		fmt.Println("FATAL: Check if MAVEN_OPTS is exported!")
@@ -238,7 +239,7 @@ func ParseProfilingAlloc(db *gorm.DB, commitID uint, testcase models.TestCase, o
 				}
 				if !bytes.Equal(line[:3], []byte("  -")) {
 					values := strings.Split(string(line), " ")
-					size = values[1] + values[2]
+					size = values[1] //+ values[2]
 					var errPD error
 					ownSize, errPD = strconv.Atoi(size)
 					if errPD != nil {

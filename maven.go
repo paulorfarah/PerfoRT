@@ -588,6 +588,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// }
 
 	ParseProfilingClock(db, commitID, *tc, profiler_output)
+	ParseProfilingAlloc(db, commitID, *tc, profiler_output)
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
@@ -604,7 +605,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			// fmt.Printf("time:  %s\n", test.Time)
 			// t, _ := strconv.ParseFloat(test.Time, 32)
 			// fmt.Printf("float: %f\n", t)
-			dur, errD := time.ParseDuration(test.Time + "s")
+			dur, errD := time.ParseDuration(strings.Replace(test.Time, ",", "", -1) + "s")
 			if errD != nil {
 				fmt.Println("ERROR parsing test time to duration: ", errD.Error())
 			}
