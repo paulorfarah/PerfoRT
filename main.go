@@ -26,7 +26,7 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
-	// url := "https://github.com/paulorfarah/maven-project"
+	url := "https://github.com/paulorfarah/maven-project"
 	// url := "https://github.com/TooTallNate/Java-WebSocket"
 
 	// url := "https://github.com/paulorfarah/TestProject"
@@ -37,7 +37,8 @@ func main() {
 	// url := "https://github.com/apache/pdfbox"
 	// url := "https://github.com/jenkinsci/jenkins" ok
 
-	url := "https://github.com/apache/commons-bcel"
+	// url := "https://github.com/apache/commons-bcel"  ok
+
 	// url := "https://github.com/grpc/grpc-java"
 
 	// url := "https://github.com/apache/kafka" // too slow
@@ -126,9 +127,11 @@ func main() {
 
 		//branches
 		branchCounter := 0
-		branches, _ := repo.Branches()
-		for {
-			branch, err := branches.Next()
+		// branches, _ := repo.Branches()
+		branchesList := []string{"master", "main"}
+		for _, branchName := range branchesList {
+			// branch, err := branches.Next()
+			branch, err := repo.Branch(branchName)
 			if err != nil {
 				if err == io.EOF {
 					//Finished branch
@@ -138,6 +141,11 @@ func main() {
 				}
 			}
 			branchCounter++
+			// get reference of the reference name
+			ref, err := repo.Reference(branch.Merge, true)
+			if err != nil {
+				return
+			}
 			// fmt.Println("branch -->: ", branch.Name())
 
 			//commits
@@ -150,7 +158,7 @@ func main() {
 			// since := time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)
 			// until := time.Date(2020, 12, 31, 0, 0, 0, 0, time.UTC)
 
-			commits, err := repo.Log(&git.LogOptions{From: branch.Hash()}) //, Since: &since, Until: &until})
+			commits, err := repo.Log(&git.LogOptions{From: ref.Hash()}) //, Since: &since, Until: &until})
 			if err != nil {
 				log.Println("Error in git log: " + err.Error())
 			}
@@ -211,7 +219,7 @@ func main() {
 								CommitterID:   committer.ID,
 								CommitterDate: cCommit.Committer.When,
 								Subject:       cCommit.Message,
-								Branch:        branch.Name().String()}
+								Branch:        branch.Name}
 							_, err = models.CreateCommit(db, commit)
 							if err != nil {
 								fmt.Printf("Error creating new commit %s\n", err.Error())
@@ -264,55 +272,57 @@ func main() {
 
 							var fileFrom *models.File
 							var fileFromID uint
+							var fileTo *models.File
+							var fileToID uint
 							if len(change.From.Name) > 0 {
 								fileFrom, err = models.FindFileByEndsWithNameAndCommit(db, change.From.Name, commit.ID)
-								fileFromID = fileFrom.ID
 								// fmt.Println("File From: ", fileFrom.ID, fileFrom.Name)
+								if err != nil {
+									log.Println("Cannot find file: " + change.From.Name)
+									log.Println(err.Error())
+									fmt.Println("Cannot find file: " + change.From.Name)
+									fmt.Println(err.Error())
+									fileFrom = nil
+									fileFromID = 0
+								} else {
+									fileFromID = fileFrom.ID
+								}
 							} else {
 								fileFrom = nil
 								fileFromID = 0
 							}
-							var fileTo *models.File
-							var fileToID uint
-							if err != nil {
-								log.Println("Cannot find file: " + change.From.Name)
-								log.Println(err.Error())
-								fmt.Println("Cannot find file: " + change.From.Name)
-								fmt.Println(err.Error())
-							} else {
-								if change.From.Name == change.To.Name {
-									fileTo = fileFrom
-									fileToID = fileFromID
+
+							// FileTo
+							var err2 error
+							if len(change.To.Name) > 0 {
+								fileTo, err2 = models.FindFileByEndsWithNameAndCommit(db, change.To.Name, commit.ID)
+								if err2 != nil {
+									log.Println("Cannot find fileTo: " + change.To.Name)
+									log.Println(err.Error())
+									fmt.Println("Cannot find fileTo: " + change.To.Name)
+									fmt.Println(err.Error())
+									fileTo = nil
+									fileToID = 0
 								} else {
-									var err2 error
-									if len(change.To.Name) > 0 {
-										fileTo, err2 = models.FindFileByEndsWithNameAndCommit(db, change.To.Name, commit.ID)
-										fileToID = fileTo.ID
-										// fmt.Println("File To: ", fileTo.ID, fileTo.Name)
-									} else {
-										fileTo = nil
-										fileToID = 0
-									}
-
-									if err2 != nil {
-										log.Println("Cannot find file: " + change.From.Name)
-										log.Println(err2.Error())
-										fmt.Println("Cannot find file: " + change.From.Name)
-										fmt.Println(err2.Error())
-									}
+									fileToID = fileTo.ID
 								}
-								act, _ := change.Action()
-								patch, _ := change.Patch()
-
-								ch := &models.Change{
-									// ChangeHash:
-									FileFromID: fileFromID,
-									FileToID:   fileToID,
-									Action:     act.String(),
-									Patch:      patch.String(),
-								}
-								models.CreateChange(db, ch)
+								// fmt.Println("File To: ", fileTo.ID, fileTo.Name)
+							} else {
+								fileTo = nil
+								fileToID = 0
 							}
+
+							act, _ := change.Action()
+							patch, _ := change.Patch()
+
+							ch := &models.Change{
+								// ChangeHash:
+								FileFromID: fileFromID,
+								FileToID:   fileToID,
+								Action:     act.String(),
+								Patch:      patch.String(),
+							}
+							models.CreateChange(db, ch)
 						}
 						// var wg sync.WaitGroup
 						// wg.Add(8)
