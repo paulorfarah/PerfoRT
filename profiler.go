@@ -235,7 +235,7 @@ func ParseProfilingAlloc(db *gorm.DB, commitID uint, testcase models.TestCase, o
 				fmt.Println("Error converting total samples to integer: ", e.Error())
 			}
 		} else {
-			if len(lines) > 2 {
+			if len(line) > 2 {
 				if bytes.Equal(line[:3], []byte("---")) || bytes.Equal(line[:3], []byte("  -")) {
 					if foundElement {
 						savePreviousStack(db, stack, ownSize, calls, totalCalls, testcase)
