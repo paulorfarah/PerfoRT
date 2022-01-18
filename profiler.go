@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ParseProfilingClock(db *gorm.DB, commitID uint, testcase models.TestCase, output string) {
+func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.TestCase, output string) {
 	output += "-wall.txt"
 	e := os.Rename("profiler/wall.txt", output)
 	if e != nil {
@@ -164,7 +164,7 @@ func ParseProfilingClock(db *gorm.DB, commitID uint, testcase models.TestCase, o
 								}
 
 								// search package and class name
-								file, err := models.FindFileByEndsWithNameAndCommit(db, element+".java", commitID)
+								file, err := models.FindFileByEndsWithNameAndCommit(db, element+".java", commit.ID)
 								if err != nil {
 									// fmt.Println("Error searching for profiled class: ", err.Error())
 									// files = append(files, -1)
@@ -195,7 +195,7 @@ func ParseProfilingClock(db *gorm.DB, commitID uint, testcase models.TestCase, o
 	// fmt.Println(lines, requestA
 }
 
-func ParseProfilingAlloc(db *gorm.DB, commitID uint, testcase models.TestCase, output string) {
+func ParseProfilingAlloc(db *gorm.DB, commit models.Commit, testcase models.TestCase, output string) {
 	output += "-alloc.txt"
 	e := os.Rename("profiler/alloc.txt", output)
 	if e != nil {
@@ -283,7 +283,7 @@ func ParseProfilingAlloc(db *gorm.DB, commitID uint, testcase models.TestCase, o
 								}
 
 								// search package and class name
-								file, err := models.FindFileByEndsWithNameAndCommit(db, element+".java", commitID)
+								file, err := models.FindFileByEndsWithNameAndCommit(db, element+".java", commit.ID)
 								if err != nil {
 									// fmt.Println("Error searching for profiled class: ", err.Error())
 									// files = append(files, -1)

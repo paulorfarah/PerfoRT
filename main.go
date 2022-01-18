@@ -326,7 +326,7 @@ func main() {
 						}
 						// var wg sync.WaitGroup
 						// wg.Add(8)
-						Measure(db, *measurement, repoDir, *repository, commit.ID, cCommit)
+						Measure(db, *measurement, repoDir, *repository, commit, cCommit)
 						// fmt.Println("finished Measure")
 						// wg.Wait()
 						// fmt.Println("finished wait group")

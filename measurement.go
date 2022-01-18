@@ -21,7 +21,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commitID uint, currCommit *object.Commit) { //}, wg *sync.WaitGroup) {
+func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, repository models.Repository, commit *models.Commit, currCommit *object.Commit) { //}, wg *sync.WaitGroup) {
 	// defer wg.Done()
 	// dt := time.Now()
 	// fmt.Println(currCommit.Hash.String() + " - " + dt.String())
@@ -52,7 +52,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// MvnInstall(repoDir)
 			// ok := MvnCompile(repoDir)
 			// if ok {
-			MeasureMavenTests(db, repoDir, commitID, measurement)
+			MeasureMavenTests(db, repoDir, *commit, measurement)
 			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 			// for _, file := range listJavaFiles(repoDir) {
@@ -83,7 +83,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				buildPath := repoDir + string(os.PathSeparator)
 				ok := GradleBuild(buildPath)
 				if ok {
-					MeasureGradleTests(db, buildPath, commitID, measurement)
+					MeasureGradleTests(db, buildPath, *commit, measurement)
 					// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID, commitID)
 					// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 					// for _, file := range listJavaFiles(buildPath) {
@@ -97,7 +97,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 					buildPath := repoDir + string(os.PathSeparator) + projectPath
 					ok := GradleBuild(buildPath)
 					if ok {
-						MeasureGradleTests(db, buildPath, commitID, measurement)
+						MeasureGradleTests(db, buildPath, *commit, measurement)
 						// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
 						// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 						// for _, file := range listJavaFiles(buildPath) {
@@ -112,8 +112,8 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 	}
 }
 
-func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
-	MvnTest(db, repoDir, measurement.ID, commitID)
+func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
+	MvnTest(db, repoDir, measurement.ID, commit.ID)
 
 	// if ok {
 	projectModules := getProjectModules(repoDir)
@@ -127,7 +127,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 		// 	path = repoDir + "/target/surefire-reports/"
 		// }
 
-		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commitID)
+		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
 		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {
@@ -141,9 +141,9 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 					for _, test := range suites.TestCases {
 						classname := strings.Replace(test.ClassName, ".", "/", -1)
 						filename := classname + ".java"
-						testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
+						testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
 						if errF != nil {
-							fmt.Println("error finding file: ", test.ClassName, commitID)
+							fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
 						}
 						tc := &models.TestCase{
 							Type:      "maven",
@@ -161,7 +161,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 						if errTC != nil {
 							fmt.Println("Error creating test case: ", errTC.Error())
 						}
-						RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commitID)
+						RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
 
 					}
 
@@ -185,10 +185,10 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commitID uint, measurement m
 	// }
 }
 
-func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement models.Measurement) {
+func MeasureGradleTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
 	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
-		JacocoTestCoverage(db, repoDir, "gradle", "gradle", measurement.ID, commitID)
+		JacocoTestCoverage(db, repoDir, "gradle", "gradle", measurement.ID, commit.ID)
 		// read tests xml file
 		// fmt.Printf("repoDir gradle tests: %s\n", repoDir)
 		suites, err := junit.IngestDir(repoDir + "/build/test-results/test/")
@@ -211,9 +211,9 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commitID uint, measurement 
 				classname := strings.Replace(test.Classname, ".", "/", -1)
 				filename := classname + ".java"
 				// fmt.Println(filename)
-				testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commitID)
+				testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
 				if errF != nil {
-					fmt.Println("error finding file: ", test.Classname, commitID)
+					fmt.Println("error finding file: ", test.Classname, commit.CommitHash)
 				}
 				// fmt.Println("testSuite: ", testSuite)
 

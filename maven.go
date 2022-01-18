@@ -397,7 +397,7 @@ func ParseMavenTestResults(f string) MavenTestSuite {
 	return testSuite
 }
 
-func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurementID, commitID uint) {
+func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurementID uint, commit models.Commit) {
 	// # Executes a single specified test in SomeTestClass
 	// Test only a certain testcase inside test class with
 	// “mvn  -Dtest=TestSurefire#testcaseFirst test“ (-pl module)
@@ -527,7 +527,13 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 	}
 
-	profiler_output := localpath + string(os.PathSeparator) + "profiler" + string(os.PathSeparator) + fmt.Sprint(commitID) + "_" + module + "_" + className + "_" + testName //+ ".jfr"
+	profiler_output := localpath + string(os.PathSeparator) + "profiler" + string(os.PathSeparator) + fmt.Sprint(commit.CommitHash) + "_"
+
+	if module != "" {
+		profiler_output += module + "_"
+	}
+
+	profiler_output += className + "_" + testName //+ ".jfr"
 
 	// jcmd 56822 JFR.start filename=teste.jfr
 
@@ -587,8 +593,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// 	}
 	// }
 
-	ParseProfilingClock(db, commitID, *tc, profiler_output)
-	ParseProfilingAlloc(db, commitID, *tc, profiler_output)
+	ParseProfilingClock(db, commit, *tc, profiler_output)
+	ParseProfilingAlloc(db, commit, *tc, profiler_output)
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
