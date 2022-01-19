@@ -26,7 +26,7 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
-	url := "https://github.com/paulorfarah/maven-project"
+	// url := "https://github.com/paulorfarah/maven-project"
 	// url := "https://github.com/TooTallNate/Java-WebSocket"
 
 	// url := "https://github.com/paulorfarah/TestProject"
@@ -37,7 +37,7 @@ func main() {
 	// url := "https://github.com/apache/pdfbox"
 	// url := "https://github.com/jenkinsci/jenkins" ok
 
-	// url := "https://github.com/apache/commons-bcel"  ok
+	url := "https://github.com/apache/commons-bcel" //ok
 
 	// url := "https://github.com/grpc/grpc-java"
 
