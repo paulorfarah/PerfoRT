@@ -26,7 +26,7 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 	lines := 0
 	f, err := os.Open(output)
 	if err != nil {
-		fmt.Print("There has been an error!: ", err)
+		fmt.Printf("Error opening file %s  - %s: ", output, err.Error())
 	}
 	defer f.Close()
 
@@ -37,7 +37,7 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 	var ownDur time.Duration
 	totalCalls := 0
 	calls := 0
-	firstInStack := true
+	// firstInStack := true
 	var prevMethod models.Method = models.Method{}
 
 	scanner := bufio.NewScanner(f)
@@ -57,8 +57,8 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 				if bytes.Equal(line[:3], []byte("---")) || bytes.Equal(line[:3], []byte("  -")) {
 					if foundElement {
 						//save stack
-						fmt.Println("*********************************************************************** stack")
-						fmt.Printf("line: %d ownDur: %v", lines, ownDur)
+						// fmt.Println("*********************************************************************** stack")
+						// fmt.Printf("line: %d ownDur: %v", lines, ownDur)
 						lastMethod := stack[len(stack)-1]
 						e := false
 						if lastMethod.Name != testcase.Name {
@@ -66,10 +66,10 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 							e = true
 						}
 						// for _, m := range stack {
-						for i := len(stack) - 2; i >= 0; i-- {
+						for i := len(stack) - 1; i >= 0; i-- {
 							m := stack[i]
 							m.Error = e
-							fmt.Printf("Name: %s, Duration: %d\n", m.Name, m.OwnDuration)
+							// fmt.Printf("Name: %s, Duration: %d\n", m.Name, m.OwnDuration)
 							if m.FileID >= 0 {
 								method, errM := models.FindMethodByEndsWithNameAndFileAndTestcase(db, m.Name, m.FileID, testcase.ID)
 								if errM != nil {
@@ -80,13 +80,13 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 										m.OwnCalls = calls
 										m.CallsPercent = float64(calls / totalCalls)
 									}
-									if !firstInStack {
-										m.CallerID = &prevMethod.ID
-										// err = models.SaveMethod(db, &prevMethod)
-										// if err != nil {
-										// 	fmt.Println("Error saving previous method: ", err.Error())
-										// }
-									}
+									// if !firstInStack {
+									m.CallerID = &prevMethod.ID
+									// err = models.SaveMethod(db, &prevMethod)
+									// if err != nil {
+									// 	fmt.Println("Error saving previous method: ", err.Error())
+									// }
+									// }
 									m.ID, err = models.CreateMethod(db, &m)
 									if err != nil {
 										fmt.Println("Error creating method: ", err.Error())
@@ -101,13 +101,13 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 										method.TotalCalls = totalCalls
 										method.CallsPercent = float64(float64(calls) / float64(totalCalls))
 									}
-									if !firstInStack {
-										method.CallerID = &prevMethod.ID
-										// err = models.SaveMethod(db, &prevMethod)
-										// if err != nil {
-										// 	fmt.Println("Error saving previous method: ", err.Error())
-										// }
-									}
+									// if !firstInStack {
+									method.CallerID = &prevMethod.ID
+									// err = models.SaveMethod(db, &prevMethod)
+									// if err != nil {
+									// 	fmt.Println("Error saving previous method: ", err.Error())
+									// }
+									// }
 									err = models.SaveMethod(db, method)
 									if err != nil {
 										fmt.Println("Error saving method: ", err.Error())
@@ -115,9 +115,9 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 
 									prevMethod = *method
 								}
-								if firstInStack {
-									firstInStack = false
-								}
+								// if firstInStack {
+								// 	firstInStack = false
+								// }
 							}
 						}
 					}
@@ -134,7 +134,7 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 							fmt.Println("Error parsing calls of method: ", errPD.Error())
 						}
 
-						firstInStack = true
+						// firstInStack = true
 						foundElement = false
 						stack = nil
 						finished = false
@@ -153,29 +153,29 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 							elements := strings.Split(call[1], ".")
 							// fmt.Println(elements)
 							if len(elements) > 1 {
-								element := elements[0]
-								method := &models.Method{Name: elements[len(elements)-1], TestCaseID: testcase.ID}
-								fmt.Printf(">>>>> method: %s File: %d\n", method.Name, method.FileID)
+								// at least one class and one method
+
+								//element
 								// fmt.Println(elements)
 								// fmt.Println(len(elements))
+								element := elements[0]
 								for i := 1; i < len(elements)-1; i++ {
-									// fmt.Println("i:", i)
 									element += "." + elements[i]
 								}
+
+								//method
+								method := &models.Method{Name: elements[len(elements)-1], TestCaseID: testcase.ID}
+								// fmt.Printf(">>>>> method: %s File: %d\n", method.Name, method.FileID)
 
 								// search package and class name
 								file, err := models.FindFileByEndsWithNameAndCommit(db, element+".java", commit.ID)
 								if err != nil {
-									// fmt.Println("Error searching for profiled class: ", err.Error())
-									// files = append(files, -1)
 									if foundElement {
+										// if already found and the current element was not found  stop parse
 										finished = true
 									}
 
 								} else {
-									// lastFound = foundElement
-									// files = append(files, int(file.ID))
-									fmt.Println("encontrou: ", file.ID)
 									method.FileID = file.ID
 									foundElement = true
 									stack = append(stack, *method)
@@ -324,7 +324,7 @@ func savePreviousStack(db *gorm.DB, stack []models.Method, ownSize, calls, total
 	// fmt.Printf("line: %d ownSize: %v", lines, ownSize)
 	firstInStack := true
 	var prevMethod models.Method = models.Method{}
-	lastMethod := stack[len(stack)-1]
+	lastMethod := stack[len(stack)]
 	e := false
 	if lastMethod.Name != testcase.Name {
 		// check if name of last method is exactly the same name of testcase, they should be...
