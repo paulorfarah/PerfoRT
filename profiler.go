@@ -322,9 +322,9 @@ func savePreviousStack(db *gorm.DB, stack []models.Method, ownSize, calls, total
 	//save previous stack
 	fmt.Println("*********************************************************************** stack")
 	// fmt.Printf("line: %d ownSize: %v", lines, ownSize)
-	firstInStack := true
+	// firstInStack := true
 	var prevMethod models.Method = models.Method{}
-	lastMethod := stack[len(stack)]
+	lastMethod := stack[len(stack)-1]
 	e := false
 	if lastMethod.Name != testcase.Name {
 		// check if name of last method is exactly the same name of testcase, they should be...
@@ -345,13 +345,13 @@ func savePreviousStack(db *gorm.DB, stack []models.Method, ownSize, calls, total
 					m.AllocCalls = calls
 					m.AllocCallsPercent = float64(calls / totalCalls)
 				}
-				if !firstInStack {
-					m.CallerID = &prevMethod.ID
-					// err = models.SaveMethod(db, &prevMethod)
-					// if err != nil {
-					// 	fmt.Println("Error saving previous method: ", err.Error())
-					// }
-				}
+				// if !firstInStack {
+				m.CallerID = &prevMethod.ID
+				// err = models.SaveMethod(db, &prevMethod)
+				// if err != nil {
+				// 	fmt.Println("Error saving previous method: ", err.Error())
+				// }
+				// }
 				var err error
 				m.ID, err = models.CreateMethod(db, &m)
 				if err != nil {
@@ -367,13 +367,13 @@ func savePreviousStack(db *gorm.DB, stack []models.Method, ownSize, calls, total
 					method.TotalAllocCalls = totalCalls
 					method.AllocCallsPercent = float64(float64(calls) / float64(totalCalls))
 				}
-				if !firstInStack {
-					method.CallerID = &prevMethod.ID
-					// err = models.SaveMethod(db, &prevMethod)
-					// if err != nil {
-					// 	fmt.Println("Error saving previous method: ", err.Error())
-					// }
-				}
+				// if !firstInStack {
+				method.CallerID = &prevMethod.ID
+				// err = models.SaveMethod(db, &prevMethod)
+				// if err != nil {
+				// 	fmt.Println("Error saving previous method: ", err.Error())
+				// }
+				// }
 				err := models.SaveMethod(db, method)
 				if err != nil {
 					fmt.Println("Error saving method: ", err.Error())
@@ -381,9 +381,9 @@ func savePreviousStack(db *gorm.DB, stack []models.Method, ownSize, calls, total
 
 				prevMethod = *method
 			}
-			if firstInStack {
-				firstInStack = false
-			}
+			// if firstInStack {
+			// 	firstInStack = false
+			// }
 		}
 	}
 }
