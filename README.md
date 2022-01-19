@@ -1,6 +1,4 @@
-# go-repo-downloader
-go repository downloader
-
+# perfrt  - performance regression testing tool
 
 configure environment variable MAVEN_OPTS:
 
