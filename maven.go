@@ -434,13 +434,13 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// fmt.Println(path)
 	param := "-Dtest=" + className + "#" + testName
 	if module != "" {
-		cmdStr = "mvn test  -pl " + module + " " + param
+		cmdStr = "mvn -Drat.skip=true test  -pl " + module + " " + param
 		fmt.Println(cmdStr)
 
-		cmd = exec.Command("mvn", "test", "-pl", module, param)
+		cmd = exec.Command("mvn", "-Drat.skip=true", "test", "-pl", module, param)
 		resultsPath += "/" + module
 	} else {
-		cmdStr = "mvn test " + param
+		cmdStr = "mvn -Drat.skip=true test " + param
 		fmt.Println(cmdStr)
 		cmd = exec.Command("mvn", "test", param)
 	}
