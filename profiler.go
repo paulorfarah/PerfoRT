@@ -201,7 +201,7 @@ func ParseProfilingAlloc(db *gorm.DB, commit models.Commit, testcase models.Test
 	if e != nil {
 		fmt.Println("Error renaming profile file: ", e.Error())
 		fmt.Println("FATAL: Check if MAVEN_OPTS is exported!")
-		log.Fatal("Check if MAVEN_OPTS is exported!")
+		log.Println("Check if MAVEN_OPTS is exported!")
 	}
 
 	lines := 0
