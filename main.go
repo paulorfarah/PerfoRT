@@ -63,23 +63,8 @@ func main() {
 	log.Println("git clone " + url)
 
 	repo, err := cloneRepository(url, repoDir)
-
 	if err == nil {
-		//	ref, err := r.Head()
-		//	if err != nil {
-		//		fmt.Println(err)
-		//	}
-		//	fmt.Println(ref)
-
-		//https://github.com/go-git/go-git/blob/master/_examples/commit/main.go
-		//Author: &object.Signature{
-		//	Name:  "John Doe",
-		//	Email: "john@doe.org",
-		//	When:  time.Now(),
-		//},
-
 		createDirs()
-
 		db := models.GetDB()
 
 		// platform
@@ -127,26 +112,28 @@ func main() {
 
 		//branches
 		branchCounter := 0
-		// branches, _ := repo.Branches()
-		branchesList := []string{"master", "main"}
-		for _, branchName := range branchesList {
-			// branch, err := branches.Next()
-			branch, err := repo.Branch(branchName)
+		branches, _ := repo.Branches()
+		// branchesList := []string{"master", "main"}  //junit4 -->:  refs/heads/main
+		// for _, branchName := range branchesList {
+		for {
+			branch, err := branches.Next()
+			// branch, err := repo.Branch(branchName)
 			if err != nil {
 				if err == io.EOF {
 					//Finished branch
 					break
 				} else {
+					fmt.Println("main/master branches not found.")
 					log.Fatal(err)
 				}
 			}
 			branchCounter++
-			// get reference of the reference name
-			ref, err := repo.Reference(branch.Merge, true)
-			if err != nil {
-				return
-			}
-			// fmt.Println("branch -->: ", branch.Name())
+			// // get reference of the reference name
+			// ref, err := repo.Reference(branch.Merge, true)
+			// if err != nil {
+			// 	return
+			// }
+			fmt.Println("branch -->: ", branch.Name())
 
 			//commits
 			var cCommit *object.Commit
@@ -158,7 +145,8 @@ func main() {
 			// since := time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)
 			// until := time.Date(2020, 12, 31, 0, 0, 0, 0, time.UTC)
 
-			commits, err := repo.Log(&git.LogOptions{From: ref.Hash()}) //, Since: &since, Until: &until})
+			commits, err := repo.Log(&git.LogOptions{From: branch.Hash()}) //, Since: &since, Until: &until})
+			// commits, err := repo.Log(&git.LogOptions{From: ref.Hash()}) //, Since: &since, Until: &until})
 			if err != nil {
 				log.Println("Error in git log: " + err.Error())
 			}
@@ -219,7 +207,7 @@ func main() {
 								CommitterID:   committer.ID,
 								CommitterDate: cCommit.Committer.When,
 								Subject:       cCommit.Message,
-								Branch:        branch.Name}
+								Branch:        branch.Name().String()}
 							_, err = models.CreateCommit(db, commit)
 							if err != nil {
 								fmt.Printf("Error creating new commit %s\n", err.Error())
@@ -367,7 +355,8 @@ func substr(s string, pos, length int) string {
 func getParentDirectory() string {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("ERROR: cannot get local directory: %s\n", err.Error())
+		log.Fatal("ERROR: cannot get local directory: ", err.Error())
 	}
 	// fmt.Println(dir)
 	dir = strings.Replace(dir, "\\", "/", -1)
@@ -383,7 +372,8 @@ func createDirs() {
 	if os.IsNotExist(errd) {
 		err := os.Mkdir("coverage", 0755)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("ERROR: cannot create directory coverage: %s\n", err.Error())
+			log.Fatal("ERROR: cannot create directory coverage: ", err.Error())
 		}
 	}
 
@@ -391,7 +381,8 @@ func createDirs() {
 	if os.IsNotExist(errd) {
 		err := os.Mkdir("gentest", 0755)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("ERROR: cannot create directory gentest: %s\n", err.Error())
+			log.Fatal("ERROR: cannot create directory gentest: ", err.Error())
 		}
 	}
 
@@ -399,7 +390,8 @@ func createDirs() {
 	if os.IsNotExist(errd) {
 		err := os.Mkdir("compilation", 0755)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("ERROR: cannot create directory compilation: %s\n", err.Error())
+			log.Fatal("ERROR: cannot create directory compilation: ", err.Error())
 		}
 	}
 
@@ -407,7 +399,8 @@ func createDirs() {
 	if os.IsNotExist(errd) {
 		err := os.Mkdir("run", 0755)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("ERROR: cannot create directory run: %s\n", err.Error())
+			log.Fatal("ERROR: cannot create directory run: ", err.Error())
 		}
 	}
 
@@ -415,7 +408,8 @@ func createDirs() {
 	if os.IsNotExist(errd) {
 		err := os.Mkdir("profiler", 0755)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("ERROR: cannot create directory profiler: %s\n", err.Error())
+			log.Fatal("ERROR: cannot create directory profiler: ", err.Error())
 		}
 	}
 

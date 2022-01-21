@@ -76,6 +76,7 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 									log.Printf("Create new method: %s (%s)\n"+m.Name, errM.Error())
 									if i == 0 {
 										m.OwnDuration = ownDur
+										m.CumulativeDuration = ownDur
 										m.TotalCalls = totalCalls
 										m.OwnCalls = calls
 										m.CallsPercent = float64(calls / totalCalls)

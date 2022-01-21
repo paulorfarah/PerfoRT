@@ -469,7 +469,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	stop := make(chan bool)
 	go func() {
-		// LOG_FILE := "/tmp/gorepodownloader_log"
+		// LOG_FILE := "/tmp/perfrt_log"
 		// // open log file
 		// logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 		// if err != nil {

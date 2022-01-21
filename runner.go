@@ -1,15 +1,6 @@
 package main
 
 import (
-	// "bytes"
-	// "fmt"
-	// "go-repo-downloader/models"
-	// "log"
-	// "os"
-	// "os/exec"
-	// "strings"
-	// "github.com/wcharczuk/go-chart/v2"
-	// "github.com/wcharczuk/go-chart/v2/drawing"
 	"bytes"
 	"context"
 	"fmt"
