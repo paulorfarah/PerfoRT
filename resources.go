@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-repo-downloader/models"
+	"perfrt/models"
 
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"

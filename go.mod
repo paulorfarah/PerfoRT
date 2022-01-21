@@ -1,4 +1,4 @@
-module go-repo-downloader
+module perfrt 
 
 go 1.13
 

@@ -3,12 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"go-repo-downloader/models"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"perfrt/models"
 	"regexp"
 	"runtime"
 	"strings"

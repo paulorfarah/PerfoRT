@@ -13,12 +13,12 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"go-repo-downloader/models"
-	"go-repo-downloader/models/charts"
+	"perfrt/models"
+	"perfrt/models/charts"
 )
 
 func main() {
-	fmt.Println("go-repo-downloader")
+	fmt.Println("starting perfrt")
 
 	logFile, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -26,13 +26,13 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
-	url := "https://github.com/paulorfarah/maven-project"
+	// url := "https://github.com/paulorfarah/maven-project"
 	// url := "https://github.com/TooTallNate/Java-WebSocket"
 
 	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
 	// url := "https://github.com/apaches/commons-io" //ok
-	// url := "https://github.com/junit-team/junit4" //ok
+	url := "https://github.com/junit-team/junit4" //ok
 	// url := "https://github.com/igniterealtime/Openfire"//ok
 	// url := "https://github.com/apache/pdfbox"
 	// url := "https://github.com/jenkinsci/jenkins" ok
