@@ -31,8 +31,8 @@ func main() {
 
 	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
-	// url := "https://github.com/apaches/commons-io" //ok
-	url := "https://github.com/junit-team/junit4" //ok
+	url := "https://github.com/apaches/commons-io" //ok
+	// url := "https://github.com/junit-team/junit4" //ok
 	// url := "https://github.com/igniterealtime/Openfire"//ok
 	// url := "https://github.com/apache/pdfbox"
 	// url := "https://github.com/jenkinsci/jenkins" ok
