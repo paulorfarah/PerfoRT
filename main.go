@@ -26,12 +26,12 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
-	// url := "https://github.com/paulorfarah/maven-project"
+	url := "https://github.com/paulorfarah/maven-project"
 	// url := "https://github.com/TooTallNate/Java-WebSocket"
 
 	// url := "https://github.com/paulorfarah/TestProject"
 	// url := "https://github.com/paulorfarah/gradle-project-example"
-	url := "https://github.com/apache/commons-io" //ok
+	// url := "https://github.com/apache/commons-io" //ok
 	// url := "https://github.com/junit-team/junit4" //ok
 	// url := "https://github.com/igniterealtime/Openfire"//ok
 	// url := "https://github.com/apache/pdfbox"
