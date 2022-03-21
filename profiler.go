@@ -165,7 +165,8 @@ func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.Test
 								}
 
 								//method
-								method := &models.Method{Name: elements[len(elements)-1], TestCaseID: testcase.ID}
+								fmt.Println("TODO: change testcase.ID to Run.ID")
+								method := &models.Method{Name: elements[len(elements)-1], RunID: testcase.ID}
 								// fmt.Printf(">>>>> method: %s File: %d\n", method.Name, method.FileID)
 
 								// search package and class name
@@ -274,7 +275,8 @@ func ParseProfilingAlloc(db *gorm.DB, commit models.Commit, testcase models.Test
 							fmt.Println(elements)
 							if len(elements) > 1 {
 								element := elements[0]
-								method := &models.Method{Name: elements[len(elements)-1], TestCaseID: testcase.ID}
+								fmt.Println("TODO: change testcase.ID to Run.ID")
+								method := &models.Method{Name: elements[len(elements)-1], RunID: testcase.ID}
 								fmt.Printf(">>>>> method: %s File: %d\n", method.Name, method.FileID)
 								// fmt.Println(elements)
 								// fmt.Println(len(elements))

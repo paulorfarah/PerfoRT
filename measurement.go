@@ -50,33 +50,33 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// buildPath := repoDir + string(os.PathSeparator)
 
 			// MvnInstall(repoDir)
-			// ok := MvnCompile(repoDir)
-			// if ok {
-			MeasureMavenTests(db, repoDir, *commit, measurement)
-			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
-			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-			// for _, file := range listJavaFiles(repoDir) {
-			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
-			// }
-			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
-			// }
-			// } else {
-			// 	MvnInstall(repoDir)
-			// 	ok := MvnCompile(repoDir)
-			// 	if ok {
-			// 		for _, projectPath := range projectModules {
-			// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
-			// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
-			// 			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
-			// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-			// 			// for _, file := range listJavaFiles(repoDir) {
-			// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
-			// 			// }
-			// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+			ok := MvnCompile(repoDir)
+			if ok {
+				MeasureMavenTests(db, repoDir, *commit, measurement)
+				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
+				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+				// for _, file := range listJavaFiles(repoDir) {
+				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+				// }
+				// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+				// }
+				// } else {
+				// 	MvnInstall(repoDir)
+				// 	ok := MvnCompile(repoDir)
+				// 	if ok {
+				// 		for _, projectPath := range projectModules {
+				// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
+				// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
+				// 			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+				// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+				// 			// for _, file := range listJavaFiles(repoDir) {
+				// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+				// 			// }
+				// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 
-			// 		}
-			// 	}
-			// }
+				// 		}
+				// 	}
+			}
 		case "gradle":
 			projectPaths := getProjectPaths(repoDir)
 			if len(projectPaths) == 0 {
@@ -119,6 +119,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 	projectModules := getProjectModules(repoDir)
 	// fmt.Println("modules: ", projectModules)
 	path := repoDir
+	packName := os.Getenv("package")
 	for _, module := range projectModules {
 		// fmt.Println("module: ", module)
 		if module != "" {
@@ -127,7 +128,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		// 	path = repoDir + "/target/surefire-reports/"
 		// }
 
-		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
+		// JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
 		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {
@@ -161,7 +162,8 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 						if errTC != nil {
 							fmt.Println("Error creating test case: ", errTC.Error())
 						}
-						RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
+						// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
+						RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
 
 					}
 
@@ -188,7 +190,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 func MeasureGradleTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
 	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
-		JacocoTestCoverage(db, repoDir, "gradle", "gradle", measurement.ID, commit.ID)
+		// JacocoTestCoverage(db, repoDir, "gradle", "gradle", measurement.ID, commit.ID)
 		// read tests xml file
 		// fmt.Printf("repoDir gradle tests: %s\n", repoDir)
 		suites, err := junit.IngestDir(repoDir + "/build/test-results/test/")

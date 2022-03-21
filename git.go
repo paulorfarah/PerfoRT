@@ -67,6 +67,7 @@ func Checkout(repoName, hash string) error {
 		log.Println("[>>ERROR]: START dir: " + dir)
 		log.Printf("git checkout -f %s\n", hash)
 		log.Println("\nCannot run git checkout: ", hash, err)
+		fmt.Println("\nCannot run git checkout: ", hash, err)
 		return err
 	}
 	err = cmd.Wait()
@@ -74,6 +75,9 @@ func Checkout(repoName, hash string) error {
 		log.Println("[>>ERROR]: WAIT dir: " + dir)
 		log.Printf("git checkout -f %s\n", hash)
 		log.Println("\nCannot run git checkout: ", hash, err)
+		fmt.Println("\nCannot run git checkout: ", hash, err)
+	} else {
+		fmt.Println("\ncheckout successfull: ", hash)
 	}
 
 	// fmt.Println("checkout output: " + string(out))

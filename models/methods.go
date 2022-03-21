@@ -10,10 +10,10 @@ import (
 
 type Method struct {
 	Model
-	FileID             uint
+	FileID             uint `gorm:"not null`
 	File               File
-	TestCaseID         uint
-	TestCase           TestCase
+	RunID              uint `gorm:"not null`
+	Run                Run
 	Name               string `gorm:"not null"`
 	CallerID           *uint
 	Caller             []Method `gorm:"foreignkey:CallerID"`
@@ -28,6 +28,7 @@ type Method struct {
 	AllocCalls         int
 	TotalAllocCalls    int
 	AllocCallsPercent  float64
+	Finished           bool `gorm:"not null;default: false"`
 }
 
 func (m *Method) TableName() string {

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -91,7 +92,19 @@ func main() {
 		}
 
 		// measurement
-		measurement := &models.Measurement{RepositoryID: repository.ID}
+		var measurement *models.Measurement
+		runsEnv, ok := os.LookupEnv("runs")
+		fmt.Println("############## runs: ", runsEnv)
+		runs, err := strconv.Atoi(runsEnv)
+		if err != nil {
+			ok = false
+		}
+		if !ok {
+			fmt.Println("ATTENTION: Number of runs not set, running with value 1!!!", "runs")
+			measurement = &models.Measurement{RepositoryID: repository.ID}
+		} else {
+			measurement = &models.Measurement{RepositoryID: repository.ID, Runs: runs}
+		}
 		models.CreateMeasurement(db, measurement)
 
 		//issues
@@ -189,6 +202,7 @@ func main() {
 						}
 
 						//Commit
+						var commitId uint
 						commit, err := models.FindCommitByHash(db, cCommit.Hash.String())
 						if err != nil {
 							log.Println("create new commit: " + cCommit.Hash.String())
@@ -208,12 +222,14 @@ func main() {
 								CommitterDate: cCommit.Committer.When,
 								Subject:       cCommit.Message,
 								Branch:        branch.Name().String()}
-							_, err = models.CreateCommit(db, commit)
+							commitId, err = models.CreateCommit(db, commit)
 							if err != nil {
 								fmt.Printf("Error creating new commit %s\n", err.Error())
 							}
 
 						}
+						// fmt.Println("commitId: ", commitId)
+						// fmt.Println("commit.ID: ", commit.ID)
 
 						//files
 						// currTree.Files().ForEach(func(f *object.File) error {
@@ -233,7 +249,7 @@ func main() {
 							// fmt.Printf("Commit: %d - %s\n", commit.ID, commit.CommitHash)
 
 							fl := &models.File{
-								CommitID: commit.ID,
+								CommitID: commitId,
 								Hash:     f.Hash.String(),
 								Name:     f.Name,
 								Size:     f.Size,
@@ -263,7 +279,7 @@ func main() {
 							var fileTo *models.File
 							var fileToID uint
 							if len(change.From.Name) > 0 {
-								fileFrom, err = models.FindFileByEndsWithNameAndCommit(db, change.From.Name, commit.ID)
+								fileFrom, err = models.FindFileByEndsWithNameAndCommit(db, change.From.Name, commitId)
 								// fmt.Println("File From: ", fileFrom.ID, fileFrom.Name)
 								if err != nil {
 									log.Println("Cannot find file: " + change.From.Name)

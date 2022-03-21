@@ -23,7 +23,7 @@ type TestCase struct {
 	// Properties    string
 	// SystemErr string
 	// SystemOut string
-	Methods []Method
+	// Methods []Method
 }
 
 func (r *TestCase) TableName() string {

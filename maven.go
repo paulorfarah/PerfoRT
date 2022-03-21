@@ -131,12 +131,14 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 		fmt.Println("error getting current path: ", err.Error())
 	}
 	jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
-	testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
-	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
-	cmd := exec.Command("bash", "-c", testStr)
-	fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
+	// testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
+	// testStr := "mvn -fn -Drat.skip=true clean test"
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	// fmt.Println("path: ", path)
+	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
+	fmt.Println("mvn -fn -Drat.skip=true clean test")
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -144,107 +146,11 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// pid := cmd.Process.Pid
-
-	// stop := make(chan bool)
-	// go func() {
-	// 	perfMetrics := []PerfMetrics{}
-	// 	for {
-	// 		select {
-	// 		case <-stop:
-	// 			//save
-	// 			for _, perfMetric := range perfMetrics {
-	// 				mr := &models.Run{
-	// 					MeasurementID: measurementID,
-	// 					Type:          "maven",
-	// 					Resources: models.Resources{
-	// 						CpuPercent:        perfMetric.CpuPercent,
-	// 						MemPercent:        perfMetric.MemoryPercent,
-	// 						MemoryInfoStat:    *perfMetric.MemoryInfo,
-	// 						IOCountersStat:    *perfMetric.IOCounters,
-	// 						PageFaultsStat:    *perfMetric.PageFaults,
-	// 						AvgStat:           *perfMetric.Load,
-	// 						VirtualMemoryStat: *perfMetric.VirtualMemory,
-	// 						SwapMemory:        *perfMetric.SwapMemory,
-	// 						// CPUTime:           perfMetric.CPUTime,
-	// 						// DiskIOCounters:    perfMetric.DiskIOCounters,
-	// 						// NetIOCounters:     perfMetric.NetIOCounters,
-	// 					},
-	// 				}
-	// 				models.CreateRun(db, mr)
-	// 				for _, cpuTime := range perfMetric.CPUTimes {
-	// 					models.CreateCPUTimes(db, &models.CPUTimes{
-	// 						RunID:     mr.ID,
-	// 						CPU:       cpuTime.CPU,
-	// 						User:      cpuTime.User,
-	// 						System:    cpuTime.System,
-	// 						Idle:      cpuTime.Idle,
-	// 						Nice:      cpuTime.Nice,
-	// 						Iowait:    cpuTime.Iowait,
-	// 						Irq:       cpuTime.Irq,
-	// 						Softirq:   cpuTime.Softirq,
-	// 						Steal:     cpuTime.Steal,
-	// 						Guest:     cpuTime.Guest,
-	// 						GuestNice: cpuTime.GuestNice,
-	// 					})
-	// 				}
-
-	// 				for i, diskIOCounter := range perfMetric.DiskIOCounters {
-	// 					models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-	// 						RunID:            mr.ID,
-	// 						Device:           i,
-	// 						ReadCount:        diskIOCounter.ReadCount,
-	// 						MergedReadCount:  diskIOCounter.MergedReadCount,
-	// 						WriteCount:       diskIOCounter.WriteCount,
-	// 						MergedWriteCount: diskIOCounter.MergedWriteCount,
-	// 						ReadBytes:        diskIOCounter.ReadBytes,
-	// 						WriteBytes:       diskIOCounter.WriteBytes,
-	// 						ReadTime:         diskIOCounter.ReadTime,
-	// 						WriteTime:        diskIOCounter.WriteTime,
-	// 						IopsInProgress:   diskIOCounter.IopsInProgress,
-	// 						IoTime:           diskIOCounter.IoTime,
-	// 						WeightedIO:       diskIOCounter.WeightedIO,
-	// 						Name:             diskIOCounter.Name,
-	// 						SerialNumber:     diskIOCounter.SerialNumber,
-	// 						Label:            diskIOCounter.Label,
-	// 					})
-	// 				}
-
-	// 				for i, netIOCounter := range perfMetric.NetIOCounters {
-	// 					models.CreateNetIOCounters(db, &models.NetIOCounters{
-	// 						RunID:       mr.ID,
-	// 						NICID:       uint(i),
-	// 						Name:        netIOCounter.Name,
-	// 						BytesSent:   netIOCounter.BytesSent,
-	// 						BytesRecv:   netIOCounter.BytesRecv,
-	// 						PacketsSent: netIOCounter.PacketsSent,
-	// 						PacketsRecv: netIOCounter.PacketsRecv,
-	// 						Errin:       netIOCounter.Errin,
-	// 						Errout:      netIOCounter.Errout,
-	// 						Dropin:      netIOCounter.Dropin,
-	// 						Dropout:     netIOCounter.Dropout,
-	// 						Fifoin:      netIOCounter.Fifoin,
-	// 						Fifoout:     netIOCounter.Fifoout,
-	// 					})
-	// 				}
-	// 			}
-	// 			return
-	// 		default:
-	// 			perfMetric, err := MonitorProcess(pid)
-	// 			if err == nil {
-	// 				perfMetrics = append(perfMetrics, perfMetric)
-	// 			}
-
-	// 		}
-	// 	}
-	// }()
-
 	err = cmd.Wait()
 	if err != nil {
 		log.Printf("Command finished with error: %v\n", err)
 		fmt.Printf("Command finished with error: %v\n", err)
 	}
-	// stop <- true
 
 	if err != nil {
 		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err.Error())
@@ -660,5 +566,120 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// 		}
 	// 	}
 	// }
+
+}
+
+func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName string) {
+	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
+
+	className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
+	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
+
+	//set environment variable to activate profiler during testcases execution
+	localpath, errPath := os.Getwd()
+	if errPath != nil {
+		log.Println(errPath)
+		fmt.Println("error getting current path: ", errPath.Error())
+	}
+
+	log.Println(">>>------------------------------------------------ junit testcase", path, packageName, className, testName)
+	fmt.Println(">>>------------------------------------------------ junit testcase", path, packageName, className, testName)
+
+	var cmd *exec.Cmd
+	// var cmdStr string
+	// fmt.Println(path)
+	// param := "-Dtest=" + className + "#" + testName
+	// if module != "" {
+	// 	cmdStr = "mvn -Drat.skip=true test  -pl " + module + " " + param
+	// 	fmt.Println(cmdStr)
+
+	// 	cmd = exec.Command("mvn", "-Drat.skip=true", "test", "-pl", module, param)
+	// 	resultsPath += "/" + module
+	// } else {
+	// 	cmdStr = "mvn -Drat.skip=true test " + param
+	// 	fmt.Println(cmdStr)
+	// 	cmd = exec.Command("mvn", "test", param)
+	// }
+
+	// resultsPath += "/target/surefire-reports/TEST-" + tc.ClassName + ".xml"
+	// fmt.Println("resultsPath: ", resultsPath)
+
+	// var err error
+	fmt.Println("Number of runs: ", measurement.Runs)
+	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
+		run := &models.Run{
+			MeasurementID: measurement.ID,
+			TestCaseID:    tc.ID,
+			Type:          "junit",
+			Number:        runNumber,
+		}
+		models.CreateRun(db, run)
+
+		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) + " -jar " +
+			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m " + packageName + className + "#" + testName
+		fmt.Println(strJunitTC)
+
+		cmd = exec.Command(
+			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", ".:target/test-classes/:target/classes", "-m", packageName+className+"#"+testName) //.Output()
+		var outb, errb bytes.Buffer
+		cmd.Stdout = &outb
+		cmd.Stderr = &errb
+		cmd.Dir = path
+		// fmt.Println("path: ", path)
+
+		err := cmd.Start()
+		if err != nil {
+			fmt.Println("Error starting command: ", err.Error())
+			log.Fatal(err)
+		}
+		pid := cmd.Process.Pid
+
+		stop := make(chan bool)
+		go func() {
+			perfMetrics := []PerfMetrics{}
+			for {
+				select {
+				case <-stop:
+					// //save
+					for _, perfMetric := range perfMetrics {
+						saveMetrics(db, run.ID, perfMetric)
+					}
+					return
+				default:
+					perfMetric, err := MonitorProcess(pid)
+					if err == nil {
+						perfMetrics = append(perfMetrics, perfMetric)
+						// saveMetrics(db, mr.ID, perfMetric)
+
+					}
+					// log.Println(perfMetric)
+
+				}
+			}
+		}()
+
+		err = cmd.Wait()
+
+		stop <- true
+		if err != nil {
+			pid = cmd.Process.Pid
+			// fmt.Println(pid)
+			process, err := os.FindProcess(int(pid))
+			if err != nil {
+				fmt.Printf("Failed to find process: %s\n", err)
+			} else {
+				errPid := process.Signal(syscall.Signal(0))
+				fmt.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
+				resPid := fmt.Sprintf("%v", errPid)
+				if resPid != "os: process already finished" {
+					fmt.Printf("junit test failed with %s\n", err.Error())
+					log.Printf("Command finished with error: %s", err.Error())
+				}
+			}
+		}
+		fmt.Println("out:", outb.String(), "err:", errb.String())
+	}
+	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
 
 }

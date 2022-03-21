@@ -10,9 +10,10 @@ type Run struct {
 	Model
 	MeasurementID uint
 	Measurement   Measurement
-	Type          string
 	TestCaseID    uint
 	TestCase      TestCase
+	Type          string
+	Number        int
 	TestCaseTime  time.Duration
 }
 

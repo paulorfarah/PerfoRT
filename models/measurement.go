@@ -10,7 +10,7 @@ type Measurement struct {
 	Model
 	RepositoryID uint //   `gorm:"not null"`
 	// Repository   Repository
-	Executions int `gorm:"default:1"`
+	Runs int `gorm:"default:1"`
 	// Maven        []Maven
 	// Randoop      []Randoop
 }
