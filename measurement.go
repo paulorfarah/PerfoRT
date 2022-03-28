@@ -53,7 +53,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			ok := MvnCompile(repoDir)
 			if ok {
 				MeasureMavenTests(db, repoDir, *commit, measurement)
-				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commitID)
+				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
 				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				// for _, file := range listJavaFiles(repoDir) {
 				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
@@ -128,7 +128,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		// 	path = repoDir + "/target/surefire-reports/"
 		// }
 
-		// JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
+		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
 		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {

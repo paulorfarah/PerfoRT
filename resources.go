@@ -10,6 +10,7 @@ import (
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
+	"gorm.io/gorm"
 )
 
 // func MonitorResources(db *gorm.DB, measurementID uint) {
@@ -134,3 +135,80 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 // 	fmt.Println(" 5 min ave:", load.Load5)
 // 	fmt.Println("15 min ave:", load.Load15)
 // }
+
+func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
+	resource := &models.Resource{
+		RunID:             measurementID,
+		CpuPercent:        perfMetric.CpuPercent,
+		MemPercent:        perfMetric.MemoryPercent,
+		MemoryInfoStat:    *perfMetric.MemoryInfo,
+		IOCountersStat:    *perfMetric.IOCounters,
+		PageFaultsStat:    *perfMetric.PageFaults,
+		AvgStat:           *perfMetric.Load,
+		VirtualMemoryStat: *perfMetric.VirtualMemory,
+		SwapMemoryStat:    *perfMetric.SwapMemory,
+		// DiskIOCounters:    perfMetric.DiskIOCounters,
+		// NetIOCounters:     perfMetric.NetIOCounters,
+
+	}
+	_, err := models.CreateResource(db, resource)
+	if err != nil {
+		fmt.Printf("Error saving resource: %s\n", err.Error())
+	}
+
+	// for _, cpuTime := range perfMetric.CPUTimes {
+	// 	models.CreateCPUTimes(db, &models.CPUTimes{
+	// 		ResourceID: resource.ID,
+	// 		CPU:        cpuTime.CPU,
+	// 		User:       cpuTime.User,
+	// 		System:     cpuTime.System,
+	// 		Idle:       cpuTime.Idle,
+	// 		Nice:       cpuTime.Nice,
+	// 		Iowait:     cpuTime.Iowait,
+	// 		Irq:        cpuTime.Irq,
+	// 		Softirq:    cpuTime.Softirq,
+	// 		Steal:      cpuTime.Steal,
+	// 		Guest:      cpuTime.Guest,
+	// 		GuestNice:  cpuTime.GuestNice,
+	// 	})
+	// }
+
+	// for i, diskIOCounter := range perfMetric.DiskIOCounters {
+	// 	models.CreateDiskIOCounters(db, &models.DiskIOCounters{
+	// 		ResourceID:       resource.ID,
+	// 		Device:           i,
+	// 		ReadCount:        diskIOCounter.ReadCount,
+	// 		MergedReadCount:  diskIOCounter.MergedReadCount,
+	// 		WriteCount:       diskIOCounter.WriteCount,
+	// 		MergedWriteCount: diskIOCounter.MergedWriteCount,
+	// 		ReadBytes:        diskIOCounter.ReadBytes,
+	// 		WriteBytes:       diskIOCounter.WriteBytes,
+	// 		ReadTime:         diskIOCounter.ReadTime,
+	// 		WriteTime:        diskIOCounter.WriteTime,
+	// 		IopsInProgress:   diskIOCounter.IopsInProgress,
+	// 		IoTime:           diskIOCounter.IoTime,
+	// 		WeightedIO:       diskIOCounter.WeightedIO,
+	// 		Name:             diskIOCounter.Name,
+	// 		SerialNumber:     diskIOCounter.SerialNumber,
+	// 		Label:            diskIOCounter.Label,
+	// 	})
+	// }
+
+	// for i, netIOCounter := range perfMetric.NetIOCounters {
+	// 	models.CreateNetIOCounters(db, &models.NetIOCounters{
+	// 		ResourceID:  resource.ID,
+	// 		NICID:       uint(i),
+	// 		Name:        netIOCounter.Name,
+	// 		BytesSent:   netIOCounter.BytesSent,
+	// 		BytesRecv:   netIOCounter.BytesRecv,
+	// 		PacketsSent: netIOCounter.PacketsSent,
+	// 		PacketsRecv: netIOCounter.PacketsRecv,
+	// 		Errin:       netIOCounter.Errin,
+	// 		Errout:      netIOCounter.Errout,
+	// 		Dropin:      netIOCounter.Dropin,
+	// 		Dropout:     netIOCounter.Dropout,
+	// 		Fifoin:      netIOCounter.Fifoin,
+	// 		Fifoout:     netIOCounter.Fifoout,
+	// 	})
+	// }
+}

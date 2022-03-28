@@ -117,6 +117,9 @@ func MvnCompile(path string) bool {
 }
 
 func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
+	//configure export MAVEN_OPTS="-javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/jacoco-0.8.6/jacocoagent.jar"
+
+	// deprecated
 	//mvn -fn -Drat.skip=true -Djacoco.destFile=coverage/jacoco-1.exec clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test
 	ok := true
 	logfile := "maven-test.log"
@@ -125,20 +128,23 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 
 	log.Println("------------------------------------------------ mvn test")
 	fmt.Println("------------------------------------------------ mvn test")
-	localpath, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-		fmt.Println("error getting current path: ", err.Error())
-	}
-	jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
+	// localpath, err := os.Getwd()
+	// if err != nil {
+	// 	log.Println(err)
+	// 	fmt.Println("error getting current path: ", err.Error())
+	// }
+
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	fmt.Println("mvn -fn -Drat.skip=true clean test")
+	// jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
 	// testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
 	// testStr := "mvn -fn -Drat.skip=true clean test"
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
 	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
-	fmt.Println("mvn -fn -Drat.skip=true clean test")
+	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	fmt.Println("path: ", path)
+	// fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -148,16 +154,12 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	}
 	err = cmd.Wait()
 	if err != nil {
-		log.Printf("Command finished with error: %v\n", err)
-		fmt.Printf("Command finished with error: %v\n", err)
-	}
-
-	if err != nil {
+		log.Printf("mvn -Drat.skip=true test failed with %s\n", err.Error())
 		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err.Error())
 	}
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
-	log.Printf("Mvn test out:\n%s\n", string(output))
+	// log.Printf("Mvn test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		ok = false
