@@ -1,8 +1,9 @@
-module perfrt 
+module perfrt
 
 go 1.13
 
 require (
+	github.com/Jeffail/gabs v1.4.0 // indirect
 	github.com/creekorful/mvnparser v1.4.0 // indirect
 	github.com/go-echarts/go-echarts/v2 v2.0.0
 	github.com/go-git/go-billy/v5 v5.0.0
@@ -15,6 +16,7 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0
 	github.com/joshdk/go-junit v0.0.0-20210226021600-6145f504ca0d // indirect
+	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/shirou/gopsutil/v3 v3.21.3 // indirect
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
 	github.com/shurcool/githubv4 v0.0.0-20200627185320-e003124d66e4

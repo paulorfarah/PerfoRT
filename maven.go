@@ -144,7 +144,7 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
 	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	// fmt.Println("path: ", path)
+	fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -617,12 +617,21 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 		models.CreateRun(db, run)
 
-		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) + " -jar " +
+		//    java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=
+		//    com.github.paulorfarah.mavenproject.,f07a8a880ab962572ff8fb013958afd55e4f282a,11
+		//    -XX:StartFlightRecording:maxsize=200M,name=sized,dumponexit=true,filename=/home/usuario/teste5.jfr,
+		// settings=/home/usuario/Downloads/perfrt.jfc
+		// -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
+
+		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
+			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
+			" -jar " +
 			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m " + packageName + className + "#" + testName
 		fmt.Println(strJunitTC)
 
 		cmd = exec.Command(
 			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+			"XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", ".:target/test-classes/:target/classes", "-m", packageName+className+"#"+testName) //.Output()
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
@@ -644,9 +653,11 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				select {
 				case <-stop:
 					// //save
+					fmt.Println("****************** stop")
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
+					SaveJFRMetrics(db, run.ID, tc.ID)
 					return
 				default:
 					perfMetric, err := MonitorProcess(pid)
@@ -680,7 +691,9 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				}
 			}
 		}
-		fmt.Println("out:", outb.String(), "err:", errb.String())
+		log.Println("out:", outb.String(), "err:", errb.String())
+
+		// SaveJFRMetrics(db, run.ID, tc.ID)
 	}
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
 

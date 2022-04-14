@@ -46,7 +46,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 	// }
 	// log.Println(folderInfo)
 	// jacoco_exec := "coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
-	jacoco_exec := "coverage/jacoco.exec"
+	jacoco_exec := repoDir + "/jacoco.exec"
 
 	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report " + jacoco_exec + " --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv " + filename
 

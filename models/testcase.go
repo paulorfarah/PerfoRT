@@ -7,23 +7,12 @@ import (
 
 type TestCase struct {
 	Model
-	// CommitID      uint
-	// Commit        Commit
-	// MeasurementID uint
-	// Measurement   Measurement
 	FileID       uint
 	FileTargetID uint
 	Name         string `gorm:"not null"`
 	Type         string `gorm:"not null"`
-	// Status        string        `gorm:"not null"`
-	ClassName string `gorm:"not null"`
-	// Duration      time.Duration `gorm:"not null"`
-	// Error         string
-	Message string
-	// Properties    string
-	// SystemErr string
-	// SystemOut string
-	// Methods []Method
+	ClassName    string `gorm:"not null"`
+	Message      string
 }
 
 func (r *TestCase) TableName() string {
