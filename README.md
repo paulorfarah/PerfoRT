@@ -49,3 +49,18 @@ There are some testcases that runs without ending. To deal with this situation a
 For example, for the target system apache commons-bcel, the package name is "org.apache.bcel.", so the testcase ignore list file should be named as ".tcignore_org.apache.bcel.".
 
 If the testcase to be ignored is not listed in the ignore file, perfrt will stablish a timeout, also can be configured in the testcase_timeout of the .env file. However, ignore them is better because do not take extra time and use extra resources neither.
+
+
+SELECT c.committer_date, commit_hash, r.id, f.name AS classname, m.name AS methodName, jvm.object_allocation_in_new_tlab_tlab_size   FROM perfrt.commits AS c INNER JOIN perfrt.files AS f ON f.commit_id=c.id INNER JOIN perfrt.methods AS m ON m.file_id=f.id INNER JOIN perfrt.runs AS r ON m.run_id = r.id INNER JOIN perfrt.jvms jvm ON jvm.run_id = r.id ORDER BY c.committer_date, f.name; 
+
+
+
+INTO OUTFILE '/var/lib/mysql-files/jvm2.csv'
+          FIELDS ENCLOSED BY '"'
+          TERMINATED BY ';'
+          ESCAPED BY '"'
+          LINES TERMINATED BY '\r\n';
+
+          
+
+mysql perfrt -u root -p  < jvms.sql > openfire.tsv
