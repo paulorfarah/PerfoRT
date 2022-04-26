@@ -139,13 +139,13 @@ type OldObjectSample struct {
 type ClassLoaderStatistics struct {
 	ClassLoader         string
 	ParentClassLoader   string
-	ClassLoaderData     int
-	ClassCount          int
-	ChunkSize           int
-	BlockSize           int
-	AnonymousClassCount int
-	AnonymousChunkSize  int
-	AnonymousBlockSize  int
+	ClassLoaderData     int64
+	ClassCount          int64
+	ChunkSize           int64
+	BlockSize           int64
+	AnonymousClassCount int64
+	AnonymousChunkSize  int64
+	AnonymousBlockSize  int64
 }
 
 type ObjectAllocationInNewTLAB struct {
@@ -172,9 +172,9 @@ type GCPhasePause struct {
 	GCPhasePauseOsThreadId   int
 	GCPhasePauseJavaName     string
 	GCPhasePauseJavaThreadId int
-	GCPhasePauseDuration     string `json:"duration"`
-	GcId                     int    `json:"gcId"`
-	GCPhasePauseName         string `json:"name"`
+	GCPhasePauseDuration     float64 `json:"duration"`
+	GcId                     int     `json:"gcId"`
+	GCPhasePauseName         string  `json:"name"`
 }
 
 func (r *Jvm) TableName() string {

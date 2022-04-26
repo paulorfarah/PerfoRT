@@ -513,13 +513,13 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					classLoaderStatistics := &models.ClassLoaderStatistics{
 						ClassLoader:         event.Values["classLoader.name"].(string),
 						ParentClassLoader:   event.Values["parentClassLoader.name"].(string),
-						ClassLoaderData:     event.Values["classLoaderData"].(int),
-						ClassCount:          event.Values["classCount"].(int),
-						ChunkSize:           event.Values["chunkSize"].(int),
-						BlockSize:           event.Values["blockSize"].(int),
-						AnonymousClassCount: event.Values["anonymousClassCount"].(int),
-						AnonymousChunkSize:  event.Values["anonymousChunkSize"].(int),
-						AnonymousBlockSize:  event.Values["anonymousBlockSize"].(int),
+						ClassLoaderData:     event.Values["classLoaderData"].(int64),
+						ClassCount:          event.Values["classCount"].(int64),
+						ChunkSize:           event.Values["chunkSize"].(int64),
+						BlockSize:           event.Values["blockSize"].(int64),
+						AnonymousClassCount: event.Values["anonymousClassCount"].(int64),
+						AnonymousChunkSize:  event.Values["anonymousChunkSize"].(int64),
+						AnonymousBlockSize:  event.Values["anonymousBlockSize"].(int64),
 					}
 					if val, ok := jfrMap[t]; ok {
 						val.ClassLoaderStatistics = *classLoaderStatistics
@@ -596,7 +596,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 
 				case "jdk.GCPhasePause":
 					gcPhasePause := &models.GCPhasePause{
-						GCPhasePauseDuration:     event.Values["duration"].(string),
+						GCPhasePauseDuration:     event.Values["duration"].(float64),
 						GCPhasePauseOsName:       event.Values["eventThread.osName"].(string),
 						GCPhasePauseOsThreadId:   event.Values["eventThread.osThreadId"].(int),
 						GCPhasePauseJavaName:     event.Values["eventThread.javaName"].(string),
