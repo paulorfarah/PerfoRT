@@ -9,98 +9,178 @@ import (
 
 type Jvm struct {
 	Model
-	RunID   uint
-	Run     Run
-	CPULoad CPULoad
+	RunID     uint `gorm:"not null"`
+	Run       Run
+	StartTime time.Time
+	CPULoad
+	ThreadCPULoad
+	ThreadStart
+	ThreadEnd
+	ThreadSleep
+	ThreadPark
+	JavaErrorThrow
+	JavaExceptionThrow
+	JavaMonitorEnter
+	JavaMonitorWait
+	OldObjectSample
+	LoadedClassCount   int
+	UnloadedClassCount int
+	ClassLoaderStatistics
+	ObjectAllocationInNewTLAB
+	ObjectAllocationOutsideTLAB
+	GCPhasePause
 }
 
 type CPULoad struct {
-	StartTime    time.Time
+	// StartTime    time.Time
 	JvmUser      float64
 	JvmSystem    float64
 	MachineTotal float64
 }
 
-type GCPhasePause struct {
-	StartTime time.Time `json:"startTime"`
-	Duration  string    `json:"duration"`
-	GcId      int       `json:"gcId"`
-	Name      string    `json:"name"`
+type ThreadCPULoad struct {
+	ThreadCPULoadOsName       string
+	ThreadCPULoadOsThreadId   int
+	ThreadCPULoadJavaName     string
+	ThreadCPULoadJavaThreadId int
+	ThreadCPULoadUser         float64
+	ThreadCPULoadSystem       float64
+}
+type ThreadStart struct { //ok
+	ThreadStartOsName                   string
+	ThreadStartOsThreadId               int
+	ThreadStartJavaName                 string
+	ThreadStartJavaThreadId             int
+	ThreadStartParentThreadosName       string
+	ThreadStartParentThreadOsThreadId   int
+	ThreadStartParentThreadJavaName     string
+	ThreadStartParentThreadJavaThreadId int
 }
 
-// type CPUTimes struct {
-// 	Model
-// 	ResourceID uint
-// 	Resource   Resource
-// 	CPUID      uint
-// 	CPU        string  `json:"cpu"`
-// 	User       float64 `json:"user"`
-// 	System     float64 `json:"system"`
-// 	Idle       float64 `json:"idle"`
-// 	Nice       float64 `json:"nice"`
-// 	Iowait     float64 `json:"iowait"`
-// 	Irq        float64 `json:"irq"`
-// 	Softirq    float64 `json:"softirq"`
-// 	Steal      float64 `json:"steal"`
-// 	Guest      float64 `json:"guest"`
-// 	GuestNice  float64 `json:"guestNice"`
-// }
+type ThreadEnd struct { //ok
+	ThreadEndOsName       string
+	ThreadEndOsThreadId   int
+	ThreadEndJavaName     string
+	ThreadEndJavaThreadId int
+}
 
-// type DiskIOCounters struct {
-// 	Model
-// 	ResourceID       uint
-// 	Resource         Resource
-// 	Device           string
-// 	ReadCount        uint64 `json:"readCount"`
-// 	MergedReadCount  uint64 `json:"mergedReadCount"`
-// 	WriteCount       uint64 `json:"writeCount"`
-// 	MergedWriteCount uint64 `json:"mergedWriteCount"`
-// 	ReadBytes        uint64 `json:"readBytes"`
-// 	WriteBytes       uint64 `json:"writeBytes"`
-// 	ReadTime         uint64 `json:"readTime"`
-// 	WriteTime        uint64 `json:"writeTime"`
-// 	IopsInProgress   uint64 `json:"iopsInProgress"`
-// 	IoTime           uint64 `json:"ioTime"`
-// 	WeightedIO       uint64 `json:"weightedIO"`
-// 	Name             string `json:"name"`
-// 	SerialNumber     string `json:"serialNumber"`
-// 	Label            string `json:"label"`
-// }
+type ThreadSleep struct {
+	ThreadSleepDuration     float64
+	ThreadSleepOsName       string
+	ThreadSleepOsThreadId   int
+	ThreadSleepJavaName     string
+	ThreadSleepJavaThreadId int
+	ThreadSleepTime         float64
+}
 
-// type NetIOCounters struct {
-// 	Model
-// 	ResourceID  uint
-// 	Resource    Resource
-// 	NICID       uint
-// 	Name        string `json:"name"`        // interface name
-// 	BytesSent   uint64 `json:"bytesSent"`   // number of bytes sent
-// 	BytesRecv   uint64 `json:"bytesRecv"`   // number of bytes received
-// 	PacketsSent uint64 `json:"packetsSent"` // number of packets sent
-// 	PacketsRecv uint64 `json:"packetsRecv"` // number of packets received
-// 	Errin       uint64 `json:"errin"`       // total number of errors while receiving
-// 	Errout      uint64 `json:"errout"`      // total number of errors while sending
-// 	Dropin      uint64 `json:"dropin"`      // total number of incoming packets which were dropped
-// 	Dropout     uint64 `json:"dropout"`     // total number of outgoing packets which were dropped (always 0 on OSX and BSD)
-// 	Fifoin      uint64 `json:"fifoin"`      // total number of FIFO buffers errors while receiving
-// 	Fifoout     uint64 `json:"fifoout"`     // total number of FIFO buffers errors while sending
+type ThreadPark struct {
+	ThreadParkDuration     float64
+	ThreadParkOsName       string
+	ThreadParkOsThreadId   int
+	ThreadParkJavaName     string
+	ThreadParkJavaThreadId int
+	ThreadParkParkedClass  string
+	ThreadParkTimeout      float64
+	ThreadParkUntil        float64
+}
 
-// }
+type JavaErrorThrow struct {
+	JavaErrorThrowDuration     float64
+	JavaErrorThrowOsName       string
+	JavaErrorThrowOsThreadId   int
+	JavaErrorThrowJavaName     string
+	JavaErrorThrowJavaThreadId int
+	JavaErrorThrowMessage      string
+	JavaErrorThrowThrownClass  string
+}
+
+type JavaExceptionThrow struct {
+	JavaExceptionThrowDuration     float64
+	JavaExceptionThrowOsName       string
+	JavaExceptionThrowOsThreadId   int
+	JavaExceptionThrowJavaName     string
+	JavaExceptionThrowJavaThreadId int
+	JavaExceptionThrowMessage      string
+	JavaExceptionThrowThrownClass  string
+}
+
+type JavaMonitorEnter struct {
+	JavaMonitorEnterDuration     float64
+	JavaMonitorEnterOsName       string
+	JavaMonitorEnterOsThreadId   int
+	JavaMonitorEnterJavaName     string
+	JavaMonitorEnterJavaThreadId int
+	JavaMonitorEnterMonitorClass string
+}
+
+type JavaMonitorWait struct {
+	JavaMonitorWaitDuration     float64
+	JavaMonitorWaitOsName       string
+	JavaMonitorWaitOsThreadId   int
+	JavaMonitorWaitJavaName     string
+	JavaMonitorWaitJavaThreadId int
+	JavaMonitorWaitMonitorClass string
+	JavaMonitorWaitTimeout      float64 //	Maximum wait time
+	JavaMonitorWaitTimedOut     bool    //Wait has been timed out
+}
+
+type OldObjectSample struct {
+	OldObjectSampleDuration           float64
+	OldObjectSampleOsName             string
+	OldObjectSampleOsThreadId         int
+	OldObjectSampleJavaName           string
+	OldObjectSampleJavaThreadId       int
+	OldObjectSampleAllocationTime     float64
+	OldObjectSampleLastKnownHeapUsage float64
+	OldObjectSampleObject             string
+	OldObjectSampleArrayElements      int
+}
+
+type ClassLoaderStatistics struct {
+	ClassLoader         string
+	ParentClassLoader   string
+	ClassLoaderData     int
+	ClassCount          int
+	ChunkSize           int
+	BlockSize           int
+	AnonymousClassCount int
+	AnonymousChunkSize  int
+	AnonymousBlockSize  int
+}
+
+type ObjectAllocationInNewTLAB struct {
+	ObjectAllocationInNewTLABOsName         string
+	ObjectAllocationInNewTLABOsThreadId     int
+	ObjectAllocationInNewTLABJavaName       string
+	ObjectAllocationInNewTLABJavaThreadId   int
+	ObjectAllocationInNewTLABObjectClass    string // Class of allocated object
+	ObjectAllocationInNewTLABAllocationSize float64
+	ObjectAllocationInNewTLABTlabSize       float64
+}
+
+type ObjectAllocationOutsideTLAB struct {
+	ObjectAllocationOutsideTLABOsName         string
+	ObjectAllocationOutsideTLABOsThreadId     int
+	ObjectAllocationOutsideTLABJavaName       string
+	ObjectAllocationOutsideTLABJavaThreadId   int
+	ObjectAllocationOutsideTLABObjectClass    string // Class of allocated object
+	ObjectAllocationOutsideTLABAllocationSize float64
+}
+
+type GCPhasePause struct {
+	GCPhasePauseOsName       string
+	GCPhasePauseOsThreadId   int
+	GCPhasePauseJavaName     string
+	GCPhasePauseJavaThreadId int
+	GCPhasePauseDuration     string `json:"duration"`
+	GcId                     int    `json:"gcId"`
+	GCPhasePauseName         string `json:"name"`
+}
 
 func (r *Jvm) TableName() string {
 	return "jvms"
 }
 
-// func (r *CPUTimes) TableName() string {
-// 	return "cputimes"
-// }
-
-// func (r *DiskIOCounters) TableName() string {
-// 	return "diskiocounters"
-// }
-
-// func (r *NetIOCounters) TableName() string {
-// 	return "netiocounters"
-// }
 func CreateJvm(db *gorm.DB, j *Jvm) (uint, error) {
 	err := db.Create(j).Error
 	if err != nil {
@@ -109,27 +189,3 @@ func CreateJvm(db *gorm.DB, j *Jvm) (uint, error) {
 	}
 	return j.ID, nil
 }
-
-// func CreateCPUTimes(db *gorm.DB, ct *CPUTimes) (uint, error) {
-// 	err := db.Create(ct).Error
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	return ct.ID, nil
-// }
-
-// func CreateDiskIOCounters(db *gorm.DB, dic *DiskIOCounters) (uint, error) {
-// 	err := db.Create(dic).Error
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	return dic.ID, nil
-// }
-
-// func CreateNetIOCounters(db *gorm.DB, nic *NetIOCounters) (uint, error) {
-// 	err := db.Create(nic).Error
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	return nic.ID, nil
-// }

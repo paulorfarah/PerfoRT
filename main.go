@@ -175,7 +175,7 @@ func main() {
 
 					if cCommit != nil && (commDate.IsZero() || commDate.Sub(pCommit.Author.When).Hours() >= 7*24) {
 						commDate = pCommit.Author.When
-						fmt.Println("*********************************************************************commDate: ", commDate)
+						// fmt.Println("*********************************************************************commDate: ", commDate)
 						// fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
 						// fmt.Printf("###>  commit: %s <###\n", cCommit.Hash)
 						//fmt.Println(currCommit.Author.Email)

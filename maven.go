@@ -653,7 +653,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				select {
 				case <-stop:
 					// //save
-					fmt.Println("****************** stop")
+					// fmt.Println("****************** stop")
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
