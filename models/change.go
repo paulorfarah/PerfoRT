@@ -16,7 +16,7 @@ type Change struct {
 	FileToID   uint
 	FileTo     File
 	Action     string `gorm:"not null"`
-	Patch      string `gorm:"type:text;not null"`
+	Patch      string `gorm:"type:longtext;not null"`
 	Length     int
 	// RandoopMetrics []RandoopMetrics
 }

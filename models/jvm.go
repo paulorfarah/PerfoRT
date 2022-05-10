@@ -139,13 +139,13 @@ type OldObjectSample struct {
 type ClassLoaderStatistics struct {
 	ClassLoader         string
 	ParentClassLoader   string
-	ClassLoaderData     int64
-	ClassCount          int64
-	ChunkSize           int64
-	BlockSize           int64
-	AnonymousClassCount int64
-	AnonymousChunkSize  int64
-	AnonymousBlockSize  int64
+	ClassLoaderData     float64
+	ClassCount          float64
+	ChunkSize           float64
+	BlockSize           float64
+	AnonymousClassCount float64
+	AnonymousChunkSize  float64
+	AnonymousBlockSize  float64
 }
 
 type ObjectAllocationInNewTLAB struct {

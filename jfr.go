@@ -10,6 +10,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/mitchellh/mapstructure"
+	"github.com/tidwall/gjson"
 	"gorm.io/gorm"
 )
 
@@ -154,6 +155,7 @@ type Event struct {
 // }
 
 func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
+	fmt.Println("****************** SaveJFRMetrics")
 	// generate json
 	if _, err := os.Stat("perfrt.jfr"); err == nil {
 		// file perfrt.jfr exists
@@ -174,23 +176,34 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 		if err != nil {
 			fmt.Println("->->->->->->->->->->->->-> error opening jfr json file: ", err.Error())
 		} else {
-			// fmt.Println("Successfully Opened perfrt.json")
+			fmt.Println("Successfully Opened perfrt.json")
 
 			// read our opened jsonFile as a byte array.
 			jsonJFR, _ := ioutil.ReadAll(jsonFile)
 
-			jsonParsed, err := gabs.ParseJSON(jsonJFR)
-			if err != nil {
-				fmt.Println("Error parsing JFR json file: ", err)
-			}
-
-			events, err := jsonParsed.S("recording", "events").Children()
+			// GJson
+			result := gjson.Get(string(jsonJFR), "recording.events")
+			result.ForEach(func(key, value gjson.Result) bool {
+				fmt.Println(value.String())
+				fmt.Println("-----")
+				return true // keep iterating
+			})
+			// gabs
+			// jsonParsed, err := gabs.ParseJSON(jsonJFR)
+			// if err != nil {
+			// 	fmt.Println("Error parsing JFR json file: ", err)
+			// }
+			// events, err := jsonParsed.S("recording", "events").ChildrenMap()
+			// if err != nil {
+			// 	fmt.Println("ERROR parsing JFR json: ", err.Error())
+			// }
 			// fmt.Printf("%v\n", events)
 			jfrMap := make(map[time.Time]models.Jvm)
-			for _, eventMap := range events {
+			// for _, eventMap := range events {
+			result.ForEach(func(key, eventMap gjson.Result) bool {
 				// fmt.Printf("%v\n", eventMap.Data())
 				var event Event
-				err := mapstructure.Decode(eventMap.Data(), &event)
+				err := mapstructure.Decode(eventMap, &event)
 				if err != nil {
 					panic(err)
 				}
@@ -203,6 +216,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				if err != nil {
 					fmt.Println(err)
 				}
+				fmt.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
 				switch event.Type {
 				case "jdk.CPULoad":
 					cpuLoad := &models.CPULoad{
@@ -231,395 +245,450 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					}
 
 				case "jdk.ThreadCPULoad":
-					tCpuLoad := &models.ThreadCPULoad{
-						ThreadCPULoadOsName:       event.Values["eventThread.osName"].(string),
-						ThreadCPULoadOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						ThreadCPULoadJavaName:     event.Values["eventThread.javaName"].(string),
-						ThreadCPULoadJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						ThreadCPULoadUser:         event.Values["user"].(float64),
-						ThreadCPULoadSystem:       event.Values["system"].(float64),
-					}
-
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadCPULoad = *tCpuLoad
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:         measurementID,
-							Run:           models.Run{},
-							StartTime:     t,
-							ThreadCPULoad: *tCpuLoad,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						tCpuLoad := &models.ThreadCPULoad{
+							ThreadCPULoadOsName:       osName,
+							ThreadCPULoadOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							ThreadCPULoadJavaName:     event.Values["eventThread.javaName"].(string),
+							ThreadCPULoadJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							ThreadCPULoadUser:         event.Values["user"].(float64),
+							ThreadCPULoadSystem:       event.Values["system"].(float64),
 						}
-						jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						if val, ok := jfrMap[t]; ok {
+							val.ThreadCPULoad = *tCpuLoad
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:         measurementID,
+								Run:           models.Run{},
+								StartTime:     t,
+								ThreadCPULoad: *tCpuLoad,
+							}
+							jfrMap[t] = *jvm
+
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ThreadStart":
-					threadStart := &models.ThreadStart{
-						ThreadStartOsName:                   event.Values["eventThread.osName"].(string),
-						ThreadStartOsThreadId:               event.Values["eventThread.osThreadId"].(int),
-						ThreadStartJavaName:                 event.Values["eventThread.javaName"].(string),
-						ThreadStartJavaThreadId:             event.Values["eventThread.javaThreadId"].(int),
-						ThreadStartParentThreadosName:       event.Values["parentThread.osName"].(string),
-						ThreadStartParentThreadOsThreadId:   event.Values["parentThread.osThreadId"].(int),
-						ThreadStartParentThreadJavaName:     event.Values["parentThread.javaName"].(string),
-						ThreadStartParentThreadJavaThreadId: event.Values["parentThread.javaThreadId"].(int),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadStart = *threadStart
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:       measurementID,
-							Run:         models.Run{},
-							StartTime:   t,
-							ThreadStart: *threadStart,
-						}
-						jfrMap[t] = *jvm
+					osName, ok := event.Values["eventThread.osName"].(string)
+					if ok {
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						threadStart := &models.ThreadStart{
+							ThreadStartOsName:                   osName,
+							ThreadStartOsThreadId:               event.Values["eventThread.osThreadId"].(int),
+							ThreadStartJavaName:                 event.Values["eventThread.javaName"].(string),
+							ThreadStartJavaThreadId:             event.Values["eventThread.javaThreadId"].(int),
+							ThreadStartParentThreadosName:       event.Values["parentThread.osName"].(string),
+							ThreadStartParentThreadOsThreadId:   event.Values["parentThread.osThreadId"].(int),
+							ThreadStartParentThreadJavaName:     event.Values["parentThread.javaName"].(string),
+							ThreadStartParentThreadJavaThreadId: event.Values["parentThread.javaThreadId"].(int),
+						}
+						if val, ok := jfrMap[t]; ok {
+							val.ThreadStart = *threadStart
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:       measurementID,
+								Run:         models.Run{},
+								StartTime:   t,
+								ThreadStart: *threadStart,
+							}
+							jfrMap[t] = *jvm
+
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ThreadEnd":
-					threadEnd := &models.ThreadEnd{
-						ThreadEndOsName:       event.Values["eventThread.osName"].(string),
-						ThreadEndOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						ThreadEndJavaName:     event.Values["eventThread.javaName"].(string),
-						ThreadEndJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadEnd = *threadEnd
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:     measurementID,
-							Run:       models.Run{},
-							StartTime: t,
-							ThreadEnd: *threadEnd,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						threadEnd := &models.ThreadEnd{
+							ThreadEndOsName:       osName,
+							ThreadEndOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							ThreadEndJavaName:     event.Values["eventThread.javaName"].(string),
+							ThreadEndJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.ThreadEnd = *threadEnd
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:     measurementID,
+								Run:       models.Run{},
+								StartTime: t,
+								ThreadEnd: *threadEnd,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ThreadSleep":
-					threadSleep := &models.ThreadSleep{
-						ThreadSleepDuration:     event.Values["duration"].(float64),
-						ThreadSleepOsName:       event.Values["eventThread.osName"].(string),
-						ThreadSleepOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						ThreadSleepJavaName:     event.Values["eventThread.javaName"].(string),
-						ThreadSleepJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						ThreadSleepTime:         event.Values["time"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadSleep = *threadSleep
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:       measurementID,
-							Run:         models.Run{},
-							StartTime:   t,
-							ThreadSleep: *threadSleep,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						threadSleep := &models.ThreadSleep{
+							ThreadSleepDuration:     event.Values["duration"].(float64),
+							ThreadSleepOsName:       osName,
+							ThreadSleepOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							ThreadSleepJavaName:     event.Values["eventThread.javaName"].(string),
+							ThreadSleepJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							ThreadSleepTime:         event.Values["time"].(float64),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.ThreadSleep = *threadSleep
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:       measurementID,
+								Run:         models.Run{},
+								StartTime:   t,
+								ThreadSleep: *threadSleep,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ThreadPark":
-					threadPark := &models.ThreadPark{
-						ThreadParkDuration:     event.Values["duration"].(float64),
-						ThreadParkOsName:       event.Values["eventThread.osName"].(string),
-						ThreadParkOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						ThreadParkJavaName:     event.Values["eventThread.javaName"].(string),
-						ThreadParkJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						ThreadParkParkedClass:  event.Values["parkedClass.name"].(string),
-						ThreadParkTimeout:      event.Values["timeout"].(float64),
-						ThreadParkUntil:        event.Values["until"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadPark = *threadPark
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:      measurementID,
-							Run:        models.Run{},
-							StartTime:  t,
-							ThreadPark: *threadPark,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						threadPark := &models.ThreadPark{
+							ThreadParkDuration:     event.Values["duration"].(float64),
+							ThreadParkOsName:       osName,
+							ThreadParkOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							ThreadParkJavaName:     event.Values["eventThread.javaName"].(string),
+							ThreadParkJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							ThreadParkParkedClass:  event.Values["parkedClass.name"].(string),
+							ThreadParkTimeout:      event.Values["timeout"].(float64),
+							ThreadParkUntil:        event.Values["until"].(float64),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.ThreadPark = *threadPark
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:      measurementID,
+								Run:        models.Run{},
+								StartTime:  t,
+								ThreadPark: *threadPark,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.JavaErrorThrow":
-					javaErrorThrow := &models.JavaErrorThrow{
-						JavaErrorThrowDuration:     event.Values["duration"].(float64),
-						JavaErrorThrowOsName:       event.Values["eventThread.osName"].(string),
-						JavaErrorThrowOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						JavaErrorThrowJavaName:     event.Values["eventThread.javaName"].(string),
-						JavaErrorThrowJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						JavaErrorThrowMessage:      event.Values["message"].(string),
-						JavaErrorThrowThrownClass:  event.Values["thrownClass.name"].(string),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaErrorThrow = *javaErrorThrow
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:          measurementID,
-							Run:            models.Run{},
-							StartTime:      t,
-							JavaErrorThrow: *javaErrorThrow,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						javaErrorThrow := &models.JavaErrorThrow{
+							JavaErrorThrowDuration:     event.Values["duration"].(float64),
+							JavaErrorThrowOsName:       osName,
+							JavaErrorThrowOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							JavaErrorThrowJavaName:     event.Values["eventThread.javaName"].(string),
+							JavaErrorThrowJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							JavaErrorThrowMessage:      event.Values["message"].(string),
+							JavaErrorThrowThrownClass:  event.Values["thrownClass.name"].(string),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.JavaErrorThrow = *javaErrorThrow
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:          measurementID,
+								Run:            models.Run{},
+								StartTime:      t,
+								JavaErrorThrow: *javaErrorThrow,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.JavaExceptionThrow":
-					javaExceptionThrow := &models.JavaExceptionThrow{
-						JavaExceptionThrowDuration:     event.Values["duration"].(float64),
-						JavaExceptionThrowOsName:       event.Values["eventThread.osName"].(string),
-						JavaExceptionThrowOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						JavaExceptionThrowJavaName:     event.Values["eventThread.javaName"].(string),
-						JavaExceptionThrowJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						JavaExceptionThrowMessage:      event.Values["message"].(string),
-						JavaExceptionThrowThrownClass:  event.Values["thrownClass.name"].(string),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaExceptionThrow = *javaExceptionThrow
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:              measurementID,
-							Run:                models.Run{},
-							StartTime:          t,
-							JavaExceptionThrow: *javaExceptionThrow,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						javaExceptionThrow := &models.JavaExceptionThrow{
+							JavaExceptionThrowDuration:     event.Values["duration"].(float64),
+							JavaExceptionThrowOsName:       osName,
+							JavaExceptionThrowOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							JavaExceptionThrowJavaName:     event.Values["eventThread.javaName"].(string),
+							JavaExceptionThrowJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							JavaExceptionThrowMessage:      event.Values["message"].(string),
+							JavaExceptionThrowThrownClass:  event.Values["thrownClass.name"].(string),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.JavaExceptionThrow = *javaExceptionThrow
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:              measurementID,
+								Run:                models.Run{},
+								StartTime:          t,
+								JavaExceptionThrow: *javaExceptionThrow,
+							}
+							jfrMap[t] = *jvm
 
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
+
 				case "jdk.JavaMonitorEnter":
-					javaMonitorEnter := &models.JavaMonitorEnter{
-						JavaMonitorEnterDuration:     event.Values["duration"].(float64),
-						JavaMonitorEnterOsName:       event.Values["eventThread.osName"].(string),
-						JavaMonitorEnterOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						JavaMonitorEnterJavaName:     event.Values["eventThread.javaName"].(string),
-						JavaMonitorEnterJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						JavaMonitorEnterMonitorClass: event.Values["monitorClass.name"].(string),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaMonitorEnter = *javaMonitorEnter
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:            measurementID,
-							Run:              models.Run{},
-							StartTime:        t,
-							JavaMonitorEnter: *javaMonitorEnter,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						javaMonitorEnter := &models.JavaMonitorEnter{
+							JavaMonitorEnterDuration:     event.Values["duration"].(float64),
+							JavaMonitorEnterOsName:       osName,
+							JavaMonitorEnterOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							JavaMonitorEnterJavaName:     event.Values["eventThread.javaName"].(string),
+							JavaMonitorEnterJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							JavaMonitorEnterMonitorClass: event.Values["monitorClass.name"].(string),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.JavaMonitorEnter = *javaMonitorEnter
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:            measurementID,
+								Run:              models.Run{},
+								StartTime:        t,
+								JavaMonitorEnter: *javaMonitorEnter,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.JavaMonitorWait":
-					javaMonitorWait := &models.JavaMonitorWait{
-						JavaMonitorWaitDuration:     event.Values["duration"].(float64),
-						JavaMonitorWaitOsName:       event.Values["eventThread.osName"].(string),
-						JavaMonitorWaitOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						JavaMonitorWaitJavaName:     event.Values["eventThread.javaName"].(string),
-						JavaMonitorWaitJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						JavaMonitorWaitMonitorClass: event.Values["monitorClass.name"].(string),
-						JavaMonitorWaitTimeout:      event.Values["timeOut"].(float64),
-						JavaMonitorWaitTimedOut:     event.Values["timedOut"].(bool),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaMonitorWait = *javaMonitorWait
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:           measurementID,
-							Run:             models.Run{},
-							StartTime:       t,
-							JavaMonitorWait: *javaMonitorWait,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						javaMonitorWait := &models.JavaMonitorWait{
+							JavaMonitorWaitDuration:     event.Values["duration"].(float64),
+							JavaMonitorWaitOsName:       osName,
+							JavaMonitorWaitOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							JavaMonitorWaitJavaName:     event.Values["eventThread.javaName"].(string),
+							JavaMonitorWaitJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							JavaMonitorWaitMonitorClass: event.Values["monitorClass.name"].(string),
+							JavaMonitorWaitTimeout:      event.Values["timeOut"].(float64),
+							JavaMonitorWaitTimedOut:     event.Values["timedOut"].(bool),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.JavaMonitorWait = *javaMonitorWait
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:           measurementID,
+								Run:             models.Run{},
+								StartTime:       t,
+								JavaMonitorWait: *javaMonitorWait,
+							}
+							jfrMap[t] = *jvm
 
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
-
 				case "jdk.OldObjectSample":
-					oldObjectSample := &models.OldObjectSample{
-						OldObjectSampleDuration:           event.Values["duration"].(float64),
-						OldObjectSampleOsName:             event.Values["eventThread.osName"].(string),
-						OldObjectSampleOsThreadId:         event.Values["eventThread.osThreadId"].(int),
-						OldObjectSampleJavaName:           event.Values["eventThread.javaName"].(string),
-						OldObjectSampleJavaThreadId:       event.Values["eventThread.javaThreadId"].(int),
-						OldObjectSampleAllocationTime:     event.Values["allocationTime"].(float64),
-						OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
-						OldObjectSampleObject:             event.Values["object.type.name"].(string),
-						OldObjectSampleArrayElements:      event.Values["arrayElements"].(int),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.OldObjectSample = *oldObjectSample
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:           measurementID,
-							Run:             models.Run{},
-							StartTime:       t,
-							OldObjectSample: *oldObjectSample,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						oldObjectSample := &models.OldObjectSample{
+							OldObjectSampleDuration:           event.Values["duration"].(float64),
+							OldObjectSampleOsName:             osName,
+							OldObjectSampleOsThreadId:         event.Values["eventThread.osThreadId"].(int),
+							OldObjectSampleJavaName:           event.Values["eventThread.javaName"].(string),
+							OldObjectSampleJavaThreadId:       event.Values["eventThread.javaThreadId"].(int),
+							OldObjectSampleAllocationTime:     event.Values["allocationTime"].(float64),
+							OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
+							OldObjectSampleObject:             event.Values["object.type.name"].(string),
+							OldObjectSampleArrayElements:      event.Values["arrayElements"].(int),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.OldObjectSample = *oldObjectSample
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:           measurementID,
+								Run:             models.Run{},
+								StartTime:       t,
+								OldObjectSample: *oldObjectSample,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ClassLoaderStatistics":
-					classLoaderStatistics := &models.ClassLoaderStatistics{
-						ClassLoader:         event.Values["classLoader.name"].(string),
-						ParentClassLoader:   event.Values["parentClassLoader.name"].(string),
-						ClassLoaderData:     event.Values["classLoaderData"].(int64),
-						ClassCount:          event.Values["classCount"].(int64),
-						ChunkSize:           event.Values["chunkSize"].(int64),
-						BlockSize:           event.Values["blockSize"].(int64),
-						AnonymousClassCount: event.Values["anonymousClassCount"].(int64),
-						AnonymousChunkSize:  event.Values["anonymousChunkSize"].(int64),
-						AnonymousBlockSize:  event.Values["anonymousBlockSize"].(int64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ClassLoaderStatistics = *classLoaderStatistics
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:                 measurementID,
-							Run:                   models.Run{},
-							StartTime:             t,
-							ClassLoaderStatistics: *classLoaderStatistics,
-						}
-						jfrMap[t] = *jvm
+					e := fmt.Sprintf("%s", event)
+					fmt.Println(e)
+					jsonParsed, err := gabs.ParseJSON([]byte(e))
+					name, nameOk := jsonParsed.Path("classLoader.name").Data().(string)
+					// name, nameOk := event.Values["classLoader.name"].(string)
+					fmt.Println("ClassLoader.name: ", name)
+					if nameOk {
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						parent, parentOk := event.Values["parentClassLoader.name"].(string)
+						if !parentOk {
+							parent = ""
+						}
+						classLoaderStatistics := &models.ClassLoaderStatistics{
+							ClassLoader:         name,
+							ParentClassLoader:   parent,
+							ClassLoaderData:     event.Values["classLoaderData"].(float64),
+							ClassCount:          event.Values["classCount"].(float64),
+							ChunkSize:           event.Values["chunkSize"].(float64),
+							BlockSize:           event.Values["blockSize"].(float64),
+							AnonymousClassCount: event.Values["anonymousClassCount"].(float64),
+							AnonymousChunkSize:  event.Values["anonymousChunkSize"].(float64),
+							AnonymousBlockSize:  event.Values["anonymousBlockSize"].(float64),
+						}
+						if val, ok := jfrMap[t]; ok {
+							val.ClassLoaderStatistics = *classLoaderStatistics
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:                 measurementID,
+								Run:                   models.Run{},
+								StartTime:             t,
+								ClassLoaderStatistics: *classLoaderStatistics,
+							}
+							jfrMap[t] = *jvm
+
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ObjectAllocationInNewTLAB":
-					objectAllocationInNewTLAB := &models.ObjectAllocationInNewTLAB{
-						ObjectAllocationInNewTLABOsName:         event.Values["eventThread.osName"].(string),
-						ObjectAllocationInNewTLABOsThreadId:     event.Values["eventThread.osThreadId"].(int),
-						ObjectAllocationInNewTLABJavaName:       event.Values["eventThread.javaName"].(string),
-						ObjectAllocationInNewTLABJavaThreadId:   event.Values["eventThread.javaThreadId"].(int),
-						ObjectAllocationInNewTLABObjectClass:    event.Values["objectClass.name"].(string),
-						ObjectAllocationInNewTLABAllocationSize: event.Values["allocationSize"].(float64),
-						ObjectAllocationInNewTLABTlabSize:       event.Values["tlabSize"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ObjectAllocationInNewTLAB = *objectAllocationInNewTLAB
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:                     measurementID,
-							Run:                       models.Run{},
-							StartTime:                 t,
-							ObjectAllocationInNewTLAB: *objectAllocationInNewTLAB,
-						}
-						jfrMap[t] = *jvm
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						objectAllocationInNewTLAB := &models.ObjectAllocationInNewTLAB{
+
+							ObjectAllocationInNewTLABOsName:         osName,
+							ObjectAllocationInNewTLABOsThreadId:     event.Values["eventThread.osThreadId"].(int),
+							ObjectAllocationInNewTLABJavaName:       event.Values["eventThread.javaName"].(string),
+							ObjectAllocationInNewTLABJavaThreadId:   event.Values["eventThread.javaThreadId"].(int),
+							ObjectAllocationInNewTLABObjectClass:    event.Values["objectClass.name"].(string),
+							ObjectAllocationInNewTLABAllocationSize: event.Values["allocationSize"].(float64),
+							ObjectAllocationInNewTLABTlabSize:       event.Values["tlabSize"].(float64),
+						}
+						if val, ok := jfrMap[t]; ok {
+							val.ObjectAllocationInNewTLAB = *objectAllocationInNewTLAB
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:                     measurementID,
+								Run:                       models.Run{},
+								StartTime:                 t,
+								ObjectAllocationInNewTLAB: *objectAllocationInNewTLAB,
+							}
+							jfrMap[t] = *jvm
+
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.ObjectAllocationOutsideTLAB":
-					objectAllocationOutsideTLAB := &models.ObjectAllocationOutsideTLAB{
-						ObjectAllocationOutsideTLABOsName:         event.Values["eventThread.osName"].(string),
-						ObjectAllocationOutsideTLABOsThreadId:     event.Values["eventThread.osThreadId"].(int),
-						ObjectAllocationOutsideTLABJavaName:       event.Values["eventThread.javaName"].(string),
-						ObjectAllocationOutsideTLABJavaThreadId:   event.Values["eventThread.javaThreadId"].(int),
-						ObjectAllocationOutsideTLABObjectClass:    event.Values["objectClass.name"].(string),
-						ObjectAllocationOutsideTLABAllocationSize: event.Values["allocationSize"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ObjectAllocationOutsideTLAB = *objectAllocationOutsideTLAB
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:                       measurementID,
-							Run:                         models.Run{},
-							StartTime:                   t,
-							ObjectAllocationOutsideTLAB: *objectAllocationOutsideTLAB,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						objectAllocationOutsideTLAB := &models.ObjectAllocationOutsideTLAB{
+							ObjectAllocationOutsideTLABOsName:         osName,
+							ObjectAllocationOutsideTLABOsThreadId:     event.Values["eventThread.osThreadId"].(int),
+							ObjectAllocationOutsideTLABJavaName:       event.Values["eventThread.javaName"].(string),
+							ObjectAllocationOutsideTLABJavaThreadId:   event.Values["eventThread.javaThreadId"].(int),
+							ObjectAllocationOutsideTLABObjectClass:    event.Values["objectClass.name"].(string),
+							ObjectAllocationOutsideTLABAllocationSize: event.Values["allocationSize"].(float64),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.ObjectAllocationOutsideTLAB = *objectAllocationOutsideTLAB
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:                       measurementID,
+								Run:                         models.Run{},
+								StartTime:                   t,
+								ObjectAllocationOutsideTLAB: *objectAllocationOutsideTLAB,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 
 				case "jdk.GCPhasePause":
-					gcPhasePause := &models.GCPhasePause{
-						GCPhasePauseDuration:     event.Values["duration"].(float64),
-						GCPhasePauseOsName:       event.Values["eventThread.osName"].(string),
-						GCPhasePauseOsThreadId:   event.Values["eventThread.osThreadId"].(int),
-						GCPhasePauseJavaName:     event.Values["eventThread.javaName"].(string),
-						GCPhasePauseJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
-						GcId:                     event.Values["gcId"].(int),
-						GCPhasePauseName:         event.Values["name"].(string),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.GCPhasePause = *gcPhasePause
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:        measurementID,
-							Run:          models.Run{},
-							StartTime:    t,
-							GCPhasePause: *gcPhasePause,
+					osName, osNameOk := event.Values["eventThread.osName"].(string)
+					if osNameOk {
+						gcPhasePause := &models.GCPhasePause{
+							GCPhasePauseDuration:     event.Values["duration"].(float64),
+							GCPhasePauseOsName:       osName,
+							GCPhasePauseOsThreadId:   event.Values["eventThread.osThreadId"].(int),
+							GCPhasePauseJavaName:     event.Values["eventThread.javaName"].(string),
+							GCPhasePauseJavaThreadId: event.Values["eventThread.javaThreadId"].(int),
+							GcId:                     event.Values["gcId"].(int),
+							GCPhasePauseName:         event.Values["name"].(string),
 						}
-						jfrMap[t] = *jvm
+						if val, ok := jfrMap[t]; ok {
+							val.GCPhasePause = *gcPhasePause
+							jfrMap[t] = val
+						} else {
+							jvm := &models.Jvm{
+								RunID:        measurementID,
+								Run:          models.Run{},
+								StartTime:    t,
+								GCPhasePause: *gcPhasePause,
+							}
+							jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
+						// _, err = models.CreateJvm(db, jvm)
+						if err != nil {
+							fmt.Printf("Error saving resource: %s\n", err.Error())
+						}
 					}
 				}
 
@@ -662,13 +731,16 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				// 	// 	}
 				// 	// 	fmt.Printf("%s - %s\n", key, value)
 				// 	// }
-			}
+				return true // keep iterating
+			})
 			for _, jvm := range jfrMap {
 				models.CreateJvm(db, &jvm)
 			}
 
 		}
 
+	} else {
+		fmt.Println("!!!!!!! JFR file not found!!!")
 	}
 
 }

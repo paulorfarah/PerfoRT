@@ -29,6 +29,7 @@ type Method struct {
 	TotalAllocCalls    int
 	AllocCallsPercent  float64
 	Finished           bool `gorm:"not null;default: false"`
+	ReturnValue        string
 }
 
 func (m *Method) TableName() string {

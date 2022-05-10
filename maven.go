@@ -501,8 +501,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// 	}
 	// }
 
-	ParseProfilingClock(db, commit, *tc, profiler_output)
-	ParseProfilingAlloc(db, commit, *tc, profiler_output)
+	// ParseProfilingClock(db, commit, *tc, profiler_output)
+	// ParseProfilingAlloc(db, commit, *tc, profiler_output)
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
@@ -623,6 +623,12 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// settings=/home/usuario/Downloads/perfrt.jfc
 		// -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
+		fmt.Println("removing " + localpath + "/perfrt.jfr")
+		e := os.Remove(localpath + "/perfrt.jfr")
+		if e != nil {
+			log.Println("Error removing JFR file: ", e.Error())
+		}
+
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
@@ -631,7 +637,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 		cmd = exec.Command(
 			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
-			"XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
+			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", ".:target/test-classes/:target/classes", "-m", packageName+className+"#"+testName) //.Output()
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
@@ -653,7 +659,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				select {
 				case <-stop:
 					// //save
-					// fmt.Println("****************** stop")
+					fmt.Println("****************** stop")
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
