@@ -40,45 +40,45 @@ type CPULoad struct {
 
 type ThreadCPULoad struct {
 	ThreadCPULoadOsName       string
-	ThreadCPULoadOsThreadId   int
+	ThreadCPULoadOsThreadId   float64
 	ThreadCPULoadJavaName     string
-	ThreadCPULoadJavaThreadId int
+	ThreadCPULoadJavaThreadId float64
 	ThreadCPULoadUser         float64
 	ThreadCPULoadSystem       float64
 }
 type ThreadStart struct { //ok
 	ThreadStartOsName                   string
-	ThreadStartOsThreadId               int
+	ThreadStartOsThreadId               float64
 	ThreadStartJavaName                 string
-	ThreadStartJavaThreadId             int
+	ThreadStartJavaThreadId             float64
 	ThreadStartParentThreadosName       string
-	ThreadStartParentThreadOsThreadId   int
+	ThreadStartParentThreadOsThreadId   float64
 	ThreadStartParentThreadJavaName     string
-	ThreadStartParentThreadJavaThreadId int
+	ThreadStartParentThreadJavaThreadId float64
 }
 
 type ThreadEnd struct { //ok
 	ThreadEndOsName       string
-	ThreadEndOsThreadId   int
+	ThreadEndOsThreadId   float64
 	ThreadEndJavaName     string
-	ThreadEndJavaThreadId int
+	ThreadEndJavaThreadId float64
 }
 
 type ThreadSleep struct {
 	ThreadSleepDuration     float64
 	ThreadSleepOsName       string
-	ThreadSleepOsThreadId   int
+	ThreadSleepOsThreadId   float64
 	ThreadSleepJavaName     string
-	ThreadSleepJavaThreadId int
+	ThreadSleepJavaThreadId float64
 	ThreadSleepTime         float64
 }
 
 type ThreadPark struct {
 	ThreadParkDuration     float64
 	ThreadParkOsName       string
-	ThreadParkOsThreadId   int
+	ThreadParkOsThreadId   float64
 	ThreadParkJavaName     string
-	ThreadParkJavaThreadId int
+	ThreadParkJavaThreadId float64
 	ThreadParkParkedClass  string
 	ThreadParkTimeout      float64
 	ThreadParkUntil        float64
@@ -87,9 +87,9 @@ type ThreadPark struct {
 type JavaErrorThrow struct {
 	JavaErrorThrowDuration     float64
 	JavaErrorThrowOsName       string
-	JavaErrorThrowOsThreadId   int
+	JavaErrorThrowOsThreadId   float64
 	JavaErrorThrowJavaName     string
-	JavaErrorThrowJavaThreadId int
+	JavaErrorThrowJavaThreadId float64
 	JavaErrorThrowMessage      string
 	JavaErrorThrowThrownClass  string
 }
@@ -97,9 +97,9 @@ type JavaErrorThrow struct {
 type JavaExceptionThrow struct {
 	JavaExceptionThrowDuration     float64
 	JavaExceptionThrowOsName       string
-	JavaExceptionThrowOsThreadId   int
+	JavaExceptionThrowOsThreadId   float64
 	JavaExceptionThrowJavaName     string
-	JavaExceptionThrowJavaThreadId int
+	JavaExceptionThrowJavaThreadId float64
 	JavaExceptionThrowMessage      string
 	JavaExceptionThrowThrownClass  string
 }
@@ -107,18 +107,18 @@ type JavaExceptionThrow struct {
 type JavaMonitorEnter struct {
 	JavaMonitorEnterDuration     float64
 	JavaMonitorEnterOsName       string
-	JavaMonitorEnterOsThreadId   int
+	JavaMonitorEnterOsThreadId   float64
 	JavaMonitorEnterJavaName     string
-	JavaMonitorEnterJavaThreadId int
+	JavaMonitorEnterJavaThreadId float64
 	JavaMonitorEnterMonitorClass string
 }
 
 type JavaMonitorWait struct {
 	JavaMonitorWaitDuration     float64
 	JavaMonitorWaitOsName       string
-	JavaMonitorWaitOsThreadId   int
+	JavaMonitorWaitOsThreadId   float64
 	JavaMonitorWaitJavaName     string
-	JavaMonitorWaitJavaThreadId int
+	JavaMonitorWaitJavaThreadId float64
 	JavaMonitorWaitMonitorClass string
 	JavaMonitorWaitTimeout      float64 //	Maximum wait time
 	JavaMonitorWaitTimedOut     bool    //Wait has been timed out
@@ -127,9 +127,9 @@ type JavaMonitorWait struct {
 type OldObjectSample struct {
 	OldObjectSampleDuration           float64
 	OldObjectSampleOsName             string
-	OldObjectSampleOsThreadId         int
+	OldObjectSampleOsThreadId         float64
 	OldObjectSampleJavaName           string
-	OldObjectSampleJavaThreadId       int
+	OldObjectSampleJavaThreadId       float64
 	OldObjectSampleAllocationTime     float64
 	OldObjectSampleLastKnownHeapUsage float64
 	OldObjectSampleObject             string
@@ -150,9 +150,9 @@ type ClassLoaderStatistics struct {
 
 type ObjectAllocationInNewTLAB struct {
 	ObjectAllocationInNewTLABOsName         string
-	ObjectAllocationInNewTLABOsThreadId     int
+	ObjectAllocationInNewTLABOsThreadId     float64
 	ObjectAllocationInNewTLABJavaName       string
-	ObjectAllocationInNewTLABJavaThreadId   int
+	ObjectAllocationInNewTLABJavaThreadId   float64
 	ObjectAllocationInNewTLABObjectClass    string // Class of allocated object
 	ObjectAllocationInNewTLABAllocationSize float64
 	ObjectAllocationInNewTLABTlabSize       float64
@@ -160,20 +160,20 @@ type ObjectAllocationInNewTLAB struct {
 
 type ObjectAllocationOutsideTLAB struct {
 	ObjectAllocationOutsideTLABOsName         string
-	ObjectAllocationOutsideTLABOsThreadId     int
+	ObjectAllocationOutsideTLABOsThreadId     float64
 	ObjectAllocationOutsideTLABJavaName       string
-	ObjectAllocationOutsideTLABJavaThreadId   int
+	ObjectAllocationOutsideTLABJavaThreadId   float64
 	ObjectAllocationOutsideTLABObjectClass    string // Class of allocated object
 	ObjectAllocationOutsideTLABAllocationSize float64
 }
 
 type GCPhasePause struct {
 	GCPhasePauseOsName       string
-	GCPhasePauseOsThreadId   int
+	GCPhasePauseOsThreadId   float64
 	GCPhasePauseJavaName     string
-	GCPhasePauseJavaThreadId int
+	GCPhasePauseJavaThreadId float64
 	GCPhasePauseDuration     float64 `json:"duration"`
-	GcId                     int     `json:"gcId"`
+	GcId                     float64 `json:"gcId"`
 	GCPhasePauseName         string  `json:"name"`
 }
 
