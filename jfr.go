@@ -572,13 +572,22 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
 					}
+
+					// "allocationTime": "2022-05-22T18:48:37.932136923-07:00",
+					atStr := event.Values["allocationTime"].(string)
+					at, err := time.Parse(layout, atStr)
+
+					if err != nil {
+						fmt.Println(err)
+					}
+
 					oldObjectSample := &models.OldObjectSample{
 						OldObjectSampleDuration:           duration,
 						OldObjectSampleOsName:             osName,
 						OldObjectSampleOsThreadId:         osThreadId,
 						OldObjectSampleJavaName:           javaName,
 						OldObjectSampleJavaThreadId:       javaThreadId,
-						OldObjectSampleAllocationTime:     event.Values["allocationTime"].(float64),
+						OldObjectSampleAllocationTime:     at,
 						OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
 						OldObjectSampleObject:             objectType,
 						OldObjectSampleArrayElements:      event.Values["arrayElements"].(int),
