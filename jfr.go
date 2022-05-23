@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"perfrt/models"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/tidwall/gjson"
@@ -328,8 +330,14 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 
 				case "jdk.ThreadSleep":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					threadSleep := &models.ThreadSleep{
-						ThreadSleepDuration:     event.Values["duration"].(float64),
+						ThreadSleepDuration:     duration,
 						ThreadSleepOsName:       osName,
 						ThreadSleepOsThreadId:   osThreadId,
 						ThreadSleepJavaName:     javaName,
@@ -357,8 +365,14 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				case "jdk.ThreadPark":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					parkedClass := getClass(event, "parkedClass")
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					threadPark := &models.ThreadPark{
-						ThreadParkDuration:     event.Values["duration"].(float64),
+						ThreadParkDuration:     duration,
 						ThreadParkOsName:       osName,
 						ThreadParkOsThreadId:   osThreadId,
 						ThreadParkJavaName:     javaName,
@@ -388,8 +402,14 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				case "jdk.JavaErrorThrow":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					thrownClass := getClass(event, "thrownClass")
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					javaErrorThrow := &models.JavaErrorThrow{
-						JavaErrorThrowDuration:     event.Values["duration"].(float64),
+						JavaErrorThrowDuration:     duration,
 						JavaErrorThrowOsName:       osName,
 						JavaErrorThrowOsThreadId:   osThreadId,
 						JavaErrorThrowJavaName:     javaName,
@@ -418,8 +438,14 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				case "jdk.JavaExceptionThrow":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					thrownClass := getClass(event, "thrownClass")
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					javaExceptionThrow := &models.JavaExceptionThrow{
-						JavaExceptionThrowDuration:     event.Values["duration"].(float64),
+						JavaExceptionThrowDuration:     duration,
 						JavaExceptionThrowOsName:       osName,
 						JavaExceptionThrowOsThreadId:   osThreadId,
 						JavaExceptionThrowJavaName:     javaName,
@@ -448,8 +474,14 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				case "jdk.JavaMonitorEnter":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					monitorClass := getClass(event, "monitorClass")
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					javaMonitorEnter := &models.JavaMonitorEnter{
-						JavaMonitorEnterDuration:     event.Values["duration"].(float64),
+						JavaMonitorEnterDuration:     duration,
 						JavaMonitorEnterOsName:       osName,
 						JavaMonitorEnterOsThreadId:   osThreadId,
 						JavaMonitorEnterJavaName:     javaName,
@@ -477,14 +509,32 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				case "jdk.JavaMonitorWait":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					monitorClass := getClass(event, "monitorClass")
+					fmt.Println(event.Values["duration"])
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
+
+					var timeOut float64
+					if event.Values["timeOut"] != nil {
+						auxtimeOut := strings.ReplaceAll(event.Values["timeOut"].(string), "PT", "")
+						auxtimeOut = strings.ReplaceAll(event.Values["timeOut"].(string), "S", "")
+						timeOut, err = strconv.ParseFloat(auxtimeOut, 64)
+					}
+
+					if err != nil {
+						fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse duration value. ", err)
+					}
 					javaMonitorWait := &models.JavaMonitorWait{
-						JavaMonitorWaitDuration:     event.Values["duration"].(float64),
+						JavaMonitorWaitDuration:     duration,
 						JavaMonitorWaitOsName:       osName,
 						JavaMonitorWaitOsThreadId:   osThreadId,
 						JavaMonitorWaitJavaName:     javaName,
 						JavaMonitorWaitJavaThreadId: javaThreadId,
 						JavaMonitorWaitMonitorClass: monitorClass,
-						JavaMonitorWaitTimeout:      event.Values["timeOut"].(float64),
+						JavaMonitorWaitTimeout:      timeOut,
 						JavaMonitorWaitTimedOut:     event.Values["timedOut"].(bool),
 					}
 					if val, ok := jfrMap[t]; ok {
@@ -508,8 +558,14 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				case "jdk.OldObjectSample":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					objectType := getObjectType(event)
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					oldObjectSample := &models.OldObjectSample{
-						OldObjectSampleDuration:           event.Values["duration"].(float64),
+						OldObjectSampleDuration:           duration,
 						OldObjectSampleOsName:             osName,
 						OldObjectSampleOsThreadId:         osThreadId,
 						OldObjectSampleJavaName:           javaName,
@@ -631,13 +687,19 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 
 				case "jdk.GCPhasePause":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+					var duration float64
+					if event.Values["duration"] != nil {
+						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						duration, err = strconv.ParseFloat(auxDur, 64)
+					}
 					gcPhasePause := &models.GCPhasePause{
-						GCPhasePauseDuration:     event.Values["duration"].(float64),
+						GCPhasePauseDuration:     duration,
 						GCPhasePauseOsName:       osName,
 						GCPhasePauseOsThreadId:   osThreadId,
 						GCPhasePauseJavaName:     javaName,
 						GCPhasePauseJavaThreadId: javaThreadId,
-						GcId:                     event.Values["gcId"].(int),
+						GcId:                     event.Values["gcId"].(float64),
 						GCPhasePauseName:         event.Values["name"].(string),
 					}
 					if val, ok := jfrMap[t]; ok {
@@ -733,7 +795,7 @@ func getClassLoader(event Event) (string, string) {
 	return name, parent
 }
 
-func getEventThread(event Event) (string, int, string, int) {
+func getEventThread(event Event) (string, float64, string, float64) {
 	var osName string
 	eventThread := event.Values["eventThread"]
 	if e, ok := eventThread.(map[string]interface{}); ok {
@@ -742,11 +804,11 @@ func getEventThread(event Event) (string, int, string, int) {
 		}
 	}
 
-	var osThreadId int
+	var osThreadId float64
 	eventThread = event.Values["eventThread"]
 	if e, ok := eventThread.(map[string]interface{}); ok {
 		if e["osThreadId"] != nil {
-			osThreadId = e["osThreadId"].(int)
+			osThreadId = e["osThreadId"].(float64)
 		}
 	}
 
@@ -758,17 +820,17 @@ func getEventThread(event Event) (string, int, string, int) {
 		}
 	}
 
-	var javaThreadId int
+	var javaThreadId float64
 	eventThread = event.Values["eventThread"]
 	if e, ok := eventThread.(map[string]interface{}); ok {
 		if e["javaThreadId"] != nil {
-			osThreadId = e["javaThreadId"].(int)
+			osThreadId = e["javaThreadId"].(float64)
 		}
 	}
 	return osName, osThreadId, javaName, javaThreadId
 }
 
-func getEventParentThread(event Event) (string, int, string, int) {
+func getEventParentThread(event Event) (string, float64, string, float64) {
 	var osName string
 	eventThread := event.Values["parentThread"]
 	if e, ok := eventThread.(map[string]interface{}); ok {
@@ -777,11 +839,11 @@ func getEventParentThread(event Event) (string, int, string, int) {
 		}
 	}
 
-	var osThreadId int
+	var osThreadId float64
 	eventThread = event.Values["parentThread"]
 	if e, ok := eventThread.(map[string]interface{}); ok {
 		if e["osThreadId"] != nil {
-			osThreadId = e["osThreadId"].(int)
+			osThreadId = e["osThreadId"].(float64)
 		}
 	}
 
@@ -793,11 +855,11 @@ func getEventParentThread(event Event) (string, int, string, int) {
 		}
 	}
 
-	var javaThreadId int
+	var javaThreadId float64
 	eventThread = event.Values["parentThread"]
 	if e, ok := eventThread.(map[string]interface{}); ok {
 		if e["javaThreadId"] != nil {
-			osThreadId = e["javaThreadId"].(int)
+			osThreadId = e["javaThreadId"].(float64)
 		}
 	}
 	return osName, osThreadId, javaName, javaThreadId
