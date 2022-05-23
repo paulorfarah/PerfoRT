@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"time"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -130,7 +131,7 @@ type OldObjectSample struct {
 	OldObjectSampleOsThreadId         float64
 	OldObjectSampleJavaName           string
 	OldObjectSampleJavaThreadId       float64
-	OldObjectSampleAllocationTime     time.Time
+	OldObjectSampleAllocationTime     sql.NullTime
 	OldObjectSampleLastKnownHeapUsage float64
 	OldObjectSampleObject             string
 	OldObjectSampleArrayElements      float64

@@ -573,25 +573,36 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						duration, err = strconv.ParseFloat(auxDur, 64)
 					}
 
-					// "allocationTime": "2022-05-22T18:48:37.932136923-07:00",
-					atStr := event.Values["allocationTime"].(string)
-					at, err := time.Parse(layout, atStr)
-
-					if err != nil {
-						fmt.Println(err)
-					}
+					// Error 1292: Incorrect datetime value: '0000-00-00' for column 'old_object_sample_allocation_time' at row 1
 
 					oldObjectSample := &models.OldObjectSample{
-						OldObjectSampleDuration:           duration,
-						OldObjectSampleOsName:             osName,
-						OldObjectSampleOsThreadId:         osThreadId,
-						OldObjectSampleJavaName:           javaName,
-						OldObjectSampleJavaThreadId:       javaThreadId,
-						OldObjectSampleAllocationTime:     at,
+						OldObjectSampleDuration:     duration,
+						OldObjectSampleOsName:       osName,
+						OldObjectSampleOsThreadId:   osThreadId,
+						OldObjectSampleJavaName:     javaName,
+						OldObjectSampleJavaThreadId: javaThreadId,
+						// OldObjectSampleAllocationTime:     at,
 						OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
 						OldObjectSampleObject:             objectType,
 						OldObjectSampleArrayElements:      event.Values["arrayElements"].(float64),
 					}
+
+					// "allocationTime": "2022-05-22T18:48:37.932136923-07:00",
+					var at time.Time
+					atStr := event.Values["allocationTime"].(string)
+					at, err = time.Parse(layout, atStr)
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					if !at.IsZero() {
+						oldObjectSample.OldObjectSampleAllocationTime.Time = at
+						oldObjectSample.OldObjectSampleAllocationTime.Valid = true
+					} else {
+						oldObjectSample.OldObjectSampleAllocationTime.Time = time.Time{}
+						oldObjectSample.OldObjectSampleAllocationTime.Valid = false
+					}
+
 					if val, ok := jfrMap[t]; ok {
 						val.OldObjectSample = *oldObjectSample
 						jfrMap[t] = val
