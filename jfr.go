@@ -336,13 +336,21 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
 					}
+
+					// "time": "PT30S"
+					var tsTime float64
+					if event.Values["time"] != nil {
+						auxTime := strings.ReplaceAll(event.Values["time"].(string), "PT", "")
+						auxTime = strings.ReplaceAll(event.Values["time"].(string), "S", "")
+						tsTime, err = strconv.ParseFloat(auxTime, 64)
+					}
 					threadSleep := &models.ThreadSleep{
 						ThreadSleepDuration:     duration,
 						ThreadSleepOsName:       osName,
 						ThreadSleepOsThreadId:   osThreadId,
 						ThreadSleepJavaName:     javaName,
 						ThreadSleepJavaThreadId: javaThreadId,
-						ThreadSleepTime:         event.Values["time"].(float64),
+						ThreadSleepTime:         tsTime,
 					}
 					if val, ok := jfrMap[t]; ok {
 						val.ThreadSleep = *threadSleep
