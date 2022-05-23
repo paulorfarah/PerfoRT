@@ -130,7 +130,7 @@ type OldObjectSample struct {
 	OldObjectSampleOsThreadId         float64
 	OldObjectSampleJavaName           string
 	OldObjectSampleJavaThreadId       float64
-	OldObjectSampleAllocationTime     float64
+	OldObjectSampleAllocationTime     time.Time
 	OldObjectSampleLastKnownHeapUsage float64
 	OldObjectSampleObject             string
 	OldObjectSampleArrayElements      int
