@@ -590,7 +590,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						OldObjectSampleAllocationTime:     at,
 						OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
 						OldObjectSampleObject:             objectType,
-						OldObjectSampleArrayElements:      event.Values["arrayElements"].(int),
+						OldObjectSampleArrayElements:      event.Values["arrayElements"].(float64),
 					}
 					if val, ok := jfrMap[t]; ok {
 						val.OldObjectSample = *oldObjectSample

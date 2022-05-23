@@ -133,7 +133,7 @@ type OldObjectSample struct {
 	OldObjectSampleAllocationTime     time.Time
 	OldObjectSampleLastKnownHeapUsage float64
 	OldObjectSampleObject             string
-	OldObjectSampleArrayElements      int
+	OldObjectSampleArrayElements      float64
 }
 
 type ClassLoaderStatistics struct {
