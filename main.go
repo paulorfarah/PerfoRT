@@ -28,6 +28,7 @@ func main() {
 	}
 	log.SetOutput(logFile)
 	log.Println("starting...")
+	url, ok := os.LookupEnv("repository")
 
 	// url := "https://github.com/paulorfarah/maven-project"
 	// url := "https://github.com/TooTallNate/Java-WebSocket"
@@ -50,7 +51,7 @@ func main() {
 	// url := "https://github.com/apache/systemml" //do not generate test case results report
 	// url := "https://github.com/apache/groovy"
 	// url := "https://github.com/google/guava" //error
-	url, ok := os.LookupEnv("repository")
+
 	fmt.Println("############## url: ", url)
 	if ok {
 		urlSplit := strings.Split(url, "/")
