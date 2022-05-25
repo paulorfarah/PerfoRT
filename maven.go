@@ -607,7 +607,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// fmt.Println("resultsPath: ", resultsPath)
 
 	// var err error
-	fmt.Println("Number of runs: ", measurement.Runs)
+	log.Println("Number of runs: ", measurement.Runs)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
 		run := &models.Run{
 			MeasurementID: measurement.ID,
@@ -623,7 +623,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// settings=/home/usuario/Downloads/perfrt.jfc
 		// -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
-		fmt.Println("removing " + localpath + "/perfrt.jfr")
+		log.Println("removing " + localpath + "/perfrt.jfr")
 		e := os.Remove(localpath + "/perfrt.jfr")
 		if e != nil {
 			log.Println("Error removing JFR file: ", e.Error())
@@ -633,7 +633,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
 			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m " + packageName + className + "#" + testName
-		fmt.Println(strJunitTC)
+		log.Println(strJunitTC)
 
 		cmd = exec.Command(
 			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
@@ -686,10 +686,10 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			// fmt.Println(pid)
 			process, err := os.FindProcess(int(pid))
 			if err != nil {
-				fmt.Printf("Failed to find process: %s\n", err)
+				log.Printf("Failed to find process: %s\n", err)
 			} else {
 				errPid := process.Signal(syscall.Signal(0))
-				fmt.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
+				log.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
 				resPid := fmt.Sprintf("%v", errPid)
 				if resPid != "os: process already finished" {
 					fmt.Printf("junit test failed with %s\n", err.Error())
