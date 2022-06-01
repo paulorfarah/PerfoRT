@@ -31,7 +31,7 @@ type MvnTestResult struct {
 func GetMavenDependenciesClasspath(path string) string {
 	logfile := "maven-classpath.log"
 
-	fmt.Println("mvn dependency:build-classpath")
+	// fmt.Println("mvn dependency:build-classpath")
 	cmd := exec.Command("mvn", "dependency:build-classpath")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
@@ -90,7 +90,7 @@ func getClasspath(path string) string {
 func MvnCompile(path string) bool {
 	logfile := "maven-compiler.log"
 
-	fmt.Println("------------------------------------------------ mvn compile")
+	fmt.Println("- mvn compile")
 	cmd := exec.Command("mvn", "-Drat.skip=true", "clean", "compile")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
@@ -126,8 +126,8 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	var output []byte
 	var err error
 
-	log.Println("------------------------------------------------ mvn test")
-	fmt.Println("------------------------------------------------ mvn test")
+	log.Println("- mvn test")
+	fmt.Println("- mvn test")
 	// localpath, err := os.Getwd()
 	// if err != nil {
 	// 	log.Println(err)
@@ -135,7 +135,8 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	// }
 
 	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	fmt.Println("mvn -fn -Drat.skip=true clean test")
+	log.Println("- mvn -fn -Drat.skip=true clean test")
+	fmt.Println("- mvn -fn -Drat.skip=true clean test")
 	// jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
 	// testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
 	// testStr := "mvn -fn -Drat.skip=true clean test"
@@ -144,7 +145,7 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
 	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	fmt.Println("path: ", path)
+	// fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -356,7 +357,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	resultsPath += "/target/surefire-reports/TEST-" + tc.ClassName + ".xml"
 	fmt.Println("resultsPath: ", resultsPath)
 	cmd.Dir = path
-	fmt.Println("path: ", path)
+	// fmt.Println("path: ", path)
 
 	var output []byte
 	var err error
@@ -584,8 +585,11 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		fmt.Println("error getting current path: ", errPath.Error())
 	}
 
-	log.Println(">>>------------------------------------------------ junit testcase", path, packageName, className, testName)
-	fmt.Println(">>>------------------------------------------------ junit testcase", path, packageName, className, testName)
+	mavenClasspath := GetMavenDependenciesClasspath(path)
+	log.Println("Dependencies: ", mavenClasspath)
+
+	log.Println("- junit testcase", path, packageName, className, testName)
+	fmt.Println("- junit testcase", path, packageName, className, testName)
 
 	var cmd *exec.Cmd
 	// var cmdStr string
@@ -632,7 +636,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
-			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m " + packageName + className + "#" + testName
+			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes:" + mavenClasspath + " -m " + packageName + className + "#" + testName
 		log.Println(strJunitTC)
 
 		cmd = exec.Command(
@@ -659,7 +663,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				select {
 				case <-stop:
 					// //save
-					fmt.Println("****************** stop")
+					// fmt.Println("****************** stop")
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}

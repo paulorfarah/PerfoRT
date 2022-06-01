@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"perfrt/models"
@@ -156,15 +157,16 @@ type Event struct {
 // }
 
 func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
-	fmt.Println("****************** SaveJFRMetrics")
+	// fmt.Println("****************** SaveJFRMetrics")
 	// generate json
 	if _, err := os.Stat("perfrt.jfr"); err == nil {
 		// file perfrt.jfr exists
-		fmt.Println("jfr print --json perfrt.jfr > perfrt.json")
+		log.Println("- jfr print --json perfrt.jfr > perfrt.json")
+		fmt.Println("- jfr print --json perfrt.jfr > perfrt.json")
 		cmd := exec.Command("bash", "-c", "jfr print --json perfrt.jfr > perfrt.json")
 		err := cmd.Run()
 		if err != nil {
-			fmt.Println("->->->->->->->->->->->->-> error executing jfr: ", err.Error())
+			fmt.Println("-> Error executing jfr: ", err.Error())
 			// log.Fatal(err)
 		}
 
@@ -175,9 +177,9 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 		defer jsonFile.Close()
 		// if we os.Open returns an error then handle it
 		if err != nil {
-			fmt.Println("->->->->->->->->->->->->-> error opening jfr json file: ", err.Error())
+			fmt.Println("-> Error opening jfr json file: ", err.Error())
 		} else {
-			fmt.Println("Successfully Opened perfrt.json")
+			// fmt.Println("Successfully Opened perfrt.json")
 
 			// read our opened jsonFile as a byte array.
 			jsonJFR, _ := ioutil.ReadAll(jsonFile)
@@ -188,8 +190,8 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 			result.ForEach(func(key, eventMap gjson.Result) bool {
 				var event Event
 
-				fmt.Println(eventMap)
-				fmt.Println("-----")
+				// fmt.Println(eventMap)
+				// fmt.Println("-----")
 				var result map[string]interface{}
 				jsonFile := fmt.Sprintf("%s", eventMap)
 				if err := json.Unmarshal([]byte(jsonFile), &result); err != nil {
@@ -214,7 +216,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				if err != nil {
 					fmt.Println(err)
 				}
-				fmt.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
+				// fmt.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
 				switch event.Type {
 				case "jdk.CPULoad":
 					cpuLoad := &models.CPULoad{
@@ -236,10 +238,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						}
 						jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
 					}
 
 				case "jdk.ThreadCPULoad":
@@ -265,10 +263,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						}
 						jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
 					}
 
 				case "jdk.ThreadStart":
@@ -297,10 +291,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.ThreadEnd":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -323,27 +313,30 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.ThreadSleep":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.ThreadSleep: cannot parse duration value. ", err)
+						}
 					}
 
 					// "time": "PT30S"
 					var tsTime float64
 					if event.Values["time"] != nil {
 						auxTime := strings.ReplaceAll(event.Values["time"].(string), "PT", "")
-						auxTime = strings.ReplaceAll(event.Values["time"].(string), "S", "")
+						auxTime = strings.ReplaceAll(auxTime, "S", "")
 						tsTime, err = strconv.ParseFloat(auxTime, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.ThreadSleep: cannot parse time value. ", err)
+						}
 					}
+
 					threadSleep := &models.ThreadSleep{
 						ThreadSleepDuration:     duration,
 						ThreadSleepOsName:       osName,
@@ -365,10 +358,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.ThreadPark":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -376,8 +365,11 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.ThreadPark: cannot parse duration value. ", err)
+						}
 					}
 					threadPark := &models.ThreadPark{
 						ThreadParkDuration:     duration,
@@ -402,10 +394,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.JavaErrorThrow":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -413,8 +401,11 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.JavaErrorThrow: cannot parse duration value. ", err)
+						}
 					}
 					javaErrorThrow := &models.JavaErrorThrow{
 						JavaErrorThrowDuration:     duration,
@@ -438,10 +429,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.JavaExceptionThrow":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -449,8 +436,11 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.JavaExceptionThrow: cannot parse duration value. ", err)
+						}
 					}
 					javaExceptionThrow := &models.JavaExceptionThrow{
 						JavaExceptionThrowDuration:     duration,
@@ -474,10 +464,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.JavaMonitorEnter":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -485,8 +471,11 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.JavaMonitorEnter: cannot parse duration value. ", err)
+						}
 					}
 					javaMonitorEnter := &models.JavaMonitorEnter{
 						JavaMonitorEnterDuration:     duration,
@@ -509,32 +498,31 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.JavaMonitorWait":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					monitorClass := getClass(event, "monitorClass")
-					fmt.Println(event.Values["duration"])
+
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse duration value. ", err)
+						}
 					}
 
 					var timeOut float64
 					if event.Values["timeOut"] != nil {
 						auxtimeOut := strings.ReplaceAll(event.Values["timeOut"].(string), "PT", "")
-						auxtimeOut = strings.ReplaceAll(event.Values["timeOut"].(string), "S", "")
+						auxtimeOut = strings.ReplaceAll(auxtimeOut, "S", "")
 						timeOut, err = strconv.ParseFloat(auxtimeOut, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse timeOut value. ", err)
+						}
 					}
 
-					if err != nil {
-						fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse duration value. ", err)
-					}
 					javaMonitorWait := &models.JavaMonitorWait{
 						JavaMonitorWaitDuration:     duration,
 						JavaMonitorWaitOsName:       osName,
@@ -558,10 +546,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.OldObjectSample":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -569,8 +553,11 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.OldObjectSample: cannot parse duration value. ", err)
+						}
 					}
 
 					// Error 1292: Incorrect datetime value: '0000-00-00' for column 'old_object_sample_allocation_time' at row 1
@@ -592,7 +579,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					atStr := event.Values["allocationTime"].(string)
 					at, err = time.Parse(layout, atStr)
 					if err != nil {
-						fmt.Println(err)
+						fmt.Println("ERROR in jdk.OldObjectSample: cannot parse allocationTime value. ", err)
 					}
 
 					if !at.IsZero() {
@@ -615,10 +602,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						}
 						jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
 					}
 
 				case "jdk.ClassLoaderStatistics":
@@ -647,11 +630,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
-					// }
 
 				case "jdk.ObjectAllocationInNewTLAB":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -679,10 +657,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.ObjectAllocationOutsideTLAB":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
@@ -708,18 +682,17 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jfrMap[t] = *jvm
 
 					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
-					}
 
 				case "jdk.GCPhasePause":
 					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 					var duration float64
 					if event.Values["duration"] != nil {
 						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(event.Values["duration"].(string), "S", "")
+						auxDur = strings.ReplaceAll(auxDur, "S", "")
 						duration, err = strconv.ParseFloat(auxDur, 64)
+						if err != nil {
+							fmt.Println("ERROR in jdk.GCPhasePause: cannot parse duration value. ", err)
+						}
 					}
 					gcPhasePause := &models.GCPhasePause{
 						GCPhasePauseDuration:     duration,
@@ -742,10 +715,6 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						}
 						jfrMap[t] = *jvm
 
-					}
-					// _, err = models.CreateJvm(db, jvm)
-					if err != nil {
-						fmt.Printf("Error saving resource: %s\n", err.Error())
 					}
 
 				}
@@ -792,7 +761,10 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				return true // keep iterating
 			})
 			for _, jvm := range jfrMap {
-				models.CreateJvm(db, &jvm)
+				_, err = models.CreateJvm(db, &jvm)
+				if err != nil {
+					fmt.Printf("Error saving jvm: %s\n", err.Error())
+				}
 			}
 
 		}
@@ -807,7 +779,7 @@ func getClassLoader(event Event) (string, string) {
 	var name string
 	classloader := event.Values["classLoader"]
 	if n, ok := classloader.(map[string]interface{}); ok {
-		fmt.Println(n)
+		// fmt.Println(n)
 		if n["name"] != nil {
 			name = n["name"].(string)
 		}

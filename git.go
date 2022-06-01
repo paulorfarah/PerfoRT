@@ -56,8 +56,10 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 
 func Checkout(repoName, hash string) error {
 	dt := time.Now()
+	log.Println()
+	log.Println("################################################ checkout " + hash + " " + dt.String())
+	fmt.Println()
 	fmt.Println("################################################ checkout " + hash + " " + dt.String())
-	log.Println("################################################ checkout " + hash)
 
 	dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
 	cmd := exec.Command("git", "checkout", "-f", hash)
@@ -76,9 +78,9 @@ func Checkout(repoName, hash string) error {
 		log.Printf("git checkout -f %s\n", hash)
 		log.Println("\nCannot run git checkout: ", hash, err)
 		fmt.Println("\nCannot run git checkout: ", hash, err)
-	} else {
-		fmt.Println("\ncheckout successfull: ", hash)
-	}
+	} //else {
+	//fmt.Println("\ncheckout successfull: ", hash)
+	//}
 
 	// fmt.Println("checkout output: " + string(out))
 	// _, err = exec.Command("git", "--git-dir=repos"+string(os.PathSeparator)+repoName+string(os.PathSeparator)+".git", "--work-tree=repos"+string(os.PathSeparator)+repoName, "checkout", commit).Output()

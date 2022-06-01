@@ -15,8 +15,8 @@ import (
 )
 
 func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measurementID, commitID uint) error {
-	log.Println("------------------------------------------------ test coverage")
-	fmt.Println("------------------------------------------------ test coverage")
+	log.Println("- test coverage")
+	fmt.Println("- test coverage")
 	//java -jar jacoco-0.8.6/jacococli.jar report coverage/jacoco-1.exec --classfiles /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes --sourcefiles /home/farah/go-work/src/github.com/paulorfarah/repos/junit4 --csv coverage/cobertura.csv
 
 	filename := "coverage/" + strings.ReplaceAll(repoDir, "/", "_") + "-" + strconv.Itoa(int(commitID)) + ".csv"
@@ -50,8 +50,8 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 
 	jacocoStr := "java -jar jacoco-0.8.6/jacococli.jar report " + jacoco_exec + " --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv " + filename
 
-	log.Println(jacocoStr)
-	fmt.Println(jacocoStr)
+	log.Println("- ", jacocoStr)
+	fmt.Println("- ", jacocoStr)
 	cmd := exec.Command("bash", "-c", jacocoStr)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
