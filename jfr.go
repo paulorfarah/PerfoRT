@@ -200,539 +200,544 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					log.Println("### ERROR: cannot unmarshal json file: ", err)
 					fmt.Println(jsonFile)
 					fmt.Println("### ERROR: cannot unmarshal json file: ", err)
-				}
-				values := result["values"]
-				if v, ok := values.(map[string]interface{}); ok {
-					// fmt.Printf(" %s", v["startTime"])
-					event.Type = result["type"].(string)
-					event.Values = v
-
 				} else {
-					log.Printf("record not a map[string]interface{}: %v\n", values)
-					// panic("record not a map[string]interface{}: ")
+					values := result["values"]
+					if v, ok := values.(map[string]interface{}); ok {
+						// fmt.Printf(" %s", v["startTime"])
+						event.Type = result["type"].(string)
+						event.Values = v
 
-				}
-
-				// fmt.Printf("%#v\n", event.Values)
-				layout := "2006-01-02T15:04:05.000000000-07:00"
-				str := event.Values["startTime"].(string)
-				indStartTime := strings.Index(str[20:29], "-")
-
-				if indStartTime != -1 {
-					// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime1: ", str)
-					var auxStartime string
-					for i := indStartTime; i < 9; i++ {
-						auxStartime += "0"
-					}
-					str = str[:20+indStartTime] + auxStartime + str[20+indStartTime:]
-					// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime2: ", str)
-				}
-				t, err := time.Parse(layout, str)
-
-				if err != nil {
-					fmt.Println(err)
-				}
-				// fmt.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
-				switch event.Type {
-				case "jdk.CPULoad":
-					cpuLoad := &models.CPULoad{
-						JvmUser:      event.Values["jvmUser"].(float64),
-						JvmSystem:    event.Values["jvmSystem"].(float64),
-						MachineTotal: event.Values["machineTotal"].(float64),
-					}
-					// fmt.Printf("%v\n", cpuLoad)
-					// save
-					if val, ok := jfrMap[t]; ok {
-						val.CPULoad = *cpuLoad
-						jfrMap[t] = val
 					} else {
-						jvm := &models.Jvm{
-							RunID:     measurementID,
-							Run:       models.Run{},
-							StartTime: &t,
-							CPULoad:   *cpuLoad,
+						log.Printf("record not a map[string]interface{}: %v\n", values)
+						// panic("record not a map[string]interface{}: ")
+
+					}
+
+					// fmt.Printf("%#v\n", event.Values)
+					layout := "2006-01-02T15:04:05.000000000-07:00"
+					str, ok := event.Values["startTime"].(string)
+					if ok {
+						indStartTime := strings.Index(str[20:29], "-")
+
+						if indStartTime != -1 {
+							// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime1: ", str)
+							var auxStartime string
+							for i := indStartTime; i < 9; i++ {
+								auxStartime += "0"
+							}
+							str = str[:20+indStartTime] + auxStartime + str[20+indStartTime:]
+							// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime2: ", str)
 						}
-						jfrMap[t] = *jvm
+						t, err := time.Parse(layout, str)
 
-					}
-
-				case "jdk.ThreadCPULoad":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					tCpuLoad := &models.ThreadCPULoad{
-						ThreadCPULoadOsName:       osName,
-						ThreadCPULoadOsThreadId:   osThreadId,
-						ThreadCPULoadJavaName:     javaName,
-						ThreadCPULoadJavaThreadId: javaThreadId,
-						ThreadCPULoadUser:         event.Values["user"].(float64),
-						ThreadCPULoadSystem:       event.Values["system"].(float64),
-					}
-
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadCPULoad = *tCpuLoad
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:         measurementID,
-							Run:           models.Run{},
-							StartTime:     &t,
-							ThreadCPULoad: *tCpuLoad,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.ThreadStart":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					osNameParent, osThreadIdParent, javaNameParent, javaThreadIdParent := getEventParentThread(event)
-					threadStart := &models.ThreadStart{
-						ThreadStartOsName:                   osName,
-						ThreadStartOsThreadId:               osThreadId,
-						ThreadStartJavaName:                 javaName,
-						ThreadStartJavaThreadId:             javaThreadId,
-						ThreadStartParentThreadosName:       osNameParent,
-						ThreadStartParentThreadOsThreadId:   osThreadIdParent,
-						ThreadStartParentThreadJavaName:     javaNameParent,
-						ThreadStartParentThreadJavaThreadId: javaThreadIdParent,
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadStart = *threadStart
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:       measurementID,
-							Run:         models.Run{},
-							StartTime:   &t,
-							ThreadStart: *threadStart,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.ThreadEnd":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					threadEnd := &models.ThreadEnd{
-						ThreadEndOsName:       osName,
-						ThreadEndOsThreadId:   osThreadId,
-						ThreadEndJavaName:     javaName,
-						ThreadEndJavaThreadId: javaThreadId,
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadEnd = *threadEnd
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:     measurementID,
-							Run:       models.Run{},
-							StartTime: &t,
-							ThreadEnd: *threadEnd,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.ThreadSleep":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
 						if err != nil {
-							fmt.Println("ERROR in jdk.ThreadSleep: cannot parse duration value. ", err)
+							fmt.Println(err)
 						}
-					}
+						// fmt.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
+						switch event.Type {
+						case "jdk.CPULoad":
+							cpuLoad := &models.CPULoad{
+								JvmUser:      event.Values["jvmUser"].(float64),
+								JvmSystem:    event.Values["jvmSystem"].(float64),
+								MachineTotal: event.Values["machineTotal"].(float64),
+							}
+							// fmt.Printf("%v\n", cpuLoad)
+							// save
+							if val, ok := jfrMap[t]; ok {
+								val.CPULoad = *cpuLoad
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:     measurementID,
+									Run:       models.Run{},
+									StartTime: &t,
+									CPULoad:   *cpuLoad,
+								}
+								jfrMap[t] = *jvm
 
-					// "time": "PT30S"
-					var tsTime float64
-					if event.Values["time"] != nil {
-						auxTime := strings.ReplaceAll(event.Values["time"].(string), "PT", "")
-						auxTime = strings.ReplaceAll(auxTime, "S", "")
-						tsTime, err = strconv.ParseFloat(auxTime, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.ThreadSleep: cannot parse time value. ", err)
+							}
+
+						case "jdk.ThreadCPULoad":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							tCpuLoad := &models.ThreadCPULoad{
+								ThreadCPULoadOsName:       osName,
+								ThreadCPULoadOsThreadId:   osThreadId,
+								ThreadCPULoadJavaName:     javaName,
+								ThreadCPULoadJavaThreadId: javaThreadId,
+								ThreadCPULoadUser:         event.Values["user"].(float64),
+								ThreadCPULoadSystem:       event.Values["system"].(float64),
+							}
+
+							if val, ok := jfrMap[t]; ok {
+								val.ThreadCPULoad = *tCpuLoad
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:         measurementID,
+									Run:           models.Run{},
+									StartTime:     &t,
+									ThreadCPULoad: *tCpuLoad,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ThreadStart":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							osNameParent, osThreadIdParent, javaNameParent, javaThreadIdParent := getEventParentThread(event)
+							threadStart := &models.ThreadStart{
+								ThreadStartOsName:                   osName,
+								ThreadStartOsThreadId:               osThreadId,
+								ThreadStartJavaName:                 javaName,
+								ThreadStartJavaThreadId:             javaThreadId,
+								ThreadStartParentThreadosName:       osNameParent,
+								ThreadStartParentThreadOsThreadId:   osThreadIdParent,
+								ThreadStartParentThreadJavaName:     javaNameParent,
+								ThreadStartParentThreadJavaThreadId: javaThreadIdParent,
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ThreadStart = *threadStart
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:       measurementID,
+									Run:         models.Run{},
+									StartTime:   &t,
+									ThreadStart: *threadStart,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ThreadEnd":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							threadEnd := &models.ThreadEnd{
+								ThreadEndOsName:       osName,
+								ThreadEndOsThreadId:   osThreadId,
+								ThreadEndJavaName:     javaName,
+								ThreadEndJavaThreadId: javaThreadId,
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ThreadEnd = *threadEnd
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:     measurementID,
+									Run:       models.Run{},
+									StartTime: &t,
+									ThreadEnd: *threadEnd,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ThreadSleep":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.ThreadSleep: cannot parse duration value. ", err)
+								}
+							}
+
+							// "time": "PT30S"
+							var tsTime float64
+							if event.Values["time"] != nil {
+								auxTime := strings.ReplaceAll(event.Values["time"].(string), "PT", "")
+								auxTime = strings.ReplaceAll(auxTime, "S", "")
+								tsTime, err = strconv.ParseFloat(auxTime, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.ThreadSleep: cannot parse time value. ", err)
+								}
+							}
+
+							threadSleep := &models.ThreadSleep{
+								ThreadSleepDuration:     duration,
+								ThreadSleepOsName:       osName,
+								ThreadSleepOsThreadId:   osThreadId,
+								ThreadSleepJavaName:     javaName,
+								ThreadSleepJavaThreadId: javaThreadId,
+								ThreadSleepTime:         tsTime,
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ThreadSleep = *threadSleep
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:       measurementID,
+									Run:         models.Run{},
+									StartTime:   &t,
+									ThreadSleep: *threadSleep,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ThreadPark":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							parkedClass := getClass(event, "parkedClass")
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.ThreadPark: cannot parse duration value. ", err)
+								}
+							}
+							threadPark := &models.ThreadPark{
+								ThreadParkDuration:     duration,
+								ThreadParkOsName:       osName,
+								ThreadParkOsThreadId:   osThreadId,
+								ThreadParkJavaName:     javaName,
+								ThreadParkJavaThreadId: javaThreadId,
+								ThreadParkParkedClass:  parkedClass,
+								ThreadParkTimeout:      event.Values["timeout"].(float64),
+								ThreadParkUntil:        event.Values["until"].(float64),
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ThreadPark = *threadPark
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:      measurementID,
+									Run:        models.Run{},
+									StartTime:  &t,
+									ThreadPark: *threadPark,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.JavaErrorThrow":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							thrownClass := getClass(event, "thrownClass")
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.JavaErrorThrow: cannot parse duration value. ", err)
+								}
+							}
+							javaErrorThrow := &models.JavaErrorThrow{
+								JavaErrorThrowDuration:     duration,
+								JavaErrorThrowOsName:       osName,
+								JavaErrorThrowOsThreadId:   osThreadId,
+								JavaErrorThrowJavaName:     javaName,
+								JavaErrorThrowJavaThreadId: javaThreadId,
+								JavaErrorThrowMessage:      event.Values["message"].(string),
+								JavaErrorThrowThrownClass:  thrownClass,
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.JavaErrorThrow = *javaErrorThrow
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:          measurementID,
+									Run:            models.Run{},
+									StartTime:      &t,
+									JavaErrorThrow: *javaErrorThrow,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.JavaExceptionThrow":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							thrownClass := getClass(event, "thrownClass")
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.JavaExceptionThrow: cannot parse duration value. ", err)
+								}
+							}
+							javaExceptionThrow := &models.JavaExceptionThrow{
+								JavaExceptionThrowDuration:     duration,
+								JavaExceptionThrowOsName:       osName,
+								JavaExceptionThrowOsThreadId:   osThreadId,
+								JavaExceptionThrowJavaName:     javaName,
+								JavaExceptionThrowJavaThreadId: javaThreadId,
+								JavaExceptionThrowMessage:      event.Values["message"].(string),
+								JavaExceptionThrowThrownClass:  thrownClass,
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.JavaExceptionThrow = *javaExceptionThrow
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:              measurementID,
+									Run:                models.Run{},
+									StartTime:          &t,
+									JavaExceptionThrow: *javaExceptionThrow,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.JavaMonitorEnter":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							monitorClass := getClass(event, "monitorClass")
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.JavaMonitorEnter: cannot parse duration value. ", err)
+								}
+							}
+							javaMonitorEnter := &models.JavaMonitorEnter{
+								JavaMonitorEnterDuration:     duration,
+								JavaMonitorEnterOsName:       osName,
+								JavaMonitorEnterOsThreadId:   osThreadId,
+								JavaMonitorEnterJavaName:     javaName,
+								JavaMonitorEnterJavaThreadId: javaThreadId,
+								JavaMonitorEnterMonitorClass: monitorClass,
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.JavaMonitorEnter = *javaMonitorEnter
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:            measurementID,
+									Run:              models.Run{},
+									StartTime:        &t,
+									JavaMonitorEnter: *javaMonitorEnter,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.JavaMonitorWait":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							monitorClass := getClass(event, "monitorClass")
+
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse duration value. ", err)
+								}
+							}
+
+							var timeOut float64
+							if event.Values["timeOut"] != nil {
+								auxtimeOut := strings.ReplaceAll(event.Values["timeOut"].(string), "PT", "")
+								auxtimeOut = strings.ReplaceAll(auxtimeOut, "S", "")
+								timeOut, err = strconv.ParseFloat(auxtimeOut, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse timeOut value. ", err)
+								}
+							}
+
+							javaMonitorWait := &models.JavaMonitorWait{
+								JavaMonitorWaitDuration:     duration,
+								JavaMonitorWaitOsName:       osName,
+								JavaMonitorWaitOsThreadId:   osThreadId,
+								JavaMonitorWaitJavaName:     javaName,
+								JavaMonitorWaitJavaThreadId: javaThreadId,
+								JavaMonitorWaitMonitorClass: monitorClass,
+								JavaMonitorWaitTimeout:      timeOut,
+								JavaMonitorWaitTimedOut:     event.Values["timedOut"].(bool),
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.JavaMonitorWait = *javaMonitorWait
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:           measurementID,
+									Run:             models.Run{},
+									StartTime:       &t,
+									JavaMonitorWait: *javaMonitorWait,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.OldObjectSample":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							objectType := getObjectType(event)
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.OldObjectSample: cannot parse duration value. ", err)
+								}
+							}
+
+							// Error 1292: Incorrect datetime value: '0000-00-00' for column 'old_object_sample_allocation_time' at row 1
+
+							oldObjectSample := &models.OldObjectSample{
+								OldObjectSampleDuration:     duration,
+								OldObjectSampleOsName:       osName,
+								OldObjectSampleOsThreadId:   osThreadId,
+								OldObjectSampleJavaName:     javaName,
+								OldObjectSampleJavaThreadId: javaThreadId,
+								// OldObjectSampleAllocationTime:     at,
+								OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
+								OldObjectSampleObject:             objectType,
+								OldObjectSampleArrayElements:      event.Values["arrayElements"].(float64),
+							}
+
+							// "allocationTime": "2022-05-22T18:48:37.932136923-07:00",
+							var at time.Time
+							atStr := event.Values["allocationTime"].(string)
+							at, err = time.Parse(layout, atStr)
+							if err != nil {
+								fmt.Println("ERROR in jdk.OldObjectSample: cannot parse allocationTime value. ", err)
+							}
+
+							if !at.IsZero() {
+								oldObjectSample.OldObjectSampleAllocationTime.Time = at
+								oldObjectSample.OldObjectSampleAllocationTime.Valid = true
+							} else {
+								oldObjectSample.OldObjectSampleAllocationTime.Time = time.Time{}
+								oldObjectSample.OldObjectSampleAllocationTime.Valid = false
+							}
+
+							if val, ok := jfrMap[t]; ok {
+								val.OldObjectSample = *oldObjectSample
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:           measurementID,
+									Run:             models.Run{},
+									StartTime:       &t,
+									OldObjectSample: *oldObjectSample,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ClassLoaderStatistics":
+							name, parent := getClassLoader(event)
+							classLoaderStatistics := &models.ClassLoaderStatistics{
+								ClassLoader:         name,
+								ParentClassLoader:   parent,
+								ClassLoaderData:     event.Values["classLoaderData"].(float64),
+								ClassCount:          event.Values["classCount"].(float64),
+								ChunkSize:           event.Values["chunkSize"].(float64),
+								BlockSize:           event.Values["blockSize"].(float64),
+								AnonymousClassCount: event.Values["anonymousClassCount"].(float64),
+								AnonymousChunkSize:  event.Values["anonymousChunkSize"].(float64),
+								AnonymousBlockSize:  event.Values["anonymousBlockSize"].(float64),
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ClassLoaderStatistics = *classLoaderStatistics
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:                 measurementID,
+									Run:                   models.Run{},
+									StartTime:             &t,
+									ClassLoaderStatistics: *classLoaderStatistics,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ObjectAllocationInNewTLAB":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							objectClass := getClass(event, "objectClass")
+							objectAllocationInNewTLAB := &models.ObjectAllocationInNewTLAB{
+
+								ObjectAllocationInNewTLABOsName:         osName,
+								ObjectAllocationInNewTLABOsThreadId:     osThreadId,
+								ObjectAllocationInNewTLABJavaName:       javaName,
+								ObjectAllocationInNewTLABJavaThreadId:   javaThreadId,
+								ObjectAllocationInNewTLABObjectClass:    objectClass,
+								ObjectAllocationInNewTLABAllocationSize: event.Values["allocationSize"].(float64),
+								ObjectAllocationInNewTLABTlabSize:       event.Values["tlabSize"].(float64),
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ObjectAllocationInNewTLAB = *objectAllocationInNewTLAB
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:                     measurementID,
+									Run:                       models.Run{},
+									StartTime:                 &t,
+									ObjectAllocationInNewTLAB: *objectAllocationInNewTLAB,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.ObjectAllocationOutsideTLAB":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							objectClass := getClass(event, "objectClass")
+							objectAllocationOutsideTLAB := &models.ObjectAllocationOutsideTLAB{
+								ObjectAllocationOutsideTLABOsName:         osName,
+								ObjectAllocationOutsideTLABOsThreadId:     osThreadId,
+								ObjectAllocationOutsideTLABJavaName:       javaName,
+								ObjectAllocationOutsideTLABJavaThreadId:   javaThreadId,
+								ObjectAllocationOutsideTLABObjectClass:    objectClass,
+								ObjectAllocationOutsideTLABAllocationSize: event.Values["allocationSize"].(float64),
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.ObjectAllocationOutsideTLAB = *objectAllocationOutsideTLAB
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:                       measurementID,
+									Run:                         models.Run{},
+									StartTime:                   &t,
+									ObjectAllocationOutsideTLAB: *objectAllocationOutsideTLAB,
+								}
+								jfrMap[t] = *jvm
+
+							}
+
+						case "jdk.GCPhasePause":
+							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
+							var duration float64
+							if event.Values["duration"] != nil {
+								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+								auxDur = strings.ReplaceAll(auxDur, "S", "")
+								duration, err = strconv.ParseFloat(auxDur, 64)
+								if err != nil {
+									fmt.Println("ERROR in jdk.GCPhasePause: cannot parse duration value. ", err)
+								}
+							}
+							gcPhasePause := &models.GCPhasePause{
+								GCPhasePauseDuration:     duration,
+								GCPhasePauseOsName:       osName,
+								GCPhasePauseOsThreadId:   osThreadId,
+								GCPhasePauseJavaName:     javaName,
+								GCPhasePauseJavaThreadId: javaThreadId,
+								GcId:                     event.Values["gcId"].(float64),
+								GCPhasePauseName:         event.Values["name"].(string),
+							}
+							if val, ok := jfrMap[t]; ok {
+								val.GCPhasePause = *gcPhasePause
+								jfrMap[t] = val
+							} else {
+								jvm := &models.Jvm{
+									RunID:        measurementID,
+									Run:          models.Run{},
+									StartTime:    &t,
+									GCPhasePause: *gcPhasePause,
+								}
+								jfrMap[t] = *jvm
+
+							}
 						}
-					}
-
-					threadSleep := &models.ThreadSleep{
-						ThreadSleepDuration:     duration,
-						ThreadSleepOsName:       osName,
-						ThreadSleepOsThreadId:   osThreadId,
-						ThreadSleepJavaName:     javaName,
-						ThreadSleepJavaThreadId: javaThreadId,
-						ThreadSleepTime:         tsTime,
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadSleep = *threadSleep
-						jfrMap[t] = val
+						//end ok starttime
 					} else {
-						jvm := &models.Jvm{
-							RunID:       measurementID,
-							Run:         models.Run{},
-							StartTime:   &t,
-							ThreadSleep: *threadSleep,
-						}
-						jfrMap[t] = *jvm
-
+						log.Println("Cannot convert interface: interface {} is not string")
 					}
-
-				case "jdk.ThreadPark":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					parkedClass := getClass(event, "parkedClass")
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.ThreadPark: cannot parse duration value. ", err)
-						}
-					}
-					threadPark := &models.ThreadPark{
-						ThreadParkDuration:     duration,
-						ThreadParkOsName:       osName,
-						ThreadParkOsThreadId:   osThreadId,
-						ThreadParkJavaName:     javaName,
-						ThreadParkJavaThreadId: javaThreadId,
-						ThreadParkParkedClass:  parkedClass,
-						ThreadParkTimeout:      event.Values["timeout"].(float64),
-						ThreadParkUntil:        event.Values["until"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ThreadPark = *threadPark
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:      measurementID,
-							Run:        models.Run{},
-							StartTime:  &t,
-							ThreadPark: *threadPark,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.JavaErrorThrow":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					thrownClass := getClass(event, "thrownClass")
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.JavaErrorThrow: cannot parse duration value. ", err)
-						}
-					}
-					javaErrorThrow := &models.JavaErrorThrow{
-						JavaErrorThrowDuration:     duration,
-						JavaErrorThrowOsName:       osName,
-						JavaErrorThrowOsThreadId:   osThreadId,
-						JavaErrorThrowJavaName:     javaName,
-						JavaErrorThrowJavaThreadId: javaThreadId,
-						JavaErrorThrowMessage:      event.Values["message"].(string),
-						JavaErrorThrowThrownClass:  thrownClass,
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaErrorThrow = *javaErrorThrow
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:          measurementID,
-							Run:            models.Run{},
-							StartTime:      &t,
-							JavaErrorThrow: *javaErrorThrow,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.JavaExceptionThrow":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					thrownClass := getClass(event, "thrownClass")
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.JavaExceptionThrow: cannot parse duration value. ", err)
-						}
-					}
-					javaExceptionThrow := &models.JavaExceptionThrow{
-						JavaExceptionThrowDuration:     duration,
-						JavaExceptionThrowOsName:       osName,
-						JavaExceptionThrowOsThreadId:   osThreadId,
-						JavaExceptionThrowJavaName:     javaName,
-						JavaExceptionThrowJavaThreadId: javaThreadId,
-						JavaExceptionThrowMessage:      event.Values["message"].(string),
-						JavaExceptionThrowThrownClass:  thrownClass,
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaExceptionThrow = *javaExceptionThrow
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:              measurementID,
-							Run:                models.Run{},
-							StartTime:          &t,
-							JavaExceptionThrow: *javaExceptionThrow,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.JavaMonitorEnter":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					monitorClass := getClass(event, "monitorClass")
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.JavaMonitorEnter: cannot parse duration value. ", err)
-						}
-					}
-					javaMonitorEnter := &models.JavaMonitorEnter{
-						JavaMonitorEnterDuration:     duration,
-						JavaMonitorEnterOsName:       osName,
-						JavaMonitorEnterOsThreadId:   osThreadId,
-						JavaMonitorEnterJavaName:     javaName,
-						JavaMonitorEnterJavaThreadId: javaThreadId,
-						JavaMonitorEnterMonitorClass: monitorClass,
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaMonitorEnter = *javaMonitorEnter
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:            measurementID,
-							Run:              models.Run{},
-							StartTime:        &t,
-							JavaMonitorEnter: *javaMonitorEnter,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.JavaMonitorWait":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					monitorClass := getClass(event, "monitorClass")
-
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse duration value. ", err)
-						}
-					}
-
-					var timeOut float64
-					if event.Values["timeOut"] != nil {
-						auxtimeOut := strings.ReplaceAll(event.Values["timeOut"].(string), "PT", "")
-						auxtimeOut = strings.ReplaceAll(auxtimeOut, "S", "")
-						timeOut, err = strconv.ParseFloat(auxtimeOut, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.JavaMonitorWait: cannot parse timeOut value. ", err)
-						}
-					}
-
-					javaMonitorWait := &models.JavaMonitorWait{
-						JavaMonitorWaitDuration:     duration,
-						JavaMonitorWaitOsName:       osName,
-						JavaMonitorWaitOsThreadId:   osThreadId,
-						JavaMonitorWaitJavaName:     javaName,
-						JavaMonitorWaitJavaThreadId: javaThreadId,
-						JavaMonitorWaitMonitorClass: monitorClass,
-						JavaMonitorWaitTimeout:      timeOut,
-						JavaMonitorWaitTimedOut:     event.Values["timedOut"].(bool),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.JavaMonitorWait = *javaMonitorWait
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:           measurementID,
-							Run:             models.Run{},
-							StartTime:       &t,
-							JavaMonitorWait: *javaMonitorWait,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.OldObjectSample":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					objectType := getObjectType(event)
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.OldObjectSample: cannot parse duration value. ", err)
-						}
-					}
-
-					// Error 1292: Incorrect datetime value: '0000-00-00' for column 'old_object_sample_allocation_time' at row 1
-
-					oldObjectSample := &models.OldObjectSample{
-						OldObjectSampleDuration:     duration,
-						OldObjectSampleOsName:       osName,
-						OldObjectSampleOsThreadId:   osThreadId,
-						OldObjectSampleJavaName:     javaName,
-						OldObjectSampleJavaThreadId: javaThreadId,
-						// OldObjectSampleAllocationTime:     at,
-						OldObjectSampleLastKnownHeapUsage: event.Values["lastKnownHeapUsage"].(float64),
-						OldObjectSampleObject:             objectType,
-						OldObjectSampleArrayElements:      event.Values["arrayElements"].(float64),
-					}
-
-					// "allocationTime": "2022-05-22T18:48:37.932136923-07:00",
-					var at time.Time
-					atStr := event.Values["allocationTime"].(string)
-					at, err = time.Parse(layout, atStr)
-					if err != nil {
-						fmt.Println("ERROR in jdk.OldObjectSample: cannot parse allocationTime value. ", err)
-					}
-
-					if !at.IsZero() {
-						oldObjectSample.OldObjectSampleAllocationTime.Time = at
-						oldObjectSample.OldObjectSampleAllocationTime.Valid = true
-					} else {
-						oldObjectSample.OldObjectSampleAllocationTime.Time = time.Time{}
-						oldObjectSample.OldObjectSampleAllocationTime.Valid = false
-					}
-
-					if val, ok := jfrMap[t]; ok {
-						val.OldObjectSample = *oldObjectSample
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:           measurementID,
-							Run:             models.Run{},
-							StartTime:       &t,
-							OldObjectSample: *oldObjectSample,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.ClassLoaderStatistics":
-					name, parent := getClassLoader(event)
-					classLoaderStatistics := &models.ClassLoaderStatistics{
-						ClassLoader:         name,
-						ParentClassLoader:   parent,
-						ClassLoaderData:     event.Values["classLoaderData"].(float64),
-						ClassCount:          event.Values["classCount"].(float64),
-						ChunkSize:           event.Values["chunkSize"].(float64),
-						BlockSize:           event.Values["blockSize"].(float64),
-						AnonymousClassCount: event.Values["anonymousClassCount"].(float64),
-						AnonymousChunkSize:  event.Values["anonymousChunkSize"].(float64),
-						AnonymousBlockSize:  event.Values["anonymousBlockSize"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ClassLoaderStatistics = *classLoaderStatistics
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:                 measurementID,
-							Run:                   models.Run{},
-							StartTime:             &t,
-							ClassLoaderStatistics: *classLoaderStatistics,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.ObjectAllocationInNewTLAB":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					objectClass := getClass(event, "objectClass")
-					objectAllocationInNewTLAB := &models.ObjectAllocationInNewTLAB{
-
-						ObjectAllocationInNewTLABOsName:         osName,
-						ObjectAllocationInNewTLABOsThreadId:     osThreadId,
-						ObjectAllocationInNewTLABJavaName:       javaName,
-						ObjectAllocationInNewTLABJavaThreadId:   javaThreadId,
-						ObjectAllocationInNewTLABObjectClass:    objectClass,
-						ObjectAllocationInNewTLABAllocationSize: event.Values["allocationSize"].(float64),
-						ObjectAllocationInNewTLABTlabSize:       event.Values["tlabSize"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ObjectAllocationInNewTLAB = *objectAllocationInNewTLAB
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:                     measurementID,
-							Run:                       models.Run{},
-							StartTime:                 &t,
-							ObjectAllocationInNewTLAB: *objectAllocationInNewTLAB,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.ObjectAllocationOutsideTLAB":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					objectClass := getClass(event, "objectClass")
-					objectAllocationOutsideTLAB := &models.ObjectAllocationOutsideTLAB{
-						ObjectAllocationOutsideTLABOsName:         osName,
-						ObjectAllocationOutsideTLABOsThreadId:     osThreadId,
-						ObjectAllocationOutsideTLABJavaName:       javaName,
-						ObjectAllocationOutsideTLABJavaThreadId:   javaThreadId,
-						ObjectAllocationOutsideTLABObjectClass:    objectClass,
-						ObjectAllocationOutsideTLABAllocationSize: event.Values["allocationSize"].(float64),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.ObjectAllocationOutsideTLAB = *objectAllocationOutsideTLAB
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:                       measurementID,
-							Run:                         models.Run{},
-							StartTime:                   &t,
-							ObjectAllocationOutsideTLAB: *objectAllocationOutsideTLAB,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
-				case "jdk.GCPhasePause":
-					osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-					var duration float64
-					if event.Values["duration"] != nil {
-						auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-						auxDur = strings.ReplaceAll(auxDur, "S", "")
-						duration, err = strconv.ParseFloat(auxDur, 64)
-						if err != nil {
-							fmt.Println("ERROR in jdk.GCPhasePause: cannot parse duration value. ", err)
-						}
-					}
-					gcPhasePause := &models.GCPhasePause{
-						GCPhasePauseDuration:     duration,
-						GCPhasePauseOsName:       osName,
-						GCPhasePauseOsThreadId:   osThreadId,
-						GCPhasePauseJavaName:     javaName,
-						GCPhasePauseJavaThreadId: javaThreadId,
-						GcId:                     event.Values["gcId"].(float64),
-						GCPhasePauseName:         event.Values["name"].(string),
-					}
-					if val, ok := jfrMap[t]; ok {
-						val.GCPhasePause = *gcPhasePause
-						jfrMap[t] = val
-					} else {
-						jvm := &models.Jvm{
-							RunID:        measurementID,
-							Run:          models.Run{},
-							StartTime:    &t,
-							GCPhasePause: *gcPhasePause,
-						}
-						jfrMap[t] = *jvm
-
-					}
-
 				}
 
 				// e := event.Data().(map[string]interface{})
