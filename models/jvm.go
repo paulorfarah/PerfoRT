@@ -12,7 +12,7 @@ type Jvm struct {
 	Model
 	RunID     uint `gorm:"not null"`
 	Run       Run
-	StartTime time.Time
+	StartTime *time.Time
 	CPULoad
 	ThreadCPULoad
 	ThreadStart

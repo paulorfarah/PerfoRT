@@ -126,8 +126,8 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	var output []byte
 	var err error
 
-	log.Println("- mvn test")
-	fmt.Println("- mvn test")
+	// log.Println("- mvn test")
+	// fmt.Println("- mvn test")
 	// localpath, err := os.Getwd()
 	// if err != nil {
 	// 	log.Println(err)
@@ -575,7 +575,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName string) {
 	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
-	className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
+	// className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
+	className := tc.ClassName
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
 
 	//set environment variable to activate profiler during testcases execution
@@ -587,9 +588,9 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	mavenClasspath := GetMavenDependenciesClasspath(path)
 	log.Println("Dependencies: ", mavenClasspath)
-
-	log.Println("- junit testcase", path, packageName, className, testName)
-	fmt.Println("- junit testcase", path, packageName, className, testName)
+	log.Println()
+	log.Println("- junit testcase", path, className, testName)
+	fmt.Println("- junit testcase", path, className, testName)
 
 	var cmd *exec.Cmd
 	// var cmdStr string
@@ -636,13 +637,14 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
-			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes:" + mavenClasspath + " -m " + packageName + className + "#" + testName
+			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes:" + mavenClasspath + " -m " + className + "#" + testName
+		log.Println()
 		log.Println(strJunitTC)
 
 		cmd = exec.Command(
 			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
-			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", ".:target/test-classes/:target/classes", "-m", packageName+className+"#"+testName) //.Output()
+			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", ".:target/test-classes/:target/classes", "-m", className+"#"+testName) //.Output()
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb

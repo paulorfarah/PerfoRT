@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"perfrt/models"
 
 	"github.com/shirou/gopsutil/v3/cpu"
@@ -36,7 +37,7 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 
 	p, err := process.NewProcess(int32(pid))
 	if err != nil {
-		fmt.Println("Error CPU Percent: ", err.Error())
+		log.Println("Error CPU Percent: ", err.Error())
 	}
 	cp, err := p.CPUPercent()
 	if err != nil {

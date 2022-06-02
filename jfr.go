@@ -162,11 +162,12 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 	if _, err := os.Stat("perfrt.jfr"); err == nil {
 		// file perfrt.jfr exists
 		log.Println("- jfr print --json perfrt.jfr > perfrt.json")
-		fmt.Println("- jfr print --json perfrt.jfr > perfrt.json")
+		// fmt.Println("- jfr print --json perfrt.jfr > perfrt.json")
 		cmd := exec.Command("bash", "-c", "jfr print --json perfrt.jfr > perfrt.json")
 		err := cmd.Run()
 		if err != nil {
 			fmt.Println("-> Error executing jfr: ", err.Error())
+			log.Println("-> Error executing jfr: ", err.Error())
 			// log.Fatal(err)
 		}
 
@@ -195,7 +196,10 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				var result map[string]interface{}
 				jsonFile := fmt.Sprintf("%s", eventMap)
 				if err := json.Unmarshal([]byte(jsonFile), &result); err != nil {
-					panic(err)
+					log.Println(jsonFile)
+					log.Println("### ERROR: cannot unmarshal json file: ", err)
+					fmt.Println(jsonFile)
+					fmt.Println("### ERROR: cannot unmarshal json file: ", err)
 				}
 				values := result["values"]
 				if v, ok := values.(map[string]interface{}); ok {
@@ -211,6 +215,17 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 				// fmt.Printf("%#v\n", event.Values)
 				layout := "2006-01-02T15:04:05.000000000-07:00"
 				str := event.Values["startTime"].(string)
+				indStartTime := strings.Index(str[20:29], "-")
+
+				if indStartTime != -1 {
+					// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime1: ", str)
+					var auxStartime string
+					for i := indStartTime; i < 9; i++ {
+						auxStartime += "0"
+					}
+					str = str[:20+indStartTime] + auxStartime + str[20+indStartTime:]
+					// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime2: ", str)
+				}
 				t, err := time.Parse(layout, str)
 
 				if err != nil {
@@ -233,7 +248,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:     measurementID,
 							Run:       models.Run{},
-							StartTime: t,
+							StartTime: &t,
 							CPULoad:   *cpuLoad,
 						}
 						jfrMap[t] = *jvm
@@ -258,7 +273,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:         measurementID,
 							Run:           models.Run{},
-							StartTime:     t,
+							StartTime:     &t,
 							ThreadCPULoad: *tCpuLoad,
 						}
 						jfrMap[t] = *jvm
@@ -285,7 +300,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:       measurementID,
 							Run:         models.Run{},
-							StartTime:   t,
+							StartTime:   &t,
 							ThreadStart: *threadStart,
 						}
 						jfrMap[t] = *jvm
@@ -307,7 +322,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:     measurementID,
 							Run:       models.Run{},
-							StartTime: t,
+							StartTime: &t,
 							ThreadEnd: *threadEnd,
 						}
 						jfrMap[t] = *jvm
@@ -352,7 +367,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:       measurementID,
 							Run:         models.Run{},
-							StartTime:   t,
+							StartTime:   &t,
 							ThreadSleep: *threadSleep,
 						}
 						jfrMap[t] = *jvm
@@ -388,7 +403,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:      measurementID,
 							Run:        models.Run{},
-							StartTime:  t,
+							StartTime:  &t,
 							ThreadPark: *threadPark,
 						}
 						jfrMap[t] = *jvm
@@ -423,7 +438,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:          measurementID,
 							Run:            models.Run{},
-							StartTime:      t,
+							StartTime:      &t,
 							JavaErrorThrow: *javaErrorThrow,
 						}
 						jfrMap[t] = *jvm
@@ -458,7 +473,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:              measurementID,
 							Run:                models.Run{},
-							StartTime:          t,
+							StartTime:          &t,
 							JavaExceptionThrow: *javaExceptionThrow,
 						}
 						jfrMap[t] = *jvm
@@ -492,7 +507,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:            measurementID,
 							Run:              models.Run{},
-							StartTime:        t,
+							StartTime:        &t,
 							JavaMonitorEnter: *javaMonitorEnter,
 						}
 						jfrMap[t] = *jvm
@@ -540,7 +555,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:           measurementID,
 							Run:             models.Run{},
-							StartTime:       t,
+							StartTime:       &t,
 							JavaMonitorWait: *javaMonitorWait,
 						}
 						jfrMap[t] = *jvm
@@ -597,7 +612,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:           measurementID,
 							Run:             models.Run{},
-							StartTime:       t,
+							StartTime:       &t,
 							OldObjectSample: *oldObjectSample,
 						}
 						jfrMap[t] = *jvm
@@ -624,7 +639,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:                 measurementID,
 							Run:                   models.Run{},
-							StartTime:             t,
+							StartTime:             &t,
 							ClassLoaderStatistics: *classLoaderStatistics,
 						}
 						jfrMap[t] = *jvm
@@ -651,7 +666,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:                     measurementID,
 							Run:                       models.Run{},
-							StartTime:                 t,
+							StartTime:                 &t,
 							ObjectAllocationInNewTLAB: *objectAllocationInNewTLAB,
 						}
 						jfrMap[t] = *jvm
@@ -676,7 +691,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:                       measurementID,
 							Run:                         models.Run{},
-							StartTime:                   t,
+							StartTime:                   &t,
 							ObjectAllocationOutsideTLAB: *objectAllocationOutsideTLAB,
 						}
 						jfrMap[t] = *jvm
@@ -710,7 +725,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 						jvm := &models.Jvm{
 							RunID:        measurementID,
 							Run:          models.Run{},
-							StartTime:    t,
+							StartTime:    &t,
 							GCPhasePause: *gcPhasePause,
 						}
 						jfrMap[t] = *jvm
