@@ -164,7 +164,9 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		ok = false
-		panic(err)
+		// panic(err)
+		log.Println("ERROR writing results of maven test to file: ", err)
+		fmt.Println("ERROR writing results of maven test to file: ", err)
 	}
 	// if err != nil {
 	// 	fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
@@ -511,7 +513,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	if err != nil {
 		// ok = false
 		fmt.Println("ERROR writing logfile: ", err.Error())
-		panic(err)
+		log.Println("ERROR writing logfile: ", err.Error())
+		// panic(err)
 	}
 	suite := ParseMavenTestResults(resultsPath)
 	for _, test := range suite.TestCases {

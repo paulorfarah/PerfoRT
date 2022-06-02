@@ -2,6 +2,7 @@ package charts
 
 import (
 	"io"
+	"log"
 	"os"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
@@ -61,7 +62,7 @@ func (BoxplotExamples) Examples() {
 	)
 	f, err := os.Create("boxplot.html")
 	if err != nil {
-		panic(err)
+		log.Println("ERROR creating boxplot chart: ", err)
 	}
 	page.Render(io.MultiWriter(f))
 }

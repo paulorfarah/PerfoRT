@@ -208,8 +208,9 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 					event.Values = v
 
 				} else {
-					fmt.Printf("record not a map[string]interface{}: %v\n", values)
-					panic("record not a map[string]interface{}: ")
+					log.Printf("record not a map[string]interface{}: %v\n", values)
+					// panic("record not a map[string]interface{}: ")
+
 				}
 
 				// fmt.Printf("%#v\n", event.Values)

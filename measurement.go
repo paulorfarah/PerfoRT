@@ -524,7 +524,7 @@ func listJavaFiles(repoDir string) []string {
 	var files []string
 	err := filepath.Walk(repoDir, visit(&files))
 	if err != nil {
-		panic(err)
+		log.Println("ERROR listing java files: ", err)
 	}
 	return files
 }
