@@ -359,7 +359,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 
 	resultsPath += "/target/surefire-reports/"
-	resultsPath += discoverTestFilename(resultsPath, tc.ClassName)
+	// resultsPath += discoverTestFilename(resultsPath, tc.ClassName)
+	resultsPath += "TEST-" + tc.ClassName + ".xml"
 
 	log.Println("resultsPath: ", resultsPath)
 	cmd.Dir = path
@@ -720,11 +721,11 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 func discoverTestFilename(path, className string) string {
 	// TEST-" + tc.ClassName + ".xml"
-	prefixes := [2]string{"TEST", ""}
-	sufixes := [2]string{"xml", "txt"}
+	prefixes := [1]string{"TEST"}
+	suffixes := [1]string{"xml"}
 
 	for _, pref := range prefixes {
-		for _, suf := range sufixes {
+		for _, suf := range suffixes {
 			testFile := pref + className + "." + suf
 			if _, err := os.Stat(path + testFile); err == nil {
 				log.Println("Test filename found: " + path + testFile)
