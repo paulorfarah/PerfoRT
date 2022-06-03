@@ -347,17 +347,21 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	if module != "" {
 		cmdStr = "mvn -Drat.skip=true test  -pl " + module + " " + param
 		fmt.Println(cmdStr)
+		log.Println(cmdStr)
 
 		cmd = exec.Command("mvn", "-Drat.skip=true", "test", "-pl", module, param)
 		resultsPath += "/" + module
 	} else {
 		cmdStr = "mvn -Drat.skip=true test " + param
 		fmt.Println(cmdStr)
+		log.Println(cmdStr)
 		cmd = exec.Command("mvn", "test", param)
 	}
 
-	resultsPath += "/target/surefire-reports/TEST-" + tc.ClassName + ".xml"
-	fmt.Println("resultsPath: ", resultsPath)
+	resultsPath += "/target/surefire-reports/"
+	resultsPath += discoverTestFilename(resultsPath, tc.ClassName)
+
+	log.Println("resultsPath: ", resultsPath)
 	cmd.Dir = path
 	// fmt.Println("path: ", path)
 
@@ -712,4 +716,23 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
 
+}
+
+func discoverTestFilename(path, className string) string {
+	// TEST-" + tc.ClassName + ".xml"
+	prefixes := [2]string{"TEST", ""}
+	sufixes := [2]string{"xml", "txt"}
+
+	for _, pref := range prefixes {
+		for _, suf := range sufixes {
+			testFile := pref + className + "." + suf
+			if _, err := os.Stat(path + testFile); err == nil {
+				log.Println("Test filename found: " + path + testFile)
+				return testFile
+			}
+			log.Println("Test filename not found: " + path + testFile)
+		}
+	}
+
+	return ""
 }
