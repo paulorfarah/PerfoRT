@@ -652,7 +652,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		cmd = exec.Command(
 			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
-			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", ".:target/test-classes/:target/classes", "-m", className+"#"+testName) //.Output()
+			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName) //.Output()
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
