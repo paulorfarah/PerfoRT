@@ -597,8 +597,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	mavenClasspath := GetMavenDependenciesClasspath(path)
 	log.Println("Dependencies: ", mavenClasspath)
 	log.Println()
-	log.Println("- junit testcase", path, className, testName)
-	fmt.Println("- junit testcase", path, className, testName)
+	log.Println("- junit testcase: ", path, className, testName)
+	fmt.Println("- junit testcase: ", path, className, testName)
 
 	var cmd *exec.Cmd
 	// var cmdStr string
@@ -641,11 +641,11 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		if e != nil {
 			log.Println("Error removing JFR file: ", e.Error())
 		}
-
+		localClasspath := ".:target/test-classes/:target/classes:" + module + "target/test-classes/:" + module + "target/classes/:"
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
-			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes:" + mavenClasspath + " -m " + className + "#" + testName
+			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + className + "#" + testName
 		log.Println()
 		log.Println(strJunitTC)
 
