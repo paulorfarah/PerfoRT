@@ -121,6 +121,16 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 	// fmt.Println("modules: ", projectModules)
 	path := repoDir
 	packName := os.Getenv("package")
+
+	var err error
+	minTestTime := 1
+	minTestTimeStr, ok := os.LookupEnv("min_test_time")
+	if ok {
+		minTestTime, err = strconv.Atoi(minTestTimeStr)
+		if err != nil {
+			minTestTime = 1
+		}
+	}
 	for _, module := range projectModules {
 		// fmt.Println("module: ", module)
 		if module != "" {
@@ -148,29 +158,38 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					guard := make(chan struct{}, maxGoroutines)
 					count := -1
 					for _, test := range suites.TestCases {
-						guard <- struct{}{} // would block if guard channel is already filled
-						go func(n int) {
-							classname := strings.Replace(test.ClassName, ".", "/", -1)
-							filename := classname + ".java"
-							testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
-							if errF != nil {
-								fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
+						tcTime, err := strconv.Atoi(test.Time)
+						if err == nil {
+							if tcTime >= minTestTime {
+								guard <- struct{}{} // would block if guard channel is already filled
+								go func(n int) {
+									classname := strings.Replace(test.ClassName, ".", "/", -1)
+									filename := classname + ".java"
+									testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
+									if errF != nil {
+										fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
+									}
+									tc := &models.TestCase{
+										Type:      "maven",
+										ClassName: test.ClassName,
+										FileID:    testSuite.ID,
+										Name:      test.Name,
+									}
+									_, errTC := models.CreateTestCase(db, tc)
+									if errTC != nil {
+										fmt.Println("Error creating test case: ", errTC.Error())
+									}
+									// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
+									RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
+									<-guard
+									count++
+								}(count)
+							} else {
+								log.Println("Testcase " + test.ClassName + "#" + test.Name + " was not executed because its time " + test.Time + " is lower than the mininum test time threshold (" + string(minTestTime) + ").")
 							}
-							tc := &models.TestCase{
-								Type:      "maven",
-								ClassName: test.ClassName,
-								FileID:    testSuite.ID,
-								Name:      test.Name,
-							}
-							_, errTC := models.CreateTestCase(db, tc)
-							if errTC != nil {
-								fmt.Println("Error creating test case: ", errTC.Error())
-							}
-							// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
-							RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
-							<-guard
-							count++
-						}(count)
+						} else {
+							log.Println("ERROR: Invalid testcase time!!! " + test.ClassName + "#" + test.Name + " - " + test.Time)
+						}
 					}
 
 				}

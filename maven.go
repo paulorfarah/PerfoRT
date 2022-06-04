@@ -385,21 +385,6 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	stop := make(chan bool)
 	go func() {
-		// LOG_FILE := "/tmp/perfrt_log"
-		// // open log file
-		// logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-		// if err != nil {
-		// 	log.Panic(err)
-		// 	return
-		// }
-		// defer logFile.Close()
-		// log.SetOutput(logFile)
-
-		// optional: log date-time, filename, and line number
-		// log.SetFlags(log.Lshortfile | log.LstdFlags)
-
-		// log.Println("measurementID: ", measurementID)
-
 		perfMetrics := []PerfMetrics{}
 		for {
 			select {
@@ -413,11 +398,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				perfMetric, err := MonitorProcess(pid)
 				if err == nil {
 					perfMetrics = append(perfMetrics, perfMetric)
-					// saveMetrics(db, mr.ID, perfMetric)
 
 				}
-				// log.Println(perfMetric)
-
 			}
 		}
 	}()
@@ -428,7 +410,6 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	if err != nil {
 		pid = cmd.Process.Pid
-		// fmt.Println(pid)
 		process, err := os.FindProcess(int(pid))
 		if err != nil {
 			fmt.Printf("Failed to find process: %s\n", err)
