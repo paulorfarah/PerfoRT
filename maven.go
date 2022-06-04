@@ -79,8 +79,10 @@ func getClasspath(path string) string {
 			if found {
 				classpath += strings.Trim(string(row), " ")
 			}
-			if bytes.Equal(row[7:], []byte("Dependencies classpath:")) {
-				found = true
+			if len(row) > 6 {
+				if bytes.Equal(row[7:], []byte("Dependencies classpath:")) {
+					found = true
+				}
 			}
 		}
 	}
