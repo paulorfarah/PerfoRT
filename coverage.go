@@ -60,19 +60,19 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 	err := cmd.Run()
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute JaCoCo coverage (" + err.Error() + "): " + stderr.String())
-		log.Println(out)
+		log.Println(out.String())
 
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute JaCoCo coverage (" + err.Error() + "): " + stderr.String())
-		fmt.Println(out)
+		fmt.Println(out.String())
 	}
 
 	err = saveCoverage(db, filename, testtype, measurementID, commitID)
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot save JaCoCo coverage: " + err.Error())
-		log.Println(out)
+		log.Println(out.String())
 
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot save JaCoCo coverage: " + err.Error())
-		fmt.Println(out)
+		fmt.Println(out.String())
 	}
 
 	return err
