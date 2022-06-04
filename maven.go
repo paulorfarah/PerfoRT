@@ -641,7 +641,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		if e != nil {
 			log.Println("Error removing JFR file: ", e.Error())
 		}
-		localClasspath := ".:target/test-classes/:target/classes:" + module + "target/test-classes/:" + module + "target/classes/:"
+		localClasspath := ".:target/test-classes/:target/classes:" + module + "/target/test-classes/:" + module + "/target/classes/:"
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
