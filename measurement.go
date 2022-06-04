@@ -123,12 +123,14 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 	packName := os.Getenv("package")
 
 	var err error
-	minTestTime := 1
+	minTestTime := 1.0
 	minTestTimeStr, ok := os.LookupEnv("min_test_time")
 	if ok && minTestTimeStr != "3" {
-		minTestTime, err = strconv.Atoi(minTestTimeStr)
-		if err != nil {
+		if minTestTime, err = strconv.ParseFloat(minTestTimeStr, 32); err != nil {
 			minTestTime = 1
+		}
+		if err != nil {
+
 		}
 	}
 	for _, module := range projectModules {
@@ -158,8 +160,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					guard := make(chan struct{}, maxGoroutines)
 					count := -1
 					for _, test := range suites.TestCases {
-						tcTime, err := strconv.Atoi(test.Time)
-						if err == nil {
+						if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
 							if tcTime >= minTestTime {
 								guard <- struct{}{} // would block if guard channel is already filled
 								go func(n int) {
@@ -185,7 +186,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 									count++
 								}(count)
 							} else {
-								log.Println("Testcase " + test.ClassName + "#" + test.Name + " was not executed because its time " + test.Time + " is lower than the mininum test time threshold (" + string(minTestTime) + ").")
+								log.Printf("Testcase %s#%s was not executed because its time %s is lower than the mininum test time threshold (%f).\n", test.ClassName, test.Name, test.Time, minTestTime)
 							}
 						} else {
 							log.Println("ERROR: Invalid testcase time!!! " + test.ClassName + "#" + test.Name + " - " + test.Time)
