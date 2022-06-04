@@ -125,7 +125,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 	var err error
 	minTestTime := 1
 	minTestTimeStr, ok := os.LookupEnv("min_test_time")
-	if ok {
+	if ok && minTestTimeStr != "3" {
 		minTestTime, err = strconv.Atoi(minTestTimeStr)
 		if err != nil {
 			minTestTime = 1

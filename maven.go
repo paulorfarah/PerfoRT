@@ -383,13 +383,22 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 	pid := cmd.Process.Pid
 
+	monitoringTime := 3
+	monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
+	if ok && monitoringTimeStr != "3" {
+		monitoringTime, err = strconv.Atoi(monitoringTimeStr)
+		if err != nil {
+			monitoringTime = 3
+		}
+
+	}
 	stop := make(chan bool)
 	go func() {
 		perfMetrics := []PerfMetrics{}
 		for {
 			select {
 			case <-stop:
-				// //save
+				//save
 				for _, perfMetric := range perfMetrics {
 					saveMetrics(db, mr.ID, perfMetric)
 				}
@@ -400,6 +409,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					perfMetrics = append(perfMetrics, perfMetric)
 
 				}
+				time.Sleep(time.Duration(monitoringTime) * time.Second)
 			}
 		}
 	}()
