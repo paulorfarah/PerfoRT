@@ -130,23 +130,23 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 
 	// log.Println("- mvn test")
 	// fmt.Println("- mvn test")
-	// localpath, err := os.Getwd()
-	// if err != nil {
-	// 	log.Println(err)
-	// 	fmt.Println("error getting current path: ", err.Error())
-	// }
+	localpath, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+		fmt.Println("error getting current path: ", err.Error())
+	}
 
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	log.Println("- mvn -fn -Drat.skip=true clean test")
-	fmt.Println("- mvn -fn -Drat.skip=true clean test")
-	// jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
-	// testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
-	// testStr := "mvn -fn -Drat.skip=true clean test"
-	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
+	// log.Println("- mvn -fn -Drat.skip=true clean test")
+	// fmt.Println("- mvn -fn -Drat.skip=true clean test")
+
+	jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
+	testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
+	log.Println(testStr)
+	fmt.Println(testStr)
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
+	fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
 	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean test")
-	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
 	// fmt.Println("path: ", path)
 	cmd.Dir = path
 
