@@ -57,7 +57,7 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 func Checkout(repoName, hash string) error {
 	dt := time.Now()
 	log.Println()
-	log.Println("################################################ checkout " + hash + " " + dt.String())
+	log.Println("################################################ git checkout -f " + hash + " " + dt.String())
 	fmt.Println()
 	fmt.Println("################################################ checkout " + hash + " " + dt.String())
 

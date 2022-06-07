@@ -93,6 +93,7 @@ func MvnCompile(path string) bool {
 	logfile := "maven-compiler.log"
 
 	fmt.Println("- mvn compile")
+	log.Println("mvn -Drat.skip=true clean compile")
 	cmd := exec.Command("mvn", "-Drat.skip=true", "clean", "compile")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
@@ -119,34 +120,27 @@ func MvnCompile(path string) bool {
 }
 
 func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
-	//configure export MAVEN_OPTS="-javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/jacoco-0.8.6/jacocoagent.jar"
 
-	// deprecated
-	//mvn -fn -Drat.skip=true -Djacoco.destFile=coverage/jacoco-1.exec clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test
 	ok := true
 	logfile := "maven-test.log"
 	var output []byte
 	var err error
 
-	// log.Println("- mvn test")
-	// fmt.Println("- mvn test")
-	localpath, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-		fmt.Println("error getting current path: ", err.Error())
-	}
+	// ATTENTION ABOUT JACOCO:
+	//
+	// 1) configure export MAVEN_OPTS="-javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/jacoco-0.8.6/jacocoagent.jar"
+	//    It will generate jacoco.exec in the application folder
+	// deprecated:
+	// jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
+	// testStr := "- mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
+	// log.Println(testStr)
+	// fmt.Println(testStr)
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
 
-	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	// log.Println("- mvn -fn -Drat.skip=true clean test")
-	// fmt.Println("- mvn -fn -Drat.skip=true clean test")
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	log.Println("- mvn -fn -Drat.skip=true clean test")
+	fmt.Println("- mvn -fn -Drat.skip=true clean test")
 
-	jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
-	testStr := "mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
-	log.Println(testStr)
-	fmt.Println(testStr)
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
-	fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test")
-	// fmt.Println("mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean test")
 	// fmt.Println("path: ", path)
 	cmd.Dir = path
 
@@ -387,12 +381,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	monitoringTime := 3
 	monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
-	if ok && monitoringTimeStr != "3" {
-		monitoringTime, err = strconv.Atoi(monitoringTimeStr)
-		if err != nil {
-			monitoringTime = 3
-		}
-
+	if ok {
+		monitoringTime, _ = strconv.Atoi(monitoringTimeStr)
 	}
 	stop := make(chan bool)
 	go func() {
@@ -615,6 +605,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// var err error
 	log.Println("Number of runs: ", measurement.Runs)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
+		log.Println("#Run: ", runNumber)
 		run := &models.Run{
 			MeasurementID: measurement.ID,
 			TestCaseID:    tc.ID,
@@ -634,7 +625,10 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		if e != nil {
 			log.Println("Error removing JFR file: ", e.Error())
 		}
-		localClasspath := ".:target/test-classes/:target/classes:" + module + "/target/test-classes/:" + module + "/target/classes/:"
+		localClasspath := ".:target/test-classes/:target/classes:"
+		if module != "" {
+			localClasspath += module + "/target/test-classes/:" + module + "/target/classes/:"
+		}
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + "/perfrt.jfr,settings=" + localpath + "/perfrt.jfc" +
 			" -jar " +
@@ -650,7 +644,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Dir = path
-		// fmt.Println("path: ", path)
+		fmt.Println("path: ", path)
 
 		err := cmd.Start()
 		if err != nil {

@@ -52,6 +52,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 
 			// MvnInstall(repoDir)
 			ok := MvnCompile(repoDir)
+			log.Println("MvnCompile ok: ", ok)
 			if ok {
 				MeasureMavenTests(db, repoDir, *commit, measurement)
 				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
@@ -77,6 +78,8 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 
 				// 		}
 				// 	}
+			} else {
+				log.Println("ERROR:  Compilation failed!")
 			}
 		case "gradle":
 			projectPaths := getProjectPaths(repoDir)
@@ -108,8 +111,11 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 					}
 				}
 			}
+		default:
+			fmt.Println("Error: Build Tool not recognized!")
+			log.Println("Error: Build Tool not recognized!")
+			log.Fatal("Error: Build Tool not recognized!")
 		}
-
 	}
 }
 
@@ -122,24 +128,16 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 	path := repoDir
 	packName := os.Getenv("package")
 
-	var err error
-	minTestTime := 1.0
+	minTestTime := 0.0
 	minTestTimeStr, ok := os.LookupEnv("min_test_time")
-	if ok && minTestTimeStr != "3" {
-		if minTestTime, err = strconv.ParseFloat(minTestTimeStr, 32); err != nil {
-			minTestTime = 1
-		}
-		if err != nil {
-
-		}
+	if ok {
+		minTestTime, _ = strconv.ParseFloat(minTestTimeStr, 32)
 	}
 	for _, module := range projectModules {
-		// fmt.Println("module: ", module)
+		log.Println("module: ", module)
 		if module != "" {
-			path = repoDir + "/" + module //+ "/target/surefire-reports/"
-		} //else {
-		// 	path = repoDir + "/target/surefire-reports/"
-		// }
+			path = repoDir + "/" + module
+		}
 
 		// JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
 		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
@@ -150,6 +148,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		} else {
 
 			for _, file := range files {
+				log.Println("test file: ", file.Name())
 				if !file.IsDir() {
 					suites := ParseMavenTestResults(path + "/target/surefire-reports/" + file.Name())
 					maxGoroutines, err := strconv.Atoi(os.Getenv("threads"))
@@ -160,6 +159,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					guard := make(chan struct{}, maxGoroutines)
 					count := -1
 					for _, test := range suites.TestCases {
+						log.Println("testcase:", test.ClassName+"#"+test.Name)
 						if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
 							if tcTime >= minTestTime {
 								guard <- struct{}{} // would block if guard channel is already filled
