@@ -151,40 +151,40 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 				log.Println("test file: ", file.Name())
 				if !file.IsDir() {
 					suites := ParseMavenTestResults(path + "/target/surefire-reports/" + file.Name())
-					maxGoroutines, err := strconv.Atoi(os.Getenv("threads"))
-					if err != nil {
-						fmt.Println("ATTENTION: Error reading number of threads from .env file, using 1")
-						maxGoroutines = 1
-					}
-					guard := make(chan struct{}, maxGoroutines)
+					// maxGoroutines, err := strconv.Atoi(os.Getenv("threads"))
+					// if err != nil {
+					// 	fmt.Println("ATTENTION: Error reading number of threads from .env file, using 1")
+					// 	maxGoroutines = 1
+					// }
+					// guard := make(chan struct{}, maxGoroutines)
 					count := -1
 					for _, test := range suites.TestCases {
 						log.Println("testcase:", test.ClassName+"#"+test.Name)
 						if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
 							if tcTime >= minTestTime {
-								guard <- struct{}{} // would block if guard channel is already filled
-								go func(n int) {
-									classname := strings.Replace(test.ClassName, ".", "/", -1)
-									filename := classname + ".java"
-									testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
-									if errF != nil {
-										fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
-									}
-									tc := &models.TestCase{
-										Type:      "maven",
-										ClassName: test.ClassName,
-										FileID:    testSuite.ID,
-										Name:      test.Name,
-									}
-									_, errTC := models.CreateTestCase(db, tc)
-									if errTC != nil {
-										fmt.Println("Error creating test case: ", errTC.Error())
-									}
-									// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
-									RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
-									<-guard
-									count++
-								}(count)
+								// guard <- struct{}{} // would block if guard channel is already filled
+								// go func(n int) {
+								classname := strings.Replace(test.ClassName, ".", "/", -1)
+								filename := classname + ".java"
+								testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
+								if errF != nil {
+									fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
+								}
+								tc := &models.TestCase{
+									Type:      "maven",
+									ClassName: test.ClassName,
+									FileID:    testSuite.ID,
+									Name:      test.Name,
+								}
+								_, errTC := models.CreateTestCase(db, tc)
+								if errTC != nil {
+									fmt.Println("Error creating test case: ", errTC.Error())
+								}
+								// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
+								RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
+								// <-guard
+								count++
+								// }(count)
 							} else {
 								log.Printf("Testcase %s#%s was not executed because its time %s is lower than the mininum test time threshold (%f).\n", test.ClassName, test.Name, test.Time, minTestTime)
 							}
