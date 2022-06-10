@@ -172,11 +172,12 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 		// Open our jsonFile
 		jsonFile, err := os.Open("perfrt.json")
 		// defer the closing of our jsonFile so that we can parse it later on
-		defer jsonFile.Close()
+
 		// if we os.Open returns an error then handle it
 		if err != nil {
 			log.Println("-> Error opening jfr json file: ", err.Error())
 		} else {
+			defer jsonFile.Close()
 			// fmt.Println("Successfully Opened perfrt.json")
 
 			// read our opened jsonFile as a byte array.

@@ -647,7 +647,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Dir = path
-		fmt.Println("path: ", path)
+		log.Println("path: ", path)
 
 		err := cmd.Start()
 		if err != nil {
@@ -656,6 +656,11 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 		pid := cmd.Process.Pid
 
+		monitoringTime := 3
+		monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
+		if ok {
+			monitoringTime, _ = strconv.Atoi(monitoringTimeStr)
+		}
 		stop := make(chan bool)
 		go func() {
 			perfMetrics := []PerfMetrics{}
@@ -663,7 +668,6 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				select {
 				case <-stop:
 					// //save
-					// fmt.Println("****************** stop")
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
@@ -673,11 +677,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					perfMetric, err := MonitorProcess(pid)
 					if err == nil {
 						perfMetrics = append(perfMetrics, perfMetric)
-						// saveMetrics(db, mr.ID, perfMetric)
-
 					}
-					// log.Println(perfMetric)
-
+					time.Sleep(time.Duration(monitoringTime) * time.Second)
 				}
 			}
 		}()
