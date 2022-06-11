@@ -82,7 +82,7 @@ type ThreadPark struct {
 	ThreadParkJavaThreadId float64
 	ThreadParkParkedClass  string
 	ThreadParkTimeout      float64
-	ThreadParkUntil        float64
+	ThreadParkUntil        *time.Time
 }
 
 type JavaErrorThrow struct {

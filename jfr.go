@@ -396,6 +396,23 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 									log.Println("ERROR in jdk.ThreadPark: cannot parse timeOut value. ", err)
 								}
 							}
+
+							var until time.Time
+							var errUntil error
+							if event.Values["until"] != nil {
+								// event.Values["until"].(float64),"until": "-999999999-01-01T00:00+18:00",
+
+								layout := "2006-01-02T15:04:05.000000000-07:00"
+								untilStr, okUntil := event.Values["until"].(string)
+								if okUntil {
+									until, errUntil = time.Parse(layout, untilStr)
+
+									if errUntil != nil {
+										log.Println("ERROR parsing ThreadPark.until timestamp: ", err)
+									}
+
+								}
+							}
 							threadPark := &models.ThreadPark{
 								ThreadParkDuration:     duration,
 								ThreadParkOsName:       osName,
@@ -404,7 +421,7 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 								ThreadParkJavaThreadId: javaThreadId,
 								ThreadParkParkedClass:  parkedClass,
 								ThreadParkTimeout:      timeOut,
-								ThreadParkUntil:        event.Values["until"].(float64),
+								ThreadParkUntil:        &until,
 							}
 							if val, ok := jfrMap[t]; ok {
 								val.ThreadPark = *threadPark
