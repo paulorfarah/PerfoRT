@@ -379,10 +379,10 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 	pid := cmd.Process.Pid
 
-	monitoringTime := 3
+	monitoringTime := 1.0
 	monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
 	if ok {
-		monitoringTime, _ = strconv.Atoi(monitoringTimeStr)
+		monitoringTime, _ = strconv.ParseFloat(monitoringTimeStr, 32)
 	}
 	stop := make(chan bool)
 	go func() {
@@ -656,10 +656,10 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 		pid := cmd.Process.Pid
 
-		monitoringTime := 3
+		monitoringTime := 1.0
 		monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
 		if ok {
-			monitoringTime, _ = strconv.Atoi(monitoringTimeStr)
+			monitoringTime, _ = strconv.ParseFloat(monitoringTimeStr, 32)
 		}
 		stop := make(chan bool)
 		go func() {
