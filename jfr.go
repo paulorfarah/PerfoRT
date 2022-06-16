@@ -449,13 +449,19 @@ func SaveJFRMetrics(db *gorm.DB, measurementID uint, tcID uint) {
 									log.Println("ERROR in jdk.JavaErrorThrow: cannot parse duration value. ", err)
 								}
 							}
+
+							message := ""
+							if event.Values["message"] != nil {
+								message = event.Values["message"].(string)
+							}
+
 							javaErrorThrow := &models.JavaErrorThrow{
 								JavaErrorThrowDuration:     duration,
 								JavaErrorThrowOsName:       osName,
 								JavaErrorThrowOsThreadId:   osThreadId,
 								JavaErrorThrowJavaName:     javaName,
 								JavaErrorThrowJavaThreadId: javaThreadId,
-								JavaErrorThrowMessage:      event.Values["message"].(string),
+								JavaErrorThrowMessage:      message,
 								JavaErrorThrowThrownClass:  thrownClass,
 							}
 							if val, ok := jfrMap[t]; ok {
