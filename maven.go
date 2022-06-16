@@ -37,6 +37,7 @@ func GetMavenDependenciesClasspath(path string) string {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
+		fmt.Println(output)
 	}
 	// fmt.Printf("combined out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
