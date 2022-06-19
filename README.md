@@ -5,6 +5,16 @@
 - $ tar -xzvf apache-maven-3.8.4-bin.tar.gz
 - $ export PATH=/path/to/apache-maven-3.8.4/bin:$PATH
 
+installation
+
+golang
+mysql
+maven
+java
+
+mysql configurations
+max_connections
+
 2) download jacoco
 - $ wget https://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.8.6/jacoco-0.8.6.zip
 - $ unzip jacoco-0.8.6.zip /path/to/perfrt
