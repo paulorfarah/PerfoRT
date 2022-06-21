@@ -699,6 +699,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			// Timeout happened first, kill the process and print a message.
 			cmd.Process.Kill()
 			fmt.Println("Testcase timed out")
+			log.Println("Testcase timed out")
 		case err := <-done:
 			// Command completed before timeout. Print output and error if it exists.
 			// fmt.Println("Output:", buf.String())
