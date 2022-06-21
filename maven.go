@@ -684,27 +684,46 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			}
 		}()
 
-		err = cmd.Wait()
+		done := make(chan error)
 
-		stop <- true
-		if err != nil {
-			pid = cmd.Process.Pid
-			// fmt.Println(pid)
-			process, err := os.FindProcess(int(pid))
+		// err = cmd.Wait()
+		go func() { done <- cmd.Wait() }()
+
+		// Start a timer
+		timeout := time.After(2 * time.Second)
+	
+		// The select statement allows us to execute based on which channel
+		// we get a message from first.
+		select {
+		case <-timeout:
+			// Timeout happened first, kill the process and print a message.
+			cmd.Process.Kill()
+			fmt.Println("Testcase timed out")
+		case err := <-done:
+			// Command completed before timeout. Print output and error if it exists.
+			// fmt.Println("Output:", buf.String())
+			// if err != nil {
+			// 	fmt.Println("Non-zero exit code:", err)
+			// }
+			stop <- true
 			if err != nil {
-				log.Printf("Failed to find process: %s\n", err)
-			} else {
-				errPid := process.Signal(syscall.Signal(0))
-				log.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
-				resPid := fmt.Sprintf("%v", errPid)
-				if resPid != "os: process already finished" {
-					fmt.Printf("junit test failed with %s\n", err.Error())
-					log.Printf("Command finished with error: %s", err.Error())
+				pid = cmd.Process.Pid
+				// fmt.Println(pid)
+				process, err := os.FindProcess(int(pid))
+				if err != nil {
+					log.Printf("Failed to find process: %s\n", err)
+				} else {
+					errPid := process.Signal(syscall.Signal(0))
+					log.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
+					resPid := fmt.Sprintf("%v", errPid)
+					if resPid != "os: process already finished" {
+						fmt.Printf("junit test failed with %s\n", err.Error())
+						log.Printf("Command finished with error: %s", err.Error())
+					}
 				}
 			}
+			log.Println("out:", outb.String(), "err:", errb.String())
 		}
-		log.Println("out:", outb.String(), "err:", errb.String())
-
 		// SaveJFRMetrics(db, run.ID, tc.ID)
 	}
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
