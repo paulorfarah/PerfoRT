@@ -605,10 +605,18 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	// var err error
 	log.Println("Number of runs: ", measurement.Runs)
-	tcTimeOut, ok := os.LookupEnv("testcase_timeout")
-	if !ok {
+	tcTimeOut := 3600
+	var err error
+	tcTimeOutStr, ok := os.LookupEnv("testcase_timeout")
+	if ok {
+		tcTimeOut, err  = strconv.Atoi(tcTimeOutStr)
+		if err != nil{
+			log.Println("WARNING: invalid testcase_timeout setting, using 1 hour.")
+			tcTimeOut = 3600
+
+		}
+	} else {
 		log.Println("WARNING: testcase_timeout setting not found, using 1 hour.")
-		tcTimeOut = 3600
 	}
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
 		log.Println("#Run: ", runNumber)
@@ -696,7 +704,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 		// Start a timer
 		
-		timeout := time.After(tcTimeOut * time.Second)
+		timeout := time.After(time.Duration(tcTimeOut) * time.Second)
 	
 		// The select statement allows us to execute based on which channel
 		// we get a message from first.
