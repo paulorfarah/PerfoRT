@@ -138,11 +138,13 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	// fmt.Println(testStr)
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
 
+	// coverage needs module, so can't collect coverage in this func
+
 	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
 	log.Println("- mvn -fn -Drat.skip=true clean test")
 	fmt.Println("- mvn -fn -Drat.skip=true clean test")
 
-	// fmt.Println("path: ", path)
+	fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -176,6 +178,7 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	// fmt.Println("^^^ out ^^^ - vvv error vvv")
 	// fmt.Printf("%s\n", stderr.String())
 	// return readMavenTestResults(path), ok
+
 	return ok
 }
 
@@ -609,8 +612,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	var err error
 	tcTimeOutStr, ok := os.LookupEnv("testcase_timeout")
 	if ok {
-		tcTimeOut, err  = strconv.Atoi(tcTimeOutStr)
-		if err != nil{
+		tcTimeOut, err = strconv.Atoi(tcTimeOutStr)
+		if err != nil {
 			log.Println("WARNING: invalid testcase_timeout setting, using 1 hour.")
 			tcTimeOut = 3600
 
@@ -703,17 +706,18 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		go func() { done <- cmd.Wait() }()
 
 		// Start a timer
-		
+
 		timeout := time.After(time.Duration(tcTimeOut) * time.Second)
-	
+
 		// The select statement allows us to execute based on which channel
 		// we get a message from first.
 		select {
 		case <-timeout:
 			// Timeout happened first, kill the process and print a message.
 			cmd.Process.Kill()
-			fmt.Println("Testcase timed out")
-			log.Println("Testcase timed out")
+			fmt.Println("Testcase timed out: ", tc.ClassName)
+			log.Println("Testcase timed out", tc.ClassName)
+			models.SetTestCaseError(db, tc)
 		case err := <-done:
 			// Command completed before timeout. Print output and error if it exists.
 			// fmt.Println("Output:", buf.String())

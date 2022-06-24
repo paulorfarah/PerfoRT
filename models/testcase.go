@@ -13,6 +13,7 @@ type TestCase struct {
 	Type         string `gorm:"not null"`
 	ClassName    string `gorm:"not null"`
 	Message      string
+	Error        bool
 }
 
 func (r *TestCase) TableName() string {
@@ -26,4 +27,8 @@ func CreateTestCase(db *gorm.DB, t *TestCase) (uint, error) {
 		return 0, err
 	}
 	return t.ID, nil
+}
+
+func SetTestCaseError(db *gorm.DB, t *TestCase) {
+	db.Model(&t).Update("Error", true)
 }

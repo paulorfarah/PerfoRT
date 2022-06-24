@@ -81,6 +81,7 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, testtype, buildTool string, measur
 func saveCoverage(db *gorm.DB, filename string, testType string, measurementID, commitID uint) error {
 
 	// Open CSV file
+	log.Println("saveCoverage: ", filename)
 	f, err := os.Open(filename)
 	if err != nil {
 		return err

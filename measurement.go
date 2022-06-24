@@ -50,12 +50,12 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// if len(projectModules) == 0 {
 			// buildPath := repoDir + string(os.PathSeparator)
 
-			// MvnInstall(repoDir)
+			MvnInstall(repoDir)
 			ok := MvnCompile(repoDir)
 			log.Println("MvnCompile ok: ", ok)
 			if ok {
 				MeasureMavenTests(db, repoDir, *commit, measurement)
-				JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
+				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
 				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				// for _, file := range listJavaFiles(repoDir) {
 				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
@@ -69,7 +69,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 				// 		for _, projectPath := range projectModules {
 				// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
 				// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
-				// 			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID)
+				// 			// (db, repoDir, "maven", "maven", measurement.ID)
 				// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
 				// 			// for _, file := range listJavaFiles(repoDir) {
 				// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
@@ -120,7 +120,6 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
-	MvnTest(db, repoDir, measurement.ID, commit.ID)
 
 	// if ok {
 	projectModules := getProjectModules(repoDir)
@@ -134,12 +133,14 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		minTestTime, _ = strconv.ParseFloat(minTestTimeStr, 32)
 	}
 	for _, module := range projectModules {
-		log.Println("module: ", module)
+		fmt.Printf("\n*** Module: %s\n\n", module)
+		log.Printf("\n*** Module: %s\n\n", module)
 		if module != "" {
 			path = repoDir + "/" + module
 		}
 
-		// JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
+		MvnTest(db, path, measurement.ID, commit.ID)
+		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
 		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {
