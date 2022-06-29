@@ -38,6 +38,7 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 	p, err := process.NewProcess(int32(pid))
 	if err != nil {
 		log.Println("Error CPU Percent: ", err.Error())
+		return PerfMetrics{}, err
 	}
 	cp, err := p.CPUPercent()
 	if err != nil {
