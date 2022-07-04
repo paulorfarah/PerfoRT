@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -16,7 +17,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"perfrt/models"
-	"perfrt/models/charts"
 )
 
 func main() {
@@ -338,14 +338,15 @@ func main() {
 							// var wg sync.WaitGroup
 							// wg.Add(8)
 							Measure(db, *measurement, repoDir, *repository, commit, cCommit)
+							runtime.GC()
 							// fmt.Println("finished Measure")
 							// wg.Wait()
 							// fmt.Println("finished wait group")
 
 							//codeanalysis.Understand(cs.Name)
 							// models.BarChart()
-							boxplot := charts.BoxplotExamples{}
-							boxplot.Examples()
+							// boxplot := charts.BoxplotExamples{}
+							// boxplot.Examples()
 						}
 					}
 					cCommit = pCommit
