@@ -194,6 +194,7 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 	stop := make(chan bool)
 	perfMetrics := []PerfMetrics{}
 	go func() {
+		defer close(stop)
 		for {
 			select {
 			case <-stop:

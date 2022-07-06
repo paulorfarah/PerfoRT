@@ -390,6 +390,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 	stop := make(chan bool)
 	go func() {
+		defer close(stop)
 		perfMetrics := []PerfMetrics{}
 		for {
 			select {
@@ -680,6 +681,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 		stop := make(chan bool)
 		go func() {
+			defer close(stop)
 			perfMetrics := []PerfMetrics{}
 			for {
 				select {
@@ -703,7 +705,10 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		done := make(chan error)
 
 		// err = cmd.Wait()
-		go func() { done <- cmd.Wait() }()
+		go func() {
+			defer close(done)
+			done <- cmd.Wait()
+		}()
 
 		// Start a timer
 
