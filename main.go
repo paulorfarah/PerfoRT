@@ -342,6 +342,8 @@ func main() {
 							// wg.Add(8)
 							Measure(db, *measurement, repoDir, *repository, commit, cCommit)
 							runtime.GC()
+							log.Println(runtime.NumGoroutine())
+							fmt.Println(runtime.NumGoroutine())
 							// fmt.Println("finished Measure")
 							// wg.Wait()
 							// fmt.Println("finished wait group")
