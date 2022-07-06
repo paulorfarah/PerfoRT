@@ -4,6 +4,8 @@ go 1.13
 
 require (
 	github.com/Jeffail/gabs v1.4.0 // indirect
+	github.com/bcicen/grmon v0.0.0-20211013120613-63facda35286 // indirect
+	github.com/bcicen/termui v0.0.0-20180326052246-4eb80249d3f5 // indirect
 	github.com/creekorful/mvnparser v1.4.0 // indirect
 	github.com/go-echarts/go-echarts/v2 v2.0.0
 	github.com/go-git/go-billy/v5 v5.0.0
@@ -16,7 +18,11 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0
 	github.com/joshdk/go-junit v0.0.0-20210226021600-6145f504ca0d // indirect
+	github.com/maruel/panicparse v1.6.2 // indirect
+	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
+	github.com/nsf/termbox-go v1.1.1 // indirect
 	github.com/shirou/gopsutil/v3 v3.21.3 // indirect
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
 	github.com/shurcool/githubv4 v0.0.0-20200627185320-e003124d66e4
