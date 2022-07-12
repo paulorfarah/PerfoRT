@@ -1,0 +1,980 @@
+Premain
+onEnter - Class: Hex.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public static byte[] org.apache.commons.codec.binary.Hex.decodeHex(char[]) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public static int org.apache.commons.codec.binary.Hex.decodeHex(char[],byte[],int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168031 end: 1657643168048 duration: 17retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168077 end: 1657643168094 duration: 17retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168110 end: 1657643168123 duration: 13retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168137 end: 1657643168149 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168161 end: 1657643168176 duration: 15retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168188 end: 1657643168201 duration: 13retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168213 end: 1657643168225 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168236 end: 1657643168248 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168261 end: 1657643168273 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168284 end: 1657643168296 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168308 end: 1657643168318 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168329 end: 1657643168343 duration: 14retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168353 end: 1657643168365 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168377 end: 1657643168389 duration: 12retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168399 end: 1657643168410 duration: 11retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168451 end: 1657643168460 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168473 end: 1657643168484 duration: 11retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168496 end: 1657643168506 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168515 end: 1657643168524 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168538 end: 1657643168549 duration: 11retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168561 end: 1657643168570 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168581 end: 1657643168591 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168601 end: 1657643168610 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168619 end: 1657643168629 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168638 end: 1657643168647 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168656 end: 1657643168665 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168675 end: 1657643168686 duration: 11retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168695 end: 1657643168704 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168713 end: 1657643168723 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168733 end: 1657643168742 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168754 end: 1657643168762 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168771 end: 1657643168779 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168789 end: 1657643168798 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168806 end: 1657643168816 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168825 end: 1657643168833 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168848 end: 1657643168858 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168866 end: 1657643168876 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168886 end: 1657643168895 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168904 end: 1657643168913 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643168921 end: 1657643168929 duration: 8retValue:
+onExit - Class: Hex.java.java method: public static int org.apache.commons.codec.binary.Hex.decodeHex(char[],byte[],int) throws org.apache.commons.codec.DecoderException start: 1657643168013 end: 1657643168942 duration: 929retValue:
+onExit - Class: Hex.java.java method: public static byte[] org.apache.commons.codec.binary.Hex.decodeHex(char[]) throws org.apache.commons.codec.DecoderException start: 1657643167993 end: 1657643168952 duration: 959retValue:
+onExit - Class: Hex.java.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657643167972 end: 1657643168961 duration: 989retValue:
+onExit - Class: Hex.java.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657643167663 end: 1657643168971 duration: 1308retValue:
+onEnter - Class: Hex.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public static byte[] org.apache.commons.codec.binary.Hex.decodeHex(char[]) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public static int org.apache.commons.codec.binary.Hex.decodeHex(char[],byte[],int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169013 end: 1657643169021 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169029 end: 1657643169038 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169046 end: 1657643169053 duration: 7retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169063 end: 1657643169072 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169081 end: 1657643169089 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169097 end: 1657643169105 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169114 end: 1657643169122 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169133 end: 1657643169141 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169149 end: 1657643169158 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169167 end: 1657643169175 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169184 end: 1657643169192 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169200 end: 1657643169209 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169217 end: 1657643169225 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169233 end: 1657643169241 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169251 end: 1657643169260 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169269 end: 1657643169277 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169285 end: 1657643169294 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169301 end: 1657643169310 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169321 end: 1657643169330 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169338 end: 1657643169346 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169354 end: 1657643169362 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169371 end: 1657643169380 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169389 end: 1657643169397 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169406 end: 1657643169413 duration: 7retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169421 end: 1657643169429 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169450 end: 1657643169460 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169472 end: 1657643169506 duration: 34retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169538 end: 1657643169566 duration: 28retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169581 end: 1657643169590 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169598 end: 1657643169607 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169614 end: 1657643169622 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169630 end: 1657643169640 duration: 10retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169649 end: 1657643169658 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169665 end: 1657643169673 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169681 end: 1657643169690 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169698 end: 1657643169709 duration: 11retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169718 end: 1657643169726 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169734 end: 1657643169742 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169751 end: 1657643169759 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169769 end: 1657643169777 duration: 8retValue:
+onExit - Class: Hex.java.java method: public static int org.apache.commons.codec.binary.Hex.decodeHex(char[],byte[],int) throws org.apache.commons.codec.DecoderException start: 1657643169004 end: 1657643169785 duration: 781retValue:
+onExit - Class: Hex.java.java method: public static byte[] org.apache.commons.codec.binary.Hex.decodeHex(char[]) throws org.apache.commons.codec.DecoderException start: 1657643168995 end: 1657643169794 duration: 799retValue:
+onExit - Class: Hex.java.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657643168986 end: 1657643169801 duration: 815retValue:
+onExit - Class: Hex.java.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657643168978 end: 1657643169810 duration: 832retValue:
+onEnter - Class: Hex.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public static byte[] org.apache.commons.codec.binary.Hex.decodeHex(char[]) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: public static int org.apache.commons.codec.binary.Hex.decodeHex(char[],byte[],int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169852 end: 1657643169861 duration: 9retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169869 end: 1657643169877 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169884 end: 1657643169897 duration: 13retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169905 end: 1657643169919 duration: 14retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169926 end: 1657643169933 duration: 7retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169941 end: 1657643169949 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169959 end: 1657643169966 duration: 7retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169974 end: 1657643169982 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643169989 end: 1657643169997 duration: 8retValue:
+onEnter - Class: Hex.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Hex.java';
+onExit - Class: Hex.java.java method: protected static int org.apache.commons.codec.binary.Hex.toDigit(char,int) throws org.apache.commons.codec.DecoderException start: 1657643170006 end: 1657643170014 duration: 8retValue:
+onExit - Class: Hex.java.java method: public static int org.apache.commons.codec.binary.Hex.decodeHex(char[],byte[],int) throws org.apache.commons.codec.DecoderException start: 1657643169844 end: 1657643170023 duration: 179retValue:
+onExit - Class: Hex.java.java method: public static byte[] org.apache.commons.codec.binary.Hex.decodeHex(char[]) throws org.apache.commons.codec.DecoderException start: 1657643169836 end: 1657643170030 duration: 194retValue:
+onExit - Class: Hex.java.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657643169826 end: 1657643170047 duration: 221retValue:
+onExit - Class: Hex.java.java method: public java.lang.Object org.apache.commons.codec.binary.Hex.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657643169818 end: 1657643170060 duration: 242retValue:
+onEnter - Class: Base32Test.java method: public void org.apache.commons.codec.binary.Base32Test.testIsInAlphabet()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32Test.java';
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170134 end: 1657643170145 duration: 11retValue:
+onEnter - Class: BaseNCodec.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte) start: 1657643170153 end: 1657643170162 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170169 end: 1657643170178 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170188 end: 1657643170196 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170206 end: 1657643170214 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170223 end: 1657643170231 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170239 end: 1657643170246 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170254 end: 1657643170267 duration: 13retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170276 end: 1657643170291 duration: 15retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170304 end: 1657643170312 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170321 end: 1657643170332 duration: 11retValue:
+onEnter - Class: BaseNCodec.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte) start: 1657643170339 end: 1657643170347 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170354 end: 1657643170362 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170370 end: 1657643170377 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170386 end: 1657643170409 duration: 23retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170418 end: 1657643170425 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170434 end: 1657643170441 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170448 end: 1657643170456 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170463 end: 1657643170476 duration: 13retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170488 end: 1657643170496 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170506 end: 1657643170515 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170523 end: 1657643170531 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170538 end: 1657643170546 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170553 end: 1657643170562 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170570 end: 1657643170578 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170588 end: 1657643170596 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170605 end: 1657643170614 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170622 end: 1657643170629 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170637 end: 1657643170645 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170654 end: 1657643170662 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170670 end: 1657643170677 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170684 end: 1657643170691 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170699 end: 1657643170706 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170713 end: 1657643170724 duration: 11retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170732 end: 1657643170741 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170749 end: 1657643170757 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170764 end: 1657643170773 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170782 end: 1657643170790 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170797 end: 1657643170805 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170812 end: 1657643170820 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170828 end: 1657643170837 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170844 end: 1657643170854 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170862 end: 1657643170871 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170878 end: 1657643170886 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170893 end: 1657643170901 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170909 end: 1657643170919 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170930 end: 1657643170938 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170945 end: 1657643170952 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170959 end: 1657643170967 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170976 end: 1657643170983 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643170990 end: 1657643170997 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171004 end: 1657643171012 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171020 end: 1657643171028 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171039 end: 1657643171049 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171061 end: 1657643171073 duration: 12retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171085 end: 1657643171097 duration: 12retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171110 end: 1657643171119 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171127 end: 1657643171136 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171144 end: 1657643171153 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171161 end: 1657643171171 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171181 end: 1657643171188 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171197 end: 1657643171206 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171214 end: 1657643171222 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171230 end: 1657643171240 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171248 end: 1657643171256 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171264 end: 1657643171272 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171278 end: 1657643171285 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171293 end: 1657643171305 duration: 12retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171313 end: 1657643171320 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171329 end: 1657643171336 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171344 end: 1657643171351 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171358 end: 1657643171367 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171375 end: 1657643171381 duration: 6retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171389 end: 1657643171395 duration: 6retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171402 end: 1657643171409 duration: 7retValue:
+onEnter - Class: BaseNCodec.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte) start: 1657643171418 end: 1657643171442 duration: 24retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171454 end: 1657643171471 duration: 17retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171488 end: 1657643171505 duration: 17retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171519 end: 1657643171534 duration: 15retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171552 end: 1657643171568 duration: 16retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171583 end: 1657643171596 duration: 13retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171605 end: 1657643171613 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171624 end: 1657643171631 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171637 end: 1657643171644 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171651 end: 1657643171657 duration: 6retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171664 end: 1657643171671 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171681 end: 1657643171688 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171696 end: 1657643171704 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171711 end: 1657643171719 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171727 end: 1657643171734 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171744 end: 1657643171751 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171758 end: 1657643171765 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171772 end: 1657643171780 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171787 end: 1657643171794 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171801 end: 1657643171811 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171818 end: 1657643171825 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171831 end: 1657643171838 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171845 end: 1657643171851 duration: 6retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171858 end: 1657643171866 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171875 end: 1657643171881 duration: 6retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171888 end: 1657643171896 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171904 end: 1657643171911 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171917 end: 1657643171924 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171933 end: 1657643171941 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171949 end: 1657643171956 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171963 end: 1657643171970 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171977 end: 1657643171984 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643171992 end: 1657643172001 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172007 end: 1657643172014 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172021 end: 1657643172030 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172037 end: 1657643172045 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172052 end: 1657643172062 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172070 end: 1657643172080 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172092 end: 1657643172099 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172105 end: 1657643172113 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172121 end: 1657643172130 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172138 end: 1657643172145 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172152 end: 1657643172158 duration: 6retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172164 end: 1657643172171 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172178 end: 1657643172187 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172194 end: 1657643172201 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172208 end: 1657643172216 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172224 end: 1657643172232 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172239 end: 1657643172246 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172256 end: 1657643172264 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172271 end: 1657643172278 duration: 7retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172286 end: 1657643172294 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172302 end: 1657643172310 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172320 end: 1657643172329 duration: 9retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172337 end: 1657643172345 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172353 end: 1657643172361 duration: 8retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172368 end: 1657643172378 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172387 end: 1657643172397 duration: 10retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172407 end: 1657643172418 duration: 11retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172430 end: 1657643172470 duration: 40retValue:
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657643172497 end: 1657643172529 duration: 32retValue:
+onExit - Class: Base32Test.java.java method: public void org.apache.commons.codec.binary.Base32Test.testIsInAlphabet() start: 1657643170091 end: 1657643172555 duration: 2464retValue:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mBase32Test[0m [32m✔[0m
+[36m│     └─[0m [34mtestIsInAlphabet()[0m [32m✔[0m
+[36m└─[0m [36mJUnit Vintage[0m [32m✔[0m
+
+Test run finished after 5016 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         0 tests failed          ]
+

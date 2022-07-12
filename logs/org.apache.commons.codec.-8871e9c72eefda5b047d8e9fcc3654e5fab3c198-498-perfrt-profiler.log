@@ -1,0 +1,128 @@
+Premain
+onEnter - Class: Base16Test.java method: public void org.apache.commons.codec.binary.Base16Test.testOddEvenDecoding()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16Test.java';
+onEnter - Class: StringUtils.java method: public static byte[] org.apache.commons.codec.binary.StringUtils.getBytesUtf8(java.lang.String)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%StringUtils.java';
+onEnter - Class: StringUtils.java method: private static byte[] org.apache.commons.codec.binary.StringUtils.getBytes(java.lang.String,java.nio.charset.Charset)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%StringUtils.java';
+onExit - Class: StringUtils.java.java method: private static byte[] org.apache.commons.codec.binary.StringUtils.getBytes(java.lang.String,java.nio.charset.Charset) start: 1657642044423 end: 1657642044442 duration: 19retValue:
+onExit - Class: StringUtils.java.java method: public static byte[] org.apache.commons.codec.binary.StringUtils.getBytesUtf8(java.lang.String) start: 1657642044400 end: 1657642044474 duration: 74retValue:
+onEnter - Class: Base16.java method: void org.apache.commons.codec.binary.Base16.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onEnter - Class: BaseNCodec.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: protected int org.apache.commons.codec.binary.BaseNCodec.getDefaultBufferSize()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: protected int org.apache.commons.codec.binary.BaseNCodec.getDefaultBufferSize()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected int org.apache.commons.codec.binary.BaseNCodec.getDefaultBufferSize() start: 1657642044557 end: 1657642044572 duration: 15retValue:
+onExit - Class: BaseNCodec.java.java method: protected int org.apache.commons.codec.binary.BaseNCodec.getDefaultBufferSize() start: 1657642044541 end: 1657642044588 duration: 47retValue:
+onExit - Class: BaseNCodec.java.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044526 end: 1657642044601 duration: 75retValue:
+onExit - Class: BaseNCodec.java.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044509 end: 1657642044615 duration: 106retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044629 end: 1657642044643 duration: 14retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044657 end: 1657642044670 duration: 13retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044682 end: 1657642044695 duration: 13retValue:
+onExit - Class: Base16.java.java method: void org.apache.commons.codec.binary.Base16.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044493 end: 1657642044707 duration: 214retValue:
+onEnter - Class: Base16.java method: void org.apache.commons.codec.binary.Base16.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onEnter - Class: BaseNCodec.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044746 end: 1657642044759 duration: 13retValue:
+onExit - Class: BaseNCodec.java.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044734 end: 1657642044771 duration: 37retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044782 end: 1657642044795 duration: 13retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044807 end: 1657642044821 duration: 14retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044834 end: 1657642044846 duration: 12retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044859 end: 1657642044871 duration: 12retValue:
+onExit - Class: Base16.java.java method: void org.apache.commons.codec.binary.Base16.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044721 end: 1657642044883 duration: 162retValue:
+onEnter - Class: Base16.java method: void org.apache.commons.codec.binary.Base16.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onEnter - Class: BaseNCodec.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044916 end: 1657642044927 duration: 11retValue:
+onExit - Class: BaseNCodec.java.java method: protected byte[] org.apache.commons.codec.binary.BaseNCodec.ensureBufferSize(int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044905 end: 1657642044938 duration: 33retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044949 end: 1657642044960 duration: 11retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044970 end: 1657642044981 duration: 11retValue:
+onEnter - Class: Base16.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16.java';
+onExit - Class: Base16.java.java method: private int org.apache.commons.codec.binary.Base16.decodeOctet(byte) start: 1657642044993 end: 1657642045003 duration: 10retValue:
+onExit - Class: Base16.java.java method: void org.apache.commons.codec.binary.Base16.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642044894 end: 1657642045013 duration: 119retValue:
+onEnter - Class: StringUtils.java method: public static java.lang.String org.apache.commons.codec.binary.StringUtils.newStringUtf8(byte[])
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%StringUtils.java';
+onEnter - Class: StringUtils.java method: private static java.lang.String org.apache.commons.codec.binary.StringUtils.newString(byte[],java.nio.charset.Charset)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%StringUtils.java';
+onExit - Class: StringUtils.java.java method: private static java.lang.String org.apache.commons.codec.binary.StringUtils.newString(byte[],java.nio.charset.Charset) start: 1657642045036 end: 1657642045049 duration: 13retValue:
+onExit - Class: StringUtils.java.java method: public static java.lang.String org.apache.commons.codec.binary.StringUtils.newStringUtf8(byte[]) start: 1657642045025 end: 1657642045060 duration: 35retValue:
+onExit - Class: Base16Test.java.java method: public void org.apache.commons.codec.binary.Base16Test.testOddEvenDecoding() start: 1657642044057 end: 1657642045073 duration: 1016retValue:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mBase16Test[0m [32m✔[0m
+[36m│     └─[0m [34mtestOddEvenDecoding()[0m [32m✔[0m
+[36m└─[0m [36mJUnit Vintage[0m [32m✔[0m
+
+Test run finished after 1087 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         0 tests failed          ]
+

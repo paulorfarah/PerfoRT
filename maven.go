@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
@@ -655,13 +656,17 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		log.Println()
 		log.Println(strJunitTC)
 
-		cmd = exec.Command(
-			"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
-			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
-			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName) //.Output()
 		// cmd = exec.Command(
 		// 	"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+		// 	"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
 		// 	"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName) //.Output()
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tcTimeOut)*time.Second)
+		defer cancel()
+
+		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
+			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
@@ -682,7 +687,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}
 		stop := make(chan bool)
 		fmt.Println("===== created channel stop =====")
-		fmt.Printf("===== #Goroutines: %d =====\n\n", runtime.NumGoroutine())
+		fmt.Printf("= #Goroutines: %d \n\n", runtime.NumGoroutine())
 		go func() {
 			// defer close(stop)
 			perfMetrics := []PerfMetrics{}
@@ -695,15 +700,21 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					}
 					SaveJFRMetrics(db, run.ID, tc.ID)
 					return
-				case <-time.After(time.Duration(tcTimeOut) * time.Second):
-					cmd.Process.Kill()
-					fmt.Println("Testcase timed out: ", tc.ClassName)
-					log.Println("Testcase timed out", tc.ClassName)
-					models.SetTestCaseError(db, tc)
+				case <-ctx.Done():
+					// errKill := cmd.Process.Kill()
+					// if errKill != nil {
+					// 	fmt.Println("Error killing process: ", errKill)
+					// 	log.Println("Error killing process: ", errKill)
+					// }
+					fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
+					log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
+
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
+					fmt.Println("saved resources metrics")
 					SaveJFRMetrics(db, run.ID, tc.ID)
+					fmt.Println("saved JFR metrics")
 					return
 				default:
 					perfMetric, err := MonitorProcess(pid)
@@ -715,9 +726,16 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			}
 		}()
 
+		// wait testcase finish
+		fmt.Println(ctx.Err())
 		err = cmd.Wait()
-
+		fmt.Println(ctx.Err())
 		stop <- true
+		if ctx.Err() == context.DeadlineExceeded {
+			fmt.Println("test case timed out")
+			models.SetTestCaseError(db, tc)
+			return
+		}
 
 		if err != nil {
 			pid = cmd.Process.Pid
@@ -774,8 +792,9 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// 	}
 		// 	log.Println("out:", outb.String(), "err:", errb.String())
 		// }
+
+		fmt.Printf("= #Goroutines: %d n\n", runtime.NumGoroutine())
 		fmt.Println("===== after select  =====")
-		fmt.Printf("===== #Goroutines: %d =====\n\n", runtime.NumGoroutine())
 
 		// SaveJFRMetrics(db, run.ID, tc.ID)
 	}

@@ -1,0 +1,116 @@
+Premain
+onEnter - Class: Base32OutputStreamTest.java method: public void org.apache.commons.codec.binary.Base32OutputStreamTest.testWriteOutOfBounds() throws java.lang.Exception
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32OutputStreamTest.java';
+onEnter - Class: Base32.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: public boolean org.apache.commons.codec.binary.Base32.isInAlphabet(byte) start: 1657642340097 end: 1657642340121 duration: 24retValue:
+onEnter - Class: BaseNCodec.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: protected static boolean org.apache.commons.codec.binary.BaseNCodec.isWhiteSpace(byte) start: 1657642340157 end: 1657642340177 duration: 20retValue:
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340224 end: 1657642340241 duration: 17retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340207 end: 1657642340257 duration: 50retValue:
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340285 end: 1657642340299 duration: 14retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340271 end: 1657642340314 duration: 43retValue:
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340345 end: 1657642340360 duration: 15retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340329 end: 1657642340376 duration: 47retValue:
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340404 end: 1657642340418 duration: 14retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.write(byte[],int,int) throws java.io.IOException start: 1657642340390 end: 1657642340432 duration: 42retValue:
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.close() throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.close() throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.eof() throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.eof() throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: Base32.java method: void org.apache.commons.codec.binary.Base32.encode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base32.java';
+onExit - Class: Base32.java.java method: void org.apache.commons.codec.binary.Base32.encode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642340501 end: 1657642340513 duration: 12retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.eof() throws java.io.IOException start: 1657642340487 end: 1657642340525 duration: 38retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.eof() throws java.io.IOException start: 1657642340475 end: 1657642340537 duration: 62retValue:
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.flush() throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.flush() throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodecOutputStream.java method: private void org.apache.commons.codec.binary.BaseNCodecOutputStream.flush(boolean) throws java.io.IOException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodecOutputStream.java';
+onEnter - Class: BaseNCodec.java method: int org.apache.commons.codec.binary.BaseNCodec.available(org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: int org.apache.commons.codec.binary.BaseNCodec.available(org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: boolean org.apache.commons.codec.binary.BaseNCodec.hasData(org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: boolean org.apache.commons.codec.binary.BaseNCodec.hasData(org.apache.commons.codec.binary.BaseNCodec$Context)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onExit - Class: BaseNCodec.java.java method: boolean org.apache.commons.codec.binary.BaseNCodec.hasData(org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642340621 end: 1657642340633 duration: 12retValue:
+onExit - Class: BaseNCodec.java.java method: boolean org.apache.commons.codec.binary.BaseNCodec.hasData(org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642340609 end: 1657642340646 duration: 37retValue:
+onExit - Class: BaseNCodec.java.java method: int org.apache.commons.codec.binary.BaseNCodec.available(org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642340597 end: 1657642340657 duration: 60retValue:
+onExit - Class: BaseNCodec.java.java method: int org.apache.commons.codec.binary.BaseNCodec.available(org.apache.commons.codec.binary.BaseNCodec$Context) start: 1657642340585 end: 1657642340670 duration: 85retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: private void org.apache.commons.codec.binary.BaseNCodecOutputStream.flush(boolean) throws java.io.IOException start: 1657642340573 end: 1657642340681 duration: 108retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.flush() throws java.io.IOException start: 1657642340561 end: 1657642340693 duration: 132retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.flush() throws java.io.IOException start: 1657642340550 end: 1657642340706 duration: 156retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.close() throws java.io.IOException start: 1657642340464 end: 1657642340719 duration: 255retValue:
+onExit - Class: BaseNCodecOutputStream.java.java method: public void org.apache.commons.codec.binary.BaseNCodecOutputStream.close() throws java.io.IOException start: 1657642340450 end: 1657642340730 duration: 280retValue:
+onExit - Class: Base32OutputStreamTest.java.java method: public void org.apache.commons.codec.binary.Base32OutputStreamTest.testWriteOutOfBounds() throws java.lang.Exception start: 1657642339725 end: 1657642340740 duration: 1015retValue:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mBase32OutputStreamTest[0m [32m✔[0m
+[36m│     └─[0m [34mtestWriteOutOfBounds()[0m [32m✔[0m
+[36m└─[0m [36mJUnit Vintage[0m [32m✔[0m
+
+Test run finished after 1091 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         0 tests failed          ]
+

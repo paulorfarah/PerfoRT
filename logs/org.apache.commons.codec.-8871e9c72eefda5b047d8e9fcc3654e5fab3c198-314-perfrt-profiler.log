@@ -1,0 +1,40 @@
+Premain
+onEnter - Class: Base16Test.java method: public void org.apache.commons.codec.binary.Base16Test.testObjectDecodeWithInvalidParameter()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Base16Test.java';
+onEnter - Class: BaseNCodec.java method: public java.lang.Object org.apache.commons.codec.binary.BaseNCodec.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: BaseNCodec.java method: public java.lang.Object org.apache.commons.codec.binary.BaseNCodec.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%BaseNCodec.java';
+onEnter - Class: Throwable.java method: public synchronized java.lang.Throwable java.lang.Throwable.fillInStackTrace()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Throwable.java';
+onExit - Class: Throwable.java.java method: public synchronized java.lang.Throwable java.lang.Throwable.fillInStackTrace() start: 1657633459138 end: 1657633459150 duration: 12retValue:
+onExit - Class: BaseNCodec.java.java method: public java.lang.Object org.apache.commons.codec.binary.BaseNCodec.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657633459121 end: 1657633459175 duration: 54retValue:
+onExit - Class: BaseNCodec.java.java method: public java.lang.Object org.apache.commons.codec.binary.BaseNCodec.decode(java.lang.Object) throws org.apache.commons.codec.DecoderException start: 1657633459103 end: 1657633459190 duration: 87retValue:
+onExit - Class: Base16Test.java.java method: public void org.apache.commons.codec.binary.Base16Test.testObjectDecodeWithInvalidParameter() start: 1657633458821 end: 1657633459246 duration: 425retValue:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mBase16Test[0m [32m✔[0m
+[36m│     └─[0m [34mtestObjectDecodeWithInvalidParameter()[0m [32m✔[0m
+[36m└─[0m [36mJUnit Vintage[0m [32m✔[0m
+
+Test run finished after 491 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         0 tests failed          ]
+

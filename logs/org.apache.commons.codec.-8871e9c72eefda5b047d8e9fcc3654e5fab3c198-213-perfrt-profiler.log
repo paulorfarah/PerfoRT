@@ -1,0 +1,40 @@
+Premain
+onEnter - Class: DecoderExceptionTest.java method: public void org.apache.commons.codec.DecoderExceptionTest.testConstructorString()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%DecoderExceptionTest.java';
+onEnter - Class: Throwable.java method: public synchronized java.lang.Throwable java.lang.Throwable.fillInStackTrace()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Throwable.java';
+onExit - Class: Throwable.java.java method: public synchronized java.lang.Throwable java.lang.Throwable.fillInStackTrace() start: 1657632868978 end: 1657632868993 duration: 15retValue:
+onEnter - Class: Throwable.java method: public java.lang.String java.lang.Throwable.getMessage()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Throwable.java';
+onExit - Class: Throwable.java.java method: public java.lang.String java.lang.Throwable.getMessage() start: 1657632869017 end: 1657632869031 duration: 14retValue:
+onEnter - Class: Throwable.java method: public synchronized java.lang.Throwable java.lang.Throwable.getCause()
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Throwable.java';
+onExit - Class: Throwable.java.java method: public synchronized java.lang.Throwable java.lang.Throwable.getCause() start: 1657632869048 end: 1657632869060 duration: 12retValue:
+onExit - Class: DecoderExceptionTest.java.java method: public void org.apache.commons.codec.DecoderExceptionTest.testConstructorString() start: 1657632868691 end: 1657632869073 duration: 382retValue:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mDecoderExceptionTest[0m [32m✔[0m
+[36m│     └─[0m [34mtestConstructorString()[0m [32m✔[0m
+[36m└─[0m [36mJUnit Vintage[0m [32m✔[0m
+
+Test run finished after 445 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         0 tests failed          ]
+

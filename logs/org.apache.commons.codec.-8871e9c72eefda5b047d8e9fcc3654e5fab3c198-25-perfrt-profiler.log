@@ -1,0 +1,116 @@
+Premain
+onEnter - Class: StringEncoderComparatorTest.java method: public void org.apache.commons.codec.StringEncoderComparatorTest.testComparatorWithSoundex() throws java.lang.Exception
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%StringEncoderComparatorTest.java';
+onEnter - Class: Soundex.java method: private boolean org.apache.commons.codec.language.Soundex.hasMarker(char[])
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private boolean org.apache.commons.codec.language.Soundex.hasMarker(char[]) start: 1657657765315 end: 1657657765335 duration: 20retValue:
+onEnter - Class: StringEncoderComparator.java method: public int org.apache.commons.codec.StringEncoderComparator.compare(java.lang.Object,java.lang.Object)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%StringEncoderComparator.java';
+onEnter - Class: Soundex.java method: public java.lang.Object org.apache.commons.codec.language.Soundex.encode(java.lang.Object) throws org.apache.commons.codec.EncoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onEnter - Class: Soundex.java method: public java.lang.String org.apache.commons.codec.language.Soundex.soundex(java.lang.String)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onEnter - Class: SoundexUtils.java method: static java.lang.String org.apache.commons.codec.language.SoundexUtils.clean(java.lang.String)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%SoundexUtils.java';
+onEnter - Class: SoundexUtils.java method: static boolean org.apache.commons.codec.language.SoundexUtils.isEmpty(java.lang.CharSequence)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%SoundexUtils.java';
+onExit - Class: SoundexUtils.java.java method: static boolean org.apache.commons.codec.language.SoundexUtils.isEmpty(java.lang.CharSequence) start: 1657657765452 end: 1657657765470 duration: 18retValue:
+onExit - Class: SoundexUtils.java.java method: static java.lang.String org.apache.commons.codec.language.SoundexUtils.clean(java.lang.String) start: 1657657765435 end: 1657657765486 duration: 51retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765501 end: 1657657765515 duration: 14retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765531 end: 1657657765544 duration: 13retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765559 end: 1657657765573 duration: 14retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765587 end: 1657657765600 duration: 13retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765613 end: 1657657765626 duration: 13retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765638 end: 1657657765650 duration: 12retValue:
+onExit - Class: Soundex.java.java method: public java.lang.String org.apache.commons.codec.language.Soundex.soundex(java.lang.String) start: 1657657765399 end: 1657657765662 duration: 263retValue:
+onExit - Class: Soundex.java.java method: public java.lang.Object org.apache.commons.codec.language.Soundex.encode(java.lang.Object) throws org.apache.commons.codec.EncoderException start: 1657657765383 end: 1657657765674 duration: 291retValue:
+onEnter - Class: Soundex.java method: public java.lang.Object org.apache.commons.codec.language.Soundex.encode(java.lang.Object) throws org.apache.commons.codec.EncoderException
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onEnter - Class: Soundex.java method: public java.lang.String org.apache.commons.codec.language.Soundex.soundex(java.lang.String)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onEnter - Class: SoundexUtils.java method: static java.lang.String org.apache.commons.codec.language.SoundexUtils.clean(java.lang.String)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%SoundexUtils.java';
+onEnter - Class: SoundexUtils.java method: static boolean org.apache.commons.codec.language.SoundexUtils.isEmpty(java.lang.CharSequence)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%SoundexUtils.java';
+onExit - Class: SoundexUtils.java.java method: static boolean org.apache.commons.codec.language.SoundexUtils.isEmpty(java.lang.CharSequence) start: 1657657765721 end: 1657657765732 duration: 11retValue:
+onExit - Class: SoundexUtils.java.java method: static java.lang.String org.apache.commons.codec.language.SoundexUtils.clean(java.lang.String) start: 1657657765710 end: 1657657765742 duration: 32retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765754 end: 1657657765765 duration: 11retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765777 end: 1657657765787 duration: 10retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765798 end: 1657657765808 duration: 10retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765817 end: 1657657765831 duration: 14retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765840 end: 1657657765850 duration: 10retValue:
+onEnter - Class: Soundex.java method: private char org.apache.commons.codec.language.Soundex.map(char)
+MethodEnter
+query: SELECT f.* FROM perfrt.files AS f INNER JOIN perfrt.commits AS c ON f.commit_id = c.id WHERE c.commit_hash='8871e9c72eefda5b047d8e9fcc3654e5fab3c198' AND f.name LIKE '%Soundex.java';
+onExit - Class: Soundex.java.java method: private char org.apache.commons.codec.language.Soundex.map(char) start: 1657657765860 end: 1657657765870 duration: 10retValue:
+onExit - Class: Soundex.java.java method: public java.lang.String org.apache.commons.codec.language.Soundex.soundex(java.lang.String) start: 1657657765698 end: 1657657765885 duration: 187retValue:
+onExit - Class: Soundex.java.java method: public java.lang.Object org.apache.commons.codec.language.Soundex.encode(java.lang.Object) throws org.apache.commons.codec.EncoderException start: 1657657765685 end: 1657657765896 duration: 211retValue:
+onExit - Class: StringEncoderComparator.java.java method: public int org.apache.commons.codec.StringEncoderComparator.compare(java.lang.Object,java.lang.Object) start: 1657657765365 end: 1657657765906 duration: 541retValue:
+onExit - Class: StringEncoderComparatorTest.java.java method: public void org.apache.commons.codec.StringEncoderComparatorTest.testComparatorWithSoundex() throws java.lang.Exception start: 1657657764964 end: 1657657765919 duration: 955retValue:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mStringEncoderComparatorTest[0m [32m✔[0m
+[36m│     └─[0m [34mtestComparatorWithSoundex()[0m [32m✔[0m
+[36m└─[0m [36mJUnit Vintage[0m [32m✔[0m
+
+Test run finished after 1016 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         0 tests failed          ]
+

@@ -10,7 +10,7 @@ import (
 
 type Jvm struct {
 	Model
-	RunID     uint `gorm:"not null"`
+	RunID     uint `gorm:"index;not null"`
 	Run       Run
 	StartTime *time.Time
 	CPULoad

@@ -12,7 +12,7 @@ type JSON []byte
 //https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type Commit struct {
 	Model
-	RepositoryID       uint //   `gorm:"not null;unique_index:idx_commit"`
+	RepositoryID       uint `gorm:"index;not null"`
 	Repository         Repository
 	CommitHash         string `gorm:"unique;not null;unique_index:idx_commit"`
 	PreviousCommitHash string
@@ -21,7 +21,7 @@ type Commit struct {
 	AuthorID           uint      `gorm:"not null"`
 	AuthorDate         time.Time `gorm:"not null"`
 	CommitterID        uint      `gorm:"not null"`
-	CommitterDate      time.Time `gorm:"not null"`
+	CommitterDate      time.Time `gorm:"index;not null"`
 	Subject            string    `gorm:"type:text;not_null"`
 	Branch             string    `gorm:"not_null"`
 	// Changes            []Change
