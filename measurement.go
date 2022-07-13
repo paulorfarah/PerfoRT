@@ -162,9 +162,9 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					for _, test := range suites.TestCases {
 						testName := test.ClassName + "#" + test.Name
 						log.Println("testcase:", testName)
-						ignoredTcs, errIgn := readTcIgnore()
+						ignoredTcs, errIgn := ReadListFromFile(".tcignore")
 						if errIgn != nil {
-							log.Println("Error reading list of ignored testcases: ", errIgn)
+							log.Println("Error reading lfist of ignored testcases: ", errIgn)
 						}
 						ignore := false
 						for _, tc := range ignoredTcs {
@@ -395,14 +395,14 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					for _, perfMetric := range perfMetrics {
 
 						resource := models.Resource{
-							RunID:             rr.ID,
-							CpuPercent:        perfMetric.CpuPercent,
-							MemPercent:        perfMetric.MemoryPercent,
-							MemoryInfoStat:    *perfMetric.MemoryInfo,
-							IOCountersStat:    *perfMetric.IOCounters,
-							PageFaultsStat:    *perfMetric.PageFaults,
-							AvgStat:           *perfMetric.Load,
-							VirtualMemoryStat: *perfMetric.VirtualMemory,
+							RunID:          rr.ID,
+							CpuPercent:     perfMetric.CpuPercent,
+							MemPercent:     perfMetric.MemoryPercent,
+							MemoryInfoStat: *perfMetric.MemoryInfo,
+							IOCountersStat: *perfMetric.IOCounters,
+							PageFaultsStat: *perfMetric.PageFaults,
+							// AvgStat:           *perfMetric.Load,
+							// VirtualMemoryStat: *perfMetric.VirtualMemory,
 							// SwapMemoryStat:    *perfMetric.SwapMemory,
 							// CPUTime:           perfMetric.CPUTime,
 							// DiskIOCounters:    perfMetric.DiskIOCounters,
@@ -791,21 +791,4 @@ func deleteDir(dir string) error {
 		}
 	}
 	return nil
-}
-
-func readTcIgnore() ([]string, error) {
-	// reads file ctignore into memory
-	// and returns a slice of testcases to be ignored
-	file, err := os.Open(".tcignore")
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
 }
