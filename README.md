@@ -35,3 +35,17 @@ set global max_connections = 999999;
   
 4) configure environment variable MAVEN_OPTS:
 - export MAVEN_OPTS=-agentpath:path/to/async-profiler-2.5.1-linux-x64/build/libasyncProfiler.so=start,event=wall,file=profile.txt
+
+Setting Files
+1) .env
+
+
+2) .releases
+Contains the list of hashes of commits of the target system to be measured by perfrt. The .releases file should have the name .releases plus character "_" (underline) and the package name configured in the .env file.
+For example, for the target system apache commons-bcel, the package name is "org.apache.bcel.", so the releases file should be named as ".releases_org.apache.bcel.".
+
+3) .tcignore
+There are some testcases that runs without ending. To deal with this situation add the testcase in a .tcignore file. A .tcignore file is a list of testcases to be ignored during the performance measurement of the target system. The .tcignore file should have the name .tcignore plus character "_" (underline) and the package name configured in the .env file.
+For example, for the target system apache commons-bcel, the package name is "org.apache.bcel.", so the testcase ignore list file should be named as ".tcignore_org.apache.bcel.".
+
+If the testcase to be ignored is not listed in the ignore file, perfrt will stablish a timeout, also can be configured in the testcase_timeout of the .env file. However, ignore them is better because do not take extra time and use extra resources neither.

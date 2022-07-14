@@ -138,7 +138,8 @@ func main() {
 			// 	fmt.Println("########################################", i.Title)
 			// }
 
-			releases, errRel := ReadListFromFile(".releases")
+			packName := os.Getenv("package")
+			releases, errRel := ReadListFromFile(".releases_" + packName)
 			if errRel != nil {
 				log.Println("Error reading file of releases: ", errRel)
 			}
@@ -190,6 +191,7 @@ func main() {
 				// isReleaseC := false
 				// isReleaseP := false
 				err = commits.ForEach(func(pCommit *object.Commit) error {
+					fmt.Println(pCommit.Hash.String())
 
 					// filter commits after a week
 					// if cCommit != nil && (commDate.IsZero() || commDate.Sub(pCommit.Author.When).Hours() >= 7*24) {

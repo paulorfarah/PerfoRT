@@ -162,7 +162,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					for _, test := range suites.TestCases {
 						testName := test.ClassName + "#" + test.Name
 						log.Println("testcase:", testName)
-						ignoredTcs, errIgn := ReadListFromFile(".tcignore")
+						ignoredTcs, errIgn := ReadListFromFile(".tcignore_" + packName)
 						if errIgn != nil {
 							log.Println("Error reading lfist of ignored testcases: ", errIgn)
 						}
