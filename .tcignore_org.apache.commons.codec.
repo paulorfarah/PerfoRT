@@ -24,3 +24,10 @@ org.apache.commons.codec.binary.Base64InputStreamTest#testReadMultipleBufferSize
 org.apache.commons.codec.binary.Base64OutputStreamTest#testBase64OutputStreamByChunk
 org.apache.commons.codec.binary.Base64Test#testPairs
 org.apache.commons.codec.binary.Base64Test#testSingletons
+org.apache.commons.codec.binary.AllocateDirectHexTest#testEncodeDecodeHexCharArrayRandom
+org.apache.commons.codec.binary.Base64Test#testHugeLineSeparator
+org.apache.commons.codec.binary.AllocateDirectHexTest#testEncodeDecodeHexCharArrayRandomToOutput
+org.apache.commons.codec.digest.Apr1CryptTest#testApr1CryptStrings
+org.apache.commons.codec.binary.Base64Test#testUrlSafe
+org.apache.commons.codec.binary.HexTest#testEncodeDecodeHexCharArrayRandom
+org.apache.commons.codec.binary.AllocateDirectHexTest#testCustomCharset

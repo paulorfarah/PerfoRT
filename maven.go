@@ -585,8 +585,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 
 	mavenClasspath := GetMavenDependenciesClasspath(path)
-	log.Println("Dependencies: ", mavenClasspath)
-	log.Println()
+	// log.Println("Dependencies: ", mavenClasspath)
+	// log.Println()
 	log.Println("- junit testcase: ", path, className, testName)
 	fmt.Println("- junit testcase: ", path, className, testName)
 
@@ -686,8 +686,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			monitoringTime, _ = strconv.ParseFloat(monitoringTimeStr, 32)
 		}
 		stop := make(chan bool)
-		fmt.Println("===== created channel stop =====")
-		fmt.Printf("= #Goroutines: %d \n\n", runtime.NumGoroutine())
+		fmt.Println("  === created channel stop ")
+		fmt.Printf("|| #Goroutines: %d \n\n", runtime.NumGoroutine())
 		go func() {
 			// defer close(stop)
 			perfMetrics := []PerfMetrics{}
@@ -727,9 +727,9 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		}()
 
 		// wait testcase finish
-		fmt.Println(ctx.Err())
+		// fmt.Println(ctx.Err())
 		err = cmd.Wait()
-		fmt.Println(ctx.Err())
+		// fmt.Println(ctx.Err())
 		stop <- true
 		if ctx.Err() == context.DeadlineExceeded {
 			fmt.Println("test case timed out")
@@ -753,6 +753,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			}
 		}
 		log.Println("Testcase out:", outb.String())
+
 		log.Println("Testcase err:", errb.String())
 
 		// done := make(chan error)
@@ -793,12 +794,13 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// 	log.Println("out:", outb.String(), "err:", errb.String())
 		// }
 
-		fmt.Printf("= #Goroutines: %d n\n", runtime.NumGoroutine())
-		fmt.Println("===== after select  =====")
+		fmt.Printf("|| #Goroutines: %d n\n", runtime.NumGoroutine())
+		fmt.Println("  === after select  ")
 
 		// SaveJFRMetrics(db, run.ID, tc.ID)
 	}
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
+	runtime.GC()
 
 }
 
