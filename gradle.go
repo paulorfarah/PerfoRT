@@ -351,6 +351,7 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 
 	stop := make(chan bool)
 	go func() {
+		defer close(stop)
 		// LOG_FILE := "/tmp/perfrt_log"
 		// // open log file
 		// logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)

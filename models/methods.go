@@ -10,12 +10,12 @@ import (
 
 type Method struct {
 	Model
-	FileID             uint `gorm:"not null`
+	FileID             uint `gorm:"index;not null"`
 	File               File
-	RunID              uint `gorm:"not null`
+	RunID              uint `gorm:"index;not null"`
 	Run                Run
-	Name               string `gorm:"not null"`
-	CallerID           *uint
+	Name               string   `gorm:"not null"`
+	CallerID           *uint    `gorm:"index"`
 	Caller             []Method `gorm:"foreignkey:CallerID"`
 	OwnDuration        time.Duration
 	CumulativeDuration time.Duration
@@ -28,7 +28,7 @@ type Method struct {
 	AllocCalls         int
 	TotalAllocCalls    int
 	AllocCallsPercent  float64
-	Finished           bool `gorm:"not null;default: false"`
+	Finished           bool `gorm:"index;not null;default: false"`
 	ReturnValue        string
 }
 

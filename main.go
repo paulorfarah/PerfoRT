@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -9,10 +10,12 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
 
-	grmon "github.com/bcicen/grmon/agent"
+	// grmon "github.com/bcicen/grmon/agent"
+	"net/http"
+	_ "net/http/pprof"
 
+	// grmon "github.com/bcicen/grmon/agent"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 
@@ -23,7 +26,11 @@ import (
 
 func main() {
 	fmt.Println("starting perfrt")
-	grmon.Start()
+	// grmon.Start()
+
+	go func() {
+		http.ListenAndServe(":1234", nil)
+	}()
 
 	logFile, err := os.OpenFile("perfrt.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -131,6 +138,12 @@ func main() {
 			// 	fmt.Println("########################################", i.Title)
 			// }
 
+			packName := os.Getenv("package")
+			releases, errRel := ReadListFromFile(".releases_" + packName)
+			if errRel != nil {
+				log.Println("Error reading file of releases: ", errRel)
+			}
+
 			//branches
 			branchCounter := 0
 			branches, _ := repo.Branches()
@@ -174,11 +187,19 @@ func main() {
 				defer commits.Close()
 				// fmt.Println("---- commits ----")
 				i := 0
-				var commDate time.Time
+				// var commDate time.Time
+				// isReleaseC := false
+				// isReleaseP := false
 				err = commits.ForEach(func(pCommit *object.Commit) error {
+					fmt.Println(pCommit.Hash.String())
 
-					if cCommit != nil && (commDate.IsZero() || commDate.Sub(pCommit.Author.When).Hours() >= 7*24) {
-						commDate = pCommit.Author.When
+					// filter commits after a week
+					// if cCommit != nil && (commDate.IsZero() || commDate.Sub(pCommit.Author.When).Hours() >= 7*24) {
+					//     commDate = pCommit.Author.When
+
+					// filter commits in a hash list
+					if isRelease(releases, pCommit.Hash.String()) {
+
 						// fmt.Println("*********************************************************************commDate: ", commDate)
 						// fmt.Printf("\n----- commit %v: %v -----\n", strconv.Itoa(i), currCommit.Message)
 						// fmt.Printf("###>  commit: %s <###\n", cCommit.Hash)
@@ -342,8 +363,8 @@ func main() {
 							// wg.Add(8)
 							Measure(db, *measurement, repoDir, *repository, commit, cCommit)
 							runtime.GC()
-							log.Println(runtime.NumGoroutine())
-							fmt.Println(runtime.NumGoroutine())
+							log.Println("#GoRoutines: ", runtime.NumGoroutine())
+							fmt.Println("#GoRoutines: ", runtime.NumGoroutine())
 							// fmt.Println("finished Measure")
 							// wg.Wait()
 							// fmt.Println("finished wait group")
@@ -353,12 +374,13 @@ func main() {
 							// boxplot := charts.BoxplotExamples{}
 							// boxplot.Examples()
 						}
+
+						cCommit = pCommit
+						cTree, _ = pCommit.Tree()
+
+						i = i + 1
+
 					}
-					cCommit = pCommit
-					cTree, _ = pCommit.Tree()
-
-					i = i + 1
-
 					return nil
 				})
 				if err != nil {
@@ -375,6 +397,17 @@ func main() {
 		log.Println("Cannot get url from .env file")
 		fmt.Println("ERROR: Cannot get url from .env file")
 	}
+}
+
+func isRelease(releases []string, hash string) bool {
+	isRelease := false
+	for _, release := range releases {
+		if hash == release {
+			isRelease = true
+			break
+		}
+	}
+	return isRelease
 }
 
 func substr(s string, pos, length int) string {
@@ -447,4 +480,21 @@ func createDirs() {
 		}
 	}
 
+}
+
+func ReadListFromFile(filename string) ([]string, error) {
+	// reads file ctignore into memory
+	// and returns a slice of testcases to be ignored
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
 }

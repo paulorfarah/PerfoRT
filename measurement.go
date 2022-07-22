@@ -160,37 +160,50 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					// guard := make(chan struct{}, maxGoroutines)
 					count := -1
 					for _, test := range suites.TestCases {
-						log.Println("testcase:", test.ClassName+"#"+test.Name)
-						if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
-							if tcTime >= minTestTime {
-								// guard <- struct{}{} // would block if guard channel is already filled
-								// go func(n int) {
-								classname := strings.Replace(test.ClassName, ".", "/", -1)
-								filename := classname + ".java"
-								testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
-								if errF != nil {
-									fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
-								}
-								tc := &models.TestCase{
-									Type:      "maven",
-									ClassName: test.ClassName,
-									FileID:    testSuite.ID,
-									Name:      test.Name,
-								}
-								_, errTC := models.CreateTestCase(db, tc)
-								if errTC != nil {
-									fmt.Println("Error creating test case: ", errTC.Error())
-								}
-								// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
-								RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
-								// <-guard
-								count++
-								// }(count)
-							} else {
-								log.Printf("Testcase %s#%s was not executed because its time %s is lower than the mininum test time threshold (%f).\n", test.ClassName, test.Name, test.Time, minTestTime)
+						testName := test.ClassName + "#" + test.Name
+						log.Println("testcase:", testName)
+						ignoredTcs, errIgn := ReadListFromFile(".tcignore_" + packName)
+						if errIgn != nil {
+							log.Println("Error reading lfist of ignored testcases: ", errIgn)
+						}
+						ignore := false
+						for _, tc := range ignoredTcs {
+							if testName == tc {
+								ignore = true
 							}
-						} else {
-							log.Println("ERROR: Invalid testcase time!!! " + test.ClassName + "#" + test.Name + " - " + test.Time)
+						}
+						if !ignore {
+							if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
+								if tcTime >= minTestTime {
+									// guard <- struct{}{} // would block if guard channel is already filled
+									// go func(n int) {
+									classname := strings.Replace(test.ClassName, ".", "/", -1)
+									filename := classname + ".java"
+									testSuite, errF := models.FindFileByEndsWithNameAndCommit(db, filename, commit.ID)
+									if errF != nil {
+										fmt.Println("error finding file: ", test.ClassName, commit.CommitHash)
+									}
+									tc := &models.TestCase{
+										Type:      "maven",
+										ClassName: test.ClassName,
+										FileID:    testSuite.ID,
+										Name:      test.Name,
+									}
+									_, errTC := models.CreateTestCase(db, tc)
+									if errTC != nil {
+										fmt.Println("Error creating test case: ", errTC.Error())
+									}
+									// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
+									RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
+									// <-guard
+									count++
+									// }(count)
+								} else {
+									log.Printf("Testcase %s#%s was not executed because its time %s is lower than the mininum test time threshold (%f).\n", test.ClassName, test.Name, test.Time, minTestTime)
+								}
+							} else {
+								log.Println("ERROR: Invalid testcase time!!! " + test.ClassName + "#" + test.Name + " - " + test.Time)
+							}
 						}
 					}
 
@@ -382,14 +395,14 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					for _, perfMetric := range perfMetrics {
 
 						resource := models.Resource{
-							RunID:             rr.ID,
-							CpuPercent:        perfMetric.CpuPercent,
-							MemPercent:        perfMetric.MemoryPercent,
-							MemoryInfoStat:    *perfMetric.MemoryInfo,
-							IOCountersStat:    *perfMetric.IOCounters,
-							PageFaultsStat:    *perfMetric.PageFaults,
-							AvgStat:           *perfMetric.Load,
-							VirtualMemoryStat: *perfMetric.VirtualMemory,
+							RunID:          rr.ID,
+							CpuPercent:     perfMetric.CpuPercent,
+							MemPercent:     perfMetric.MemoryPercent,
+							MemoryInfoStat: *perfMetric.MemoryInfo,
+							IOCountersStat: *perfMetric.IOCounters,
+							PageFaultsStat: *perfMetric.PageFaults,
+							// AvgStat:           *perfMetric.Load,
+							// VirtualMemoryStat: *perfMetric.VirtualMemory,
 							// SwapMemoryStat:    *perfMetric.SwapMemory,
 							// CPUTime:           perfMetric.CPUTime,
 							// DiskIOCounters:    perfMetric.DiskIOCounters,

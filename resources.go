@@ -5,11 +5,6 @@ import (
 	"log"
 	"perfrt/models"
 
-	"github.com/shirou/gopsutil/v3/cpu"
-	"github.com/shirou/gopsutil/v3/disk"
-	"github.com/shirou/gopsutil/v3/load"
-	"github.com/shirou/gopsutil/v3/mem"
-	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
 	"gorm.io/gorm"
 )
@@ -20,17 +15,17 @@ import (
 // 	// go memMonitor()
 // }
 type PerfMetrics struct {
-	CpuPercent     float64
-	MemoryPercent  float32
-	IOCounters     *process.IOCountersStat
-	MemoryInfo     *process.MemoryInfoStat
-	PageFaults     *process.PageFaultsStat
-	Load           *load.AvgStat
-	CPUTimes       []cpu.TimesStat
-	VirtualMemory  *mem.VirtualMemoryStat
-	SwapMemory     *models.SwapMemoryStat
-	DiskIOCounters map[string]disk.IOCountersStat
-	NetIOCounters  []net.IOCountersStat
+	CpuPercent    float64
+	MemoryPercent float32
+	IOCounters    *process.IOCountersStat
+	MemoryInfo    *process.MemoryInfoStat
+	PageFaults    *process.PageFaultsStat
+	// Load           *load.AvgStat
+	// CPUTimes       []cpu.TimesStat
+	// VirtualMemory  *mem.VirtualMemoryStat
+	// SwapMemory     *models.SwapMemoryStat
+	// DiskIOCounters map[string]disk.IOCountersStat
+	// NetIOCounters  []net.IOCountersStat
 }
 
 func MonitorProcess(pid int) (PerfMetrics, error) {
@@ -62,40 +57,40 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 		return PerfMetrics{}, err
 	}
 
-	l, _ := load.Avg()
-	ct, _ := cpu.Times(false)
-	vm, _ := mem.VirtualMemory()
+	// l, _ := load.Avg()
+	// ct, _ := cpu.Times(false)
+	// vm, _ := mem.VirtualMemory()
 
-	swap, _ := mem.SwapMemory()
-	sm := &models.SwapMemoryStat{
-		SwapTotal:       swap.Total,
-		SwapUsed:        swap.Used,
-		SwapFree:        swap.Free,
-		SwapUsedPercent: swap.UsedPercent,
-		Sin:             swap.Sin,
-		Sout:            swap.Sout,
-		PgIn:            swap.PgIn,
-		PgOut:           swap.PgOut,
-		PgFault:         swap.PgFault,
-		PgMajFaults:     swap.PgMajFault,
-	}
+	// swap, _ := mem.SwapMemory()
+	// sm := &models.SwapMemoryStat{
+	// 	SwapTotal:       swap.Total,
+	// 	SwapUsed:        swap.Used,
+	// 	SwapFree:        swap.Free,
+	// 	SwapUsedPercent: swap.UsedPercent,
+	// 	Sin:             swap.Sin,
+	// 	Sout:            swap.Sout,
+	// 	PgIn:            swap.PgIn,
+	// 	PgOut:           swap.PgOut,
+	// 	PgFault:         swap.PgFault,
+	// 	PgMajFaults:     swap.PgMajFault,
+	// }
 
-	mem.SwapMemory()
-	di, _ := disk.IOCounters()
-	ni, _ := net.IOCounters(false)
+	// mem.SwapMemory()
+	// di, _ := disk.IOCounters()
+	// ni, _ := net.IOCounters(false)
 
 	perfMetrics := &PerfMetrics{
-		CpuPercent:     cp,
-		MemoryPercent:  m,
-		IOCounters:     io,
-		MemoryInfo:     mi,
-		PageFaults:     pf,
-		Load:           l,
-		CPUTimes:       ct,
-		VirtualMemory:  vm,
-		SwapMemory:     sm,
-		DiskIOCounters: di,
-		NetIOCounters:  ni,
+		CpuPercent:    cp,
+		MemoryPercent: m,
+		IOCounters:    io,
+		MemoryInfo:    mi,
+		PageFaults:    pf,
+		// Load:           l,
+		// CPUTimes:       ct,
+		// VirtualMemory:  vm,
+		// SwapMemory:     sm,
+		// DiskIOCounters: di,
+		// NetIOCounters:  ni,
 	}
 	return *perfMetrics, nil
 
@@ -140,15 +135,15 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 
 func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
 	resource := &models.Resource{
-		RunID:             measurementID,
-		CpuPercent:        perfMetric.CpuPercent,
-		MemPercent:        perfMetric.MemoryPercent,
-		MemoryInfoStat:    *perfMetric.MemoryInfo,
-		IOCountersStat:    *perfMetric.IOCounters,
-		PageFaultsStat:    *perfMetric.PageFaults,
-		AvgStat:           *perfMetric.Load,
-		VirtualMemoryStat: *perfMetric.VirtualMemory,
-		SwapMemoryStat:    *perfMetric.SwapMemory,
+		RunID:          measurementID,
+		CpuPercent:     perfMetric.CpuPercent,
+		MemPercent:     perfMetric.MemoryPercent,
+		MemoryInfoStat: *perfMetric.MemoryInfo,
+		IOCountersStat: *perfMetric.IOCounters,
+		PageFaultsStat: *perfMetric.PageFaults,
+		// AvgStat:           *perfMetric.Load,
+		// VirtualMemoryStat: *perfMetric.VirtualMemory,
+		// SwapMemoryStat:    *perfMetric.SwapMemory,
 		// DiskIOCounters:    perfMetric.DiskIOCounters,
 		// NetIOCounters:     perfMetric.NetIOCounters,
 

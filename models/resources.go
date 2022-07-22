@@ -10,7 +10,7 @@ import (
 
 type Resource struct {
 	Model
-	RunID      uint
+	RunID      uint `gorm:"index"`
 	Run        Run
 	CpuPercent float64
 	MemPercent float32
