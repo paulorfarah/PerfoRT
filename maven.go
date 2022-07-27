@@ -624,6 +624,13 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	} else {
 		log.Println("WARNING: testcase_timeout setting not found, using 1 hour.")
 	}
+	monitoringTime := 1.0
+	monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
+	if ok {
+		monitoringTime, _ = strconv.ParseFloat(monitoringTimeStr, 32)
+	}
+
+	finish := make(chan bool)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
 		log.Println("#Run: ", runNumber)
 		run := &models.Run{
@@ -633,6 +640,63 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			Number:        runNumber,
 		}
 		models.CreateRun(db, run)
+
+		// prepare goroutine
+		start := make(chan int)
+		stop := make(chan bool)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tcTimeOut)*time.Second)
+		defer cancel()
+		go func() {
+			active := false
+			var pid int
+			perfMetrics := []PerfMetrics{}
+			for {
+				select {
+				case pid = <-start:
+					fmt.Println("+++ start monitoring... ", time.Now())
+					active = true
+					perfMetrics = []PerfMetrics{}
+				case <-stop:
+					fmt.Println("### stop monitoring... ", time.Now())
+					//save
+					for _, perfMetric := range perfMetrics {
+						saveMetrics(db, run.ID, perfMetric)
+					}
+					SaveJFRMetrics(db, run.ID, tc.ID)
+					active = false
+					// return
+				case <-ctx.Done():
+					fmt.Println("!!! time out monitoring... ", time.Now())
+					errKill := cmd.Process.Kill()
+					if errKill != nil {
+						fmt.Println("Error killing process: ", errKill)
+						log.Println("Error killing process: ", errKill)
+					}
+					fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
+					log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
+
+					for _, perfMetric := range perfMetrics {
+						saveMetrics(db, run.ID, perfMetric)
+					}
+					fmt.Println("saved resources metrics")
+					SaveJFRMetrics(db, run.ID, tc.ID)
+					fmt.Println("saved JFR metrics")
+					active = false
+					// return
+				case <-finish:
+					fmt.Println(">>> finished monitoring... ", time.Now())
+					return
+				default:
+					if active {
+						perfMetric, err := MonitorProcess(pid)
+						if err == nil {
+							perfMetrics = append(perfMetrics, perfMetric)
+						}
+						time.Sleep(time.Duration(monitoringTime) * time.Second)
+					}
+				}
+			}
+		}()
 
 		//    java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=
 		//    com.github.paulorfarah.mavenproject.,f07a8a880ab962572ff8fb013958afd55e4f282a,11
@@ -661,8 +725,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// 	"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
 		// 	"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName) //.Output()
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tcTimeOut)*time.Second)
-		defer cancel()
+		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
 
 		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
@@ -671,80 +734,33 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Dir = path
-		log.Println("path: ", path)
+		// log.Println("path: ", path)
 
 		err := cmd.Start()
+		start <- cmd.Process.Pid
 		if err != nil {
-			fmt.Println("Error starting command: ", err.Error())
-			log.Fatal(err)
+			log.Println("Error starting command: ", err.Error())
+			// log.Fatal(err)
 		}
-		pid := cmd.Process.Pid
 
-		monitoringTime := 1.0
-		monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
-		if ok {
-			monitoringTime, _ = strconv.ParseFloat(monitoringTimeStr, 32)
-		}
-		stop := make(chan bool)
-		fmt.Println("  === created channel stop ")
-		fmt.Printf("|| #Goroutines: %d \n\n", runtime.NumGoroutine())
-		go func() {
-			// defer close(stop)
-			perfMetrics := []PerfMetrics{}
-			for {
-				select {
-				case <-stop:
-					//save
-					for _, perfMetric := range perfMetrics {
-						saveMetrics(db, run.ID, perfMetric)
-					}
-					SaveJFRMetrics(db, run.ID, tc.ID)
-					return
-				case <-ctx.Done():
-					// errKill := cmd.Process.Kill()
-					// if errKill != nil {
-					// 	fmt.Println("Error killing process: ", errKill)
-					// 	log.Println("Error killing process: ", errKill)
-					// }
-					fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
-					log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
-
-					for _, perfMetric := range perfMetrics {
-						saveMetrics(db, run.ID, perfMetric)
-					}
-					fmt.Println("saved resources metrics")
-					SaveJFRMetrics(db, run.ID, tc.ID)
-					fmt.Println("saved JFR metrics")
-					return
-				default:
-					perfMetric, err := MonitorProcess(pid)
-					if err == nil {
-						perfMetrics = append(perfMetrics, perfMetric)
-					}
-					time.Sleep(time.Duration(monitoringTime) * time.Second)
-				}
-			}
-		}()
-
-		// wait testcase finish
-		// fmt.Println(ctx.Err())
 		err = cmd.Wait()
 		// fmt.Println(ctx.Err())
 		stop <- true
 		if ctx.Err() == context.DeadlineExceeded {
+			log.Println("test case timed out")
 			fmt.Println("test case timed out")
 			models.SetTestCaseError(db, tc)
-			return
+			cancel()
+			// return
 		}
 
 		if err != nil {
-			pid = cmd.Process.Pid
-			process, err := os.FindProcess(int(pid))
+			process, err := os.FindProcess(int(cmd.Process.Pid))
 			if err != nil {
 				fmt.Printf("Failed to find process: %s\n", err)
 			} else {
 				errPid := process.Signal(syscall.Signal(0))
-				fmt.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
+				fmt.Printf("process.Signal on pid %d returned: %v\n", cmd.Process.Pid, errPid)
 				resPid := fmt.Sprintf("%v", errPid)
 				if resPid != "os: process already finished" {
 					fmt.Printf("junit test failed with %s\n", err.Error())
@@ -794,11 +810,12 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// 	log.Println("out:", outb.String(), "err:", errb.String())
 		// }
 
-		fmt.Printf("|| #Goroutines: %d n\n", runtime.NumGoroutine())
-		fmt.Println("  === after select  ")
+		// fmt.Printf("|| #Goroutines: %d n\n", runtime.NumGoroutine())
+		// fmt.Println("  === after select  ")
 
 		// SaveJFRMetrics(db, run.ID, tc.ID)
 	}
+	finish <- true
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
 	runtime.GC()
 

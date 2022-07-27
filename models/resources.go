@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
@@ -12,6 +14,7 @@ type Resource struct {
 	Model
 	RunID      uint `gorm:"index"`
 	Run        Run
+	Timestamp  time.Time
 	CpuPercent float64
 	MemPercent float32
 	process.MemoryInfoStat

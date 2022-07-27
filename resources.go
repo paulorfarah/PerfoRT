@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"perfrt/models"
+	"time"
 
 	"github.com/shirou/gopsutil/v3/process"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ import (
 // 	// go memMonitor()
 // }
 type PerfMetrics struct {
+	Timestamp     time.Time
 	CpuPercent    float64
 	MemoryPercent float32
 	IOCounters    *process.IOCountersStat
@@ -80,6 +82,7 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 	// ni, _ := net.IOCounters(false)
 
 	perfMetrics := &PerfMetrics{
+		Timestamp:     time.Now(),
 		CpuPercent:    cp,
 		MemoryPercent: m,
 		IOCounters:    io,
@@ -136,6 +139,7 @@ func MonitorProcess(pid int) (PerfMetrics, error) {
 func saveMetrics(db *gorm.DB, measurementID uint, perfMetric PerfMetrics) {
 	resource := &models.Resource{
 		RunID:          measurementID,
+		Timestamp:      perfMetric.Timestamp,
 		CpuPercent:     perfMetric.CpuPercent,
 		MemPercent:     perfMetric.MemoryPercent,
 		MemoryInfoStat: *perfMetric.MemoryInfo,
