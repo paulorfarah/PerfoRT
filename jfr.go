@@ -159,8 +159,8 @@ type Event struct {
 func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 	log.Println("****************** SaveJFRMetrics", time.Now())
 	// generate json
-	jfrFilename := "perfrt" + strconv.Itoa(int(runID)) + ".jfr"
-	jsonFilename := "perfrt" + strconv.Itoa(int(runID)) + ".json"
+	jfrFilename := "jfr/perfrt" + strconv.Itoa(int(runID)) + ".jfr"
+	jsonFilename := "jfr/perfrt" + strconv.Itoa(int(runID)) + ".json"
 	if _, err := os.Stat(jfrFilename); err == nil {
 		// file perfrt.jfr exists
 		log.Println("- jfr print --json " + jfrFilename + " > " + jsonFilename)

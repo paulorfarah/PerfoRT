@@ -704,7 +704,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// settings=/home/usuario/Downloads/perfrt.jfc
 		// -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
-		jfrFilename := "/perfrt" + strconv.Itoa(int(run.ID)) + ".jfr"
+		jfrFilename := "/jfr/perfrt" + strconv.Itoa(int(run.ID)) + ".jfr"
 		// log.Println("removing " + localpath + jfrFilename)
 		// e := os.Remove(localpath + jfrFilename)
 		// if e != nil {
@@ -715,7 +715,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			localClasspath += module + "/target/test-classes/:" + module + "/target/classes/:"
 		}
 		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
-			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/perfrt.jfc" +
+			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
 			" -jar " +
 			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + className + "#" + testName
 		log.Println()
@@ -729,7 +729,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
 
 		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
-			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/perfrt.jfc",
+			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/perfrt.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
