@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	// grmon "github.com/bcicen/grmon/agent"
 	"net/http"
@@ -108,19 +109,50 @@ func main() {
 			}
 
 			// measurement
-			var measurement *models.Measurement
+			// var measurement *models.Measurement
+			measurement := &models.Measurement{RepositoryID: repository.ID}
 			runsEnv, ok := os.LookupEnv("runs")
 			fmt.Println("############## runs: ", runsEnv)
 			runs, err := strconv.Atoi(runsEnv)
 			if err != nil {
 				ok = false
 			}
-			if !ok {
-				fmt.Println("ATTENTION: Number of runs not set, running with value 1!!!", "runs")
-				measurement = &models.Measurement{RepositoryID: repository.ID}
+			if ok {
+				measurement.Runs = runs
 			} else {
-				measurement = &models.Measurement{RepositoryID: repository.ID, Runs: runs}
+				fmt.Println("ATTENTION: Number of runs not set, running with value 1!!!", "runs")
+				measurement.Runs = 1
 			}
+
+			tcTimeOut := 3600
+			tcTimeOutStr, ok := os.LookupEnv("testcase_timeout")
+			if ok {
+				tcTimeOut, err = strconv.Atoi(tcTimeOutStr)
+				if err != nil {
+					log.Println("WARNING: invalid testcase_timeout setting, using 1 hour.")
+					tcTimeOut = 3600
+				}
+			} else {
+				log.Println("WARNING: testcase_timeout setting not found, using 1 hour.")
+			}
+			log.Println("monitoring time: ", tcTimeOut)
+			measurement.TestcaseTimeout = time.Duration(tcTimeOut)
+
+			var monitoringTime time.Duration
+			monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
+			if ok {
+				monitoringTime, err = time.ParseDuration(monitoringTimeStr + "s")
+				if err != nil {
+					log.Println("Error parsing monitoringTimeFlt: ", err)
+					monitoringTime, _ = time.ParseDuration("1s")
+				}
+			} else {
+				log.Println("WARNING: environment variable monitoring_time not found, using 1s!")
+				monitoringTime, _ = time.ParseDuration("1s")
+			}
+			log.Println("monitoring time: ", monitoringTime)
+			measurement.MonitoringTime = monitoringTime
+
 			models.CreateMeasurement(db, measurement)
 
 			//issues

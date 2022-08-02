@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gorm.io/gorm"
 )
@@ -10,7 +12,9 @@ type Measurement struct {
 	Model
 	RepositoryID uint //   `gorm:"not null"`
 	// Repository   Repository
-	Runs int `gorm:"default:1"`
+	Runs            int           `gorm:"default:1"`
+	TestcaseTimeout time.Duration `gorm:"default:3600"`
+	MonitoringTime  time.Duration `gorm:"default:1"`
 	// Maven        []Maven
 	// Randoop      []Randoop
 }

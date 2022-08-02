@@ -611,24 +611,6 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	// var err error
 	log.Println("Number of runs: ", measurement.Runs)
-	tcTimeOut := 3600
-	var err error
-	tcTimeOutStr, ok := os.LookupEnv("testcase_timeout")
-	if ok {
-		tcTimeOut, err = strconv.Atoi(tcTimeOutStr)
-		if err != nil {
-			log.Println("WARNING: invalid testcase_timeout setting, using 1 hour.")
-			tcTimeOut = 3600
-
-		}
-	} else {
-		log.Println("WARNING: testcase_timeout setting not found, using 1 hour.")
-	}
-	monitoringTime := 1.0
-	monitoringTimeStr, ok := os.LookupEnv("monitoring_time")
-	if ok {
-		monitoringTime, _ = strconv.ParseFloat(monitoringTimeStr, 32)
-	}
 
 	finish := make(chan bool)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
@@ -644,7 +626,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// prepare goroutine
 		start := make(chan int)
 		stop := make(chan bool)
-		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tcTimeOut)*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), measurement.TestcaseTimeout*time.Second)
 		defer cancel()
 		go func() {
 			active := false
@@ -658,30 +640,36 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					perfMetrics = []PerfMetrics{}
 				case <-stop:
 					fmt.Println("### stop monitoring... ", time.Now())
+					active = false
 					//save
+					fmt.Println("saving resources: ", len(perfMetrics))
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
+					fmt.Println("saved resources...")
 					SaveJFRMetrics(db, run.ID, tc.ID)
-					active = false
+					fmt.Println("saved jvm...")
 					// return
 				case <-ctx.Done():
 					fmt.Println("!!! time out monitoring... ", time.Now())
-					errKill := cmd.Process.Kill()
-					if errKill != nil {
-						fmt.Println("Error killing process: ", errKill)
-						log.Println("Error killing process: ", errKill)
-					}
-					fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
-					log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
+					if active {
+						active = false
+						errKill := cmd.Process.Kill()
+						if errKill != nil {
+							fmt.Println("Error killing process: ", errKill)
+							log.Println("Error killing process: ", errKill)
+						}
+						fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
+						log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
-					for _, perfMetric := range perfMetrics {
-						saveMetrics(db, run.ID, perfMetric)
+						for _, perfMetric := range perfMetrics {
+							saveMetrics(db, run.ID, perfMetric)
+						}
+						fmt.Println("saved resources metrics")
+						SaveJFRMetrics(db, run.ID, tc.ID)
+						fmt.Println("saved JFR metrics")
 					}
-					fmt.Println("saved resources metrics")
-					SaveJFRMetrics(db, run.ID, tc.ID)
-					fmt.Println("saved JFR metrics")
-					active = false
+
 					// return
 				case <-finish:
 					fmt.Println(">>> finished monitoring... ", time.Now())
@@ -692,7 +680,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 						if err == nil {
 							perfMetrics = append(perfMetrics, perfMetric)
 						}
-						time.Sleep(time.Duration(monitoringTime) * time.Second)
+						time.Sleep(measurement.MonitoringTime)
 					}
 				}
 			}
@@ -818,7 +806,9 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 	finish <- true
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
+	fmt.Println("run GC: ", time.Now())
 	runtime.GC()
+	fmt.Println("ended GC: ", time.Now())
 
 }
 
