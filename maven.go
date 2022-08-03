@@ -654,11 +654,11 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					fmt.Println("!!! time out monitoring... ", time.Now())
 					if active {
 						active = false
-						errKill := cmd.Process.Kill()
-						if errKill != nil {
-							fmt.Println("Error killing process: ", errKill)
-							log.Println("Error killing process: ", errKill)
-						}
+						// errKill := cmd.Process.Kill()
+						// if errKill != nil {
+						// 	fmt.Println("Error killing process: ", errKill)
+						// 	log.Println("Error killing process: ", errKill)
+						// }
 						fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
 						log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
