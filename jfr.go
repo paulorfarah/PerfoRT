@@ -234,7 +234,7 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 							log.Println("ERROR parsing startTime: ", err)
 						}
 						// fmt.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
-						log.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
+						// log.Println("->->->->->->->->->->->->-> Event type: "+event.Type+" ", t)
 						switch event.Type {
 						case "jdk.CPULoad":
 							cpuLoad := &models.CPULoad{
