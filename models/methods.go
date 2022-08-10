@@ -17,6 +17,7 @@ type Method struct {
 	Name               string   `gorm:"not null"`
 	CallerID           *uint    `gorm:"index"`
 	Caller             []Method `gorm:"foreignkey:CallerID"`
+	EndedAt            time.Time
 	OwnDuration        time.Duration
 	CumulativeDuration time.Duration
 	OwnCalls           int
