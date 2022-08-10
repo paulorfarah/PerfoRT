@@ -635,24 +635,25 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			for {
 				select {
 				case pid = <-start:
-					fmt.Println("+++ start monitoring... ", time.Now())
+					log.Println("+++ start monitoring... ", time.Now())
 					active = true
 					perfMetrics = []PerfMetrics{}
 				case <-stop:
-					fmt.Println("### stop monitoring... ", time.Now())
+					log.Println("### stop monitoring... ", time.Now())
 					active = false
 					//save
-					fmt.Println("saving resources: ", len(perfMetrics))
+					log.Println("saving resources: ", len(perfMetrics))
 					for _, perfMetric := range perfMetrics {
 						saveMetrics(db, run.ID, perfMetric)
 					}
-					fmt.Println("saved resources...")
+					log.Println("saved resources...")
 					SaveJFRMetrics(db, run.ID, tc.ID)
-					fmt.Println("saved jvm...")
+					log.Println("saved jvm...")
 					// return
 				case <-ctx.Done():
-					fmt.Println("!!! time out monitoring... ", time.Now())
 					if active {
+						fmt.Println("!!! time out monitoring... ", time.Now())
+						log.Println("!!! time out monitoring... ", time.Now())
 						active = false
 						// errKill := cmd.Process.Kill()
 						// if errKill != nil {
@@ -665,9 +666,9 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 						for _, perfMetric := range perfMetrics {
 							saveMetrics(db, run.ID, perfMetric)
 						}
-						fmt.Println("saved resources metrics")
+						fmt.Println("saved resources...")
 						SaveJFRMetrics(db, run.ID, tc.ID)
-						fmt.Println("saved JFR metrics")
+						fmt.Println("saved jvm...")
 					}
 
 					// return
@@ -736,8 +737,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// fmt.Println(ctx.Err())
 		stop <- true
 		if ctx.Err() == context.DeadlineExceeded {
-			log.Println("test case timed out")
-			fmt.Println("test case timed out")
+			log.Println("DeadlineExceeded...")
+			fmt.Println("DeadlineExceeded...")
 			models.SetTestCaseError(db, tc)
 			cancel()
 			// return
