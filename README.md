@@ -69,3 +69,26 @@ INTO OUTFILE '/var/lib/mysql-files/jvm2.csv'
 
 mysql perfrt -u root -p  < jvms.sql > openfire.tsv
 
+
+
+SELECT repo.name, mea.id AS measurement, c.committer_date, commit_hash, r.id AS run, f.name AS classname, m.name AS methodName, m.own_duration, 
+AVG(res.cpu_percent), STD(res.cpu_percent)
+FROM commits AS c
+INNER JOIN files AS f ON f.commit_id=c.id
+INNER JOIN methods AS m ON m.file_id=f.id
+INNER JOIN runs AS r ON m.run_id = r.id
+INNER JOIN measurements AS mea On r.measurement_id=mea.id
+INNER JOIN repositories AS repo ON mea.repository_id = repo.id
+INNER JOIN jvms AS jvm ON jvm.run_id = r.id
+INNER JOIN resources AS res ON res.run_id = r.id
+WHERE res.timestamp >= (SELECT MIN(created_at) FROM methods AS met WHERE met.run_id=res.run_id GROUP BY met.run_id)
+AND res.timestamp <= (SELECT MAX(ended_at) FROM methods AS met WHERE met.run_id=res.run_id GROUP BY met.run_id)     
+GROUP BY repo.id, c.commit_hash, f.name, m.id, r.id, res.run_id     
+ORDER BY repo.name, mea.id, c.committer_date, f.name, m.name, r.id;
+
+
+-- INTO OUTFILE '/var/lib/mysql-files/jvm2.csv'
+-- FIELDS ENCLOSED BY '"'
+-- TERMINATED BY ';'
+-- ESCAPED BY '"'
+-- LINES TERMINATED BY '\r\n';
