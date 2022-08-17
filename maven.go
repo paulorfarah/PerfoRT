@@ -574,6 +574,19 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
 	// className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
+
+	// read JAVA_HOME
+	profiler := "/perfrt-profiler-1.11.jar"
+	jhome := os.Getenv("JAVA_HOME")
+	if jhome == "" {
+		fmt.Println("ATTENTION: JAVA_HOME environment variable is not defined correctly")
+		log.Println("ATTENTION: JAVA_HOME environment variable is not defined correctly")
+	} else {
+		if strings.Contains(jhome, "8") {
+			profiler = "/perfrt-profiler-1.8.jar"
+		}
+	}
+
 	className := tc.ClassName
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
 
@@ -703,7 +716,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		if module != "" {
 			localClasspath += module + "/target/test-classes/:" + module + "/target/classes/:"
 		}
-		strJunitTC := "java -javaagent:" + localpath + "/perfrt-profiler-0.0.1-SNAPSHOT.jar=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
+		strJunitTC := "java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
 			" -jar " +
 			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + className + "#" + testName
@@ -717,7 +730,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
 
-		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/perfrt.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName)
 		var outb, errb bytes.Buffer
