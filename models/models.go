@@ -41,6 +41,7 @@ func init() {
 	db, err = gorm.Open(mysql.Open(strConn), &gorm.Config{
 		Logger:                                   logger.Default.LogMode(logger.Error),
 		DisableForeignKeyConstraintWhenMigrating: true,
+		SkipDefaultTransaction:                   true,
 	})
 
 	if err != nil {
