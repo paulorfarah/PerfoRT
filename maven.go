@@ -15,7 +15,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 
@@ -576,7 +575,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	// className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
 
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 
 	// read JAVA_HOME
 	profiler := "/perfrt-profiler-1.11.jar"
@@ -644,7 +643,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		stop := make(chan bool)
 		ctx, cancel := context.WithTimeout(context.Background(), measurement.TestcaseTimeout*time.Second)
 		defer cancel()
-		wg.Add(1)
+		// wg.Add(1)
 		go func() {
 			active := false
 			var pid int
@@ -655,7 +654,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					log.Println("+++ start monitoring... ", time.Now())
 					active = true
 					perfMetrics = []PerfMetrics{}
-					wg.Done()
+					// wg.Done()
 				case <-stop:
 					log.Println("### stop monitoring... ", time.Now())
 					active = false
@@ -743,7 +742,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		cmd.Stderr = &errb
 		cmd.Dir = path
 		// log.Println("path: ", path)
-		wg.Wait()
+		// wg.Wait()
 
 		err := cmd.Start()
 		start <- cmd.Process.Pid
