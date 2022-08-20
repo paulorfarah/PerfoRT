@@ -165,7 +165,8 @@ func compileRandoopTests(source, output, classpath, cpSep string) bool {
 	return true
 }
 
-func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics, bool) {
+// func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics, bool) {
+func runRandoopTests(dir, classpath, cpSep string) (float64, int, []models.Resource, bool) {
 	log.Println("------------------------------------------------ run randoop tests")
 	fmt.Println("------------------------------------------------ run randoop tests")
 
@@ -192,7 +193,8 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 	pid := cmdRandoop.Process.Pid
 
 	stop := make(chan bool)
-	perfMetrics := []PerfMetrics{}
+	// perfMetrics := []PerfMetrics{}
+	resources := []models.Resource{}
 	go func() {
 		defer close(stop)
 		for {
@@ -200,9 +202,11 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 			case <-stop:
 				return
 			default:
-				perfMetric, err := MonitorProcess(pid)
+				// perfMetric, err := MonitorProcess(pid)
+				resource, err := MonitorProcess(pid, 0)
 				if err == nil {
-					perfMetrics = append(perfMetrics, perfMetric)
+					// perfMetrics = append(perfMetrics, perfMetric)
+					resources = append(resources, resource)
 				}
 
 			}
@@ -219,11 +223,13 @@ func runRandoopTests(dir, classpath, cpSep string) (float64, int, []PerfMetrics,
 
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CRITICAL ERROR]: Cannot execute randoop tests (" + err.Error() + "): " + stderr.String())
 		fmt.Println(out)
-		return float64(0.0), 0, []PerfMetrics{}, false
+		// return float64(0.0), 0, []PerfMetrics{}, false
+		return float64(0.0), 0, []models.Resource{}, false
 	}
 
 	testTime, numTests, ok := readRandoopTestResults(logfile)
-	return testTime, numTests, perfMetrics, ok
+	// return testTime, numTests, perfMetrics, ok
+	return testTime, numTests, resources, ok
 }
 
 func readPackage(fileName string) string {

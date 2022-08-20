@@ -367,21 +367,23 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 
 		// log.Println("measurementID: ", measurementID)
 
-		perfMetrics := []PerfMetrics{}
+		// perfMetrics := []PerfMetrics{}
+		resources := []models.Resource{}
 		for {
 			select {
 			case <-stop:
 				// //save
-				for _, perfMetric := range perfMetrics {
-					saveMetrics(db, mr.ID, perfMetric)
-				}
+				// for _, perfMetric := range perfMetrics {
+				// 	saveMetrics(db, mr.ID, perfMetric)
+				// }
+				db.CreateInBatches(resources, 3000)
 				return
 			default:
-				perfMetric, err := MonitorProcess(pid)
+				// perfMetric, err := MonitorProcess(pid)
+				resource, err := MonitorProcess(pid, mr.ID)
 				if err == nil {
-					perfMetrics = append(perfMetrics, perfMetric)
-					// saveMetrics(db, mr.ID, perfMetric)
-
+					// perfMetrics = append(perfMetrics, perfMetric)
+					resources = append(resources, resource)
 				}
 				// log.Println(perfMetric)
 

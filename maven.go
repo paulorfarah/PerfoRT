@@ -393,19 +393,16 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	stop := make(chan bool)
 	go func() {
 		defer close(stop)
-		perfMetrics := []PerfMetrics{}
+		resources := []models.Resource{}
 		for {
 			select {
 			case <-stop:
-				//save
-				for _, perfMetric := range perfMetrics {
-					saveMetrics(db, mr.ID, perfMetric)
-				}
+				db.CreateInBatches(resources, 3000)
 				return
 			default:
-				perfMetric, err := MonitorProcess(pid)
+				resource, err := MonitorProcess(pid, mr.ID)
 				if err == nil {
-					perfMetrics = append(perfMetrics, perfMetric)
+					resources = append(resources, resource)
 
 				}
 				time.Sleep(time.Duration(monitoringTime) * time.Second)
@@ -573,8 +570,6 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName string) {
 	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
-	// className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
-
 	// var wg sync.WaitGroup
 
 	// read JAVA_HOME
@@ -606,25 +601,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	fmt.Println("- junit testcase: ", path, className, testName)
 
 	var cmd *exec.Cmd
-	// var cmdStr string
-	// fmt.Println(path)
-	// param := "-Dtest=" + className + "#" + testName
-	// if module != "" {
-	// 	cmdStr = "mvn -Drat.skip=true test  -pl " + module + " " + param
-	// 	fmt.Println(cmdStr)
 
-	// 	cmd = exec.Command("mvn", "-Drat.skip=true", "test", "-pl", module, param)
-	// 	resultsPath += "/" + module
-	// } else {
-	// 	cmdStr = "mvn -Drat.skip=true test " + param
-	// 	fmt.Println(cmdStr)
-	// 	cmd = exec.Command("mvn", "test", param)
-	// }
-
-	// resultsPath += "/target/surefire-reports/TEST-" + tc.ClassName + ".xml"
-	// fmt.Println("resultsPath: ", resultsPath)
-
-	// var err error
 	log.Println("Number of runs: ", measurement.Runs)
 
 	finish := make(chan bool)
@@ -647,26 +624,23 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		go func() {
 			active := false
 			var pid int
-			perfMetrics := []PerfMetrics{}
+			resources := []models.Resource{}
 			for {
 				select {
 				case pid = <-start:
 					log.Println("+++ start monitoring... ", time.Now())
 					active = true
-					perfMetrics = []PerfMetrics{}
+					resources = []models.Resource{}
 					// wg.Done()
 				case <-stop:
 					log.Println("### stop monitoring... ", time.Now())
 					active = false
 					//save
-					log.Println("saving resources: ", len(perfMetrics))
-					for _, perfMetric := range perfMetrics {
-						saveMetrics(db, run.ID, perfMetric)
-					}
+					log.Println("saving resources: ", len(resources))
+					db.CreateInBatches(resources, 3000)
 					log.Println("saved resources...")
 					SaveJFRMetrics(db, run.ID, tc.ID)
 					log.Println("saved jvm...")
-					// return
 				case <-ctx.Done():
 					if active {
 						fmt.Println("!!! time out monitoring... ", time.Now())
@@ -680,23 +654,20 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 						fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
 						log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
-						for _, perfMetric := range perfMetrics {
-							saveMetrics(db, run.ID, perfMetric)
-						}
+						db.CreateInBatches(resources, 3000)
 						fmt.Println("saved resources...")
 						SaveJFRMetrics(db, run.ID, tc.ID)
 						fmt.Println("saved jvm...")
 					}
 
-					// return
 				case <-finish:
 					fmt.Println(">>> finished monitoring... ", time.Now())
 					return
 				default:
 					if active {
-						perfMetric, err := MonitorProcess(pid)
+						resource, err := MonitorProcess(pid, run.ID)
 						if err == nil {
-							perfMetrics = append(perfMetrics, perfMetric)
+							resources = append(resources, resource)
 						}
 						time.Sleep(measurement.MonitoringTime)
 					}

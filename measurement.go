@@ -355,7 +355,8 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 		dirClassTest := dir + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "test"
 		okComp := compileRandoopTests(dirSourceTest, dirClassTest, classpath, cpSep)
 		if okComp {
-			_, _, perfMetrics, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
+			// _, _, perfMetrics, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
+			_, _, resources, okTest := runRandoopTests(dirSourceTest, classpath, cpSep)
 			filename, errF := models.FindFileByEndsWithNameAndCommit(db, path, commitID)
 			if errF != nil {
 				fmt.Println(errF.Error())
@@ -392,83 +393,90 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 						Type:       "randoop",
 					}
 					models.CreateRun(db, rr)
-					for _, perfMetric := range perfMetrics {
 
-						resource := models.Resource{
-							RunID:          rr.ID,
-							CpuPercent:     perfMetric.CpuPercent,
-							MemPercent:     perfMetric.MemoryPercent,
-							MemoryInfoStat: *perfMetric.MemoryInfo,
-							IOCountersStat: *perfMetric.IOCounters,
-							PageFaultsStat: *perfMetric.PageFaults,
-							// AvgStat:           *perfMetric.Load,
-							// VirtualMemoryStat: *perfMetric.VirtualMemory,
-							// SwapMemoryStat:    *perfMetric.SwapMemory,
-							// CPUTime:           perfMetric.CPUTime,
-							// DiskIOCounters:    perfMetric.DiskIOCounters,
-							// NetIOCounters:     perfMetric.NetIOCounters,
-						}
-						_, err = models.CreateResource(db, &resource)
-						if err != nil {
-							fmt.Println("ERROR creating randoop resource: ", err.Error())
-						}
-						// for _, cpuTime := range perfMetric.CPUTimes {
-						// 	models.CreateCPUTimes(db, &models.CPUTimes{
-						// 		ResourceID: resource.ID,
-						// 		CPU:        cpuTime.CPU,
-						// 		User:       cpuTime.User,
-						// 		System:     cpuTime.System,
-						// 		Idle:       cpuTime.Idle,
-						// 		Nice:       cpuTime.Nice,
-						// 		Iowait:     cpuTime.Iowait,
-						// 		Irq:        cpuTime.Irq,
-						// 		Softirq:    cpuTime.Softirq,
-						// 		Steal:      cpuTime.Steal,
-						// 		Guest:      cpuTime.Guest,
-						// 		GuestNice:  cpuTime.GuestNice,
-						// 	})
-
-						// }
-
-						// for i, diskIOCounter := range perfMetric.DiskIOCounters {
-						// 	models.CreateDiskIOCounters(db, &models.DiskIOCounters{
-						// 		ResourceID:       resource.ID,
-						// 		Device:           i,
-						// 		ReadCount:        diskIOCounter.ReadCount,
-						// 		MergedReadCount:  diskIOCounter.MergedReadCount,
-						// 		WriteCount:       diskIOCounter.WriteCount,
-						// 		MergedWriteCount: diskIOCounter.MergedWriteCount,
-						// 		ReadBytes:        diskIOCounter.ReadBytes,
-						// 		WriteBytes:       diskIOCounter.WriteBytes,
-						// 		ReadTime:         diskIOCounter.ReadTime,
-						// 		WriteTime:        diskIOCounter.WriteTime,
-						// 		IopsInProgress:   diskIOCounter.IopsInProgress,
-						// 		IoTime:           diskIOCounter.IoTime,
-						// 		WeightedIO:       diskIOCounter.WeightedIO,
-						// 		Name:             diskIOCounter.Name,
-						// 		SerialNumber:     diskIOCounter.SerialNumber,
-						// 		Label:            diskIOCounter.Label,
-						// 	})
-						// }
-
-						// for i, netIOCounter := range perfMetric.NetIOCounters {
-						// 	models.CreateNetIOCounters(db, &models.NetIOCounters{
-						// 		ResourceID:  resource.ID,
-						// 		NICID:       uint(i),
-						// 		Name:        netIOCounter.Name,
-						// 		BytesSent:   netIOCounter.BytesSent,
-						// 		BytesRecv:   netIOCounter.BytesRecv,
-						// 		PacketsSent: netIOCounter.PacketsSent,
-						// 		PacketsRecv: netIOCounter.PacketsRecv,
-						// 		Errin:       netIOCounter.Errin,
-						// 		Errout:      netIOCounter.Errout,
-						// 		Dropin:      netIOCounter.Dropin,
-						// 		Dropout:     netIOCounter.Dropout,
-						// 		Fifoin:      netIOCounter.Fifoin,
-						// 		Fifoout:     netIOCounter.Fifoout,
-						// 	})
-						// }
+					for i, _ := range resources {
+						resources[i].RunID = rr.ID
 					}
+					db.CreateInBatches(resources, 3000)
+
+					// ATTENTION: deprecates perfmetric changed by resources implemented above
+					// for _, perfMetric := range perfMetrics {
+
+					// 	resource := models.Resource{
+					// 		RunID:          rr.ID,
+					// 		CpuPercent:     perfMetric.CpuPercent,
+					// 		MemPercent:     perfMetric.MemoryPercent,
+					// 		MemoryInfoStat: *perfMetric.MemoryInfo,
+					// 		IOCountersStat: *perfMetric.IOCounters,
+					// 		PageFaultsStat: *perfMetric.PageFaults,
+					// 		// AvgStat:           *perfMetric.Load,
+					// 		// VirtualMemoryStat: *perfMetric.VirtualMemory,
+					// 		// SwapMemoryStat:    *perfMetric.SwapMemory,
+					// 		// CPUTime:           perfMetric.CPUTime,
+					// 		// DiskIOCounters:    perfMetric.DiskIOCounters,
+					// 		// NetIOCounters:     perfMetric.NetIOCounters,
+					// 	}
+					// 	_, err = models.CreateResource(db, &resource)
+					// 	if err != nil {
+					// 		fmt.Println("ERROR creating randoop resource: ", err.Error())
+					// 	}
+					// 	// for _, cpuTime := range perfMetric.CPUTimes {
+					// 	// 	models.CreateCPUTimes(db, &models.CPUTimes{
+					// 	// 		ResourceID: resource.ID,
+					// 	// 		CPU:        cpuTime.CPU,
+					// 	// 		User:       cpuTime.User,
+					// 	// 		System:     cpuTime.System,
+					// 	// 		Idle:       cpuTime.Idle,
+					// 	// 		Nice:       cpuTime.Nice,
+					// 	// 		Iowait:     cpuTime.Iowait,
+					// 	// 		Irq:        cpuTime.Irq,
+					// 	// 		Softirq:    cpuTime.Softirq,
+					// 	// 		Steal:      cpuTime.Steal,
+					// 	// 		Guest:      cpuTime.Guest,
+					// 	// 		GuestNice:  cpuTime.GuestNice,
+					// 	// 	})
+
+					// 	// }
+
+					// 	// for i, diskIOCounter := range perfMetric.DiskIOCounters {
+					// 	// 	models.CreateDiskIOCounters(db, &models.DiskIOCounters{
+					// 	// 		ResourceID:       resource.ID,
+					// 	// 		Device:           i,
+					// 	// 		ReadCount:        diskIOCounter.ReadCount,
+					// 	// 		MergedReadCount:  diskIOCounter.MergedReadCount,
+					// 	// 		WriteCount:       diskIOCounter.WriteCount,
+					// 	// 		MergedWriteCount: diskIOCounter.MergedWriteCount,
+					// 	// 		ReadBytes:        diskIOCounter.ReadBytes,
+					// 	// 		WriteBytes:       diskIOCounter.WriteBytes,
+					// 	// 		ReadTime:         diskIOCounter.ReadTime,
+					// 	// 		WriteTime:        diskIOCounter.WriteTime,
+					// 	// 		IopsInProgress:   diskIOCounter.IopsInProgress,
+					// 	// 		IoTime:           diskIOCounter.IoTime,
+					// 	// 		WeightedIO:       diskIOCounter.WeightedIO,
+					// 	// 		Name:             diskIOCounter.Name,
+					// 	// 		SerialNumber:     diskIOCounter.SerialNumber,
+					// 	// 		Label:            diskIOCounter.Label,
+					// 	// 	})
+					// 	// }
+
+					// 	// for i, netIOCounter := range perfMetric.NetIOCounters {
+					// 	// 	models.CreateNetIOCounters(db, &models.NetIOCounters{
+					// 	// 		ResourceID:  resource.ID,
+					// 	// 		NICID:       uint(i),
+					// 	// 		Name:        netIOCounter.Name,
+					// 	// 		BytesSent:   netIOCounter.BytesSent,
+					// 	// 		BytesRecv:   netIOCounter.BytesRecv,
+					// 	// 		PacketsSent: netIOCounter.PacketsSent,
+					// 	// 		PacketsRecv: netIOCounter.PacketsRecv,
+					// 	// 		Errin:       netIOCounter.Errin,
+					// 	// 		Errout:      netIOCounter.Errout,
+					// 	// 		Dropin:      netIOCounter.Dropin,
+					// 	// 		Dropout:     netIOCounter.Dropout,
+					// 	// 		Fifoin:      netIOCounter.Fifoin,
+					// 	// 		Fifoout:     netIOCounter.Fifoout,
+					// 	// 	})
+					// 	// }
+					// }
 				}
 			}
 
