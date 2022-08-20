@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/tidwall/gjson"
+	"golang.org/x/exp/maps"
 	"gorm.io/gorm"
 )
 
@@ -815,17 +816,20 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 				// 	// }
 				return true // keep iterating
 			})
-			for _, jvm := range jfrMap {
-				_, err = models.CreateJvm(db, &jvm)
-				if err != nil {
-					log.Printf("Error saving jvm: %s\n", err.Error())
-				}
-			}
+
+			// for _, jvm := range jfrMap {
+			// 	_, err = models.CreateJvm(db, &jvm)
+			// 	if err != nil {
+			// 		log.Printf("Error saving jvm: %s\n", err.Error())
+			// 	}
+			// }
+			jfrValues := maps.Values(jfrMap)
+			db.CreateInBatches(jfrValues, 500)
 
 		}
 
 	} else {
-		log.Println("!!!!!!! JFR file not found!!!")
+		log.Println("ATTENTION!!!!!!! JFR file not found!!!")
 	}
 
 }
