@@ -36,92 +36,91 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 	// 	log.Println("Error copying commit directory: ", err.Error())
 	// }
 
-	err := Checkout(repository.Name, currCommit.Hash.String())
-	if err != nil {
-		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
-		log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
-	} else {
+	// err := Checkout(repository.Name, currCommit.Hash.String())
+	// if err != nil {
+	// 	fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
+	// 	log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
+	// } else {
 
-		switch buildtool := checkBuildTool(repoDir); buildtool {
-		case "":
-			fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
-		case "maven":
-			// projectModules := getProjectModules(repoDir)
-			// if len(projectModules) == 0 {
-			// buildPath := repoDir + string(os.PathSeparator)
+	switch buildtool := checkBuildTool(repoDir); buildtool {
+	case "":
+		fmt.Println("ATTENTION: Maven or Gradle files not found in ", repoDir)
+	case "maven":
+		// projectModules := getProjectModules(repoDir)
+		// if len(projectModules) == 0 {
+		// buildPath := repoDir + string(os.PathSeparator)
 
-			MvnInstall(repoDir)
-			ok := MvnCompile(repoDir)
-			log.Println("MvnCompile ok: ", ok)
+		ok := MvnInstall(repoDir)
+		// ok := MvnCompile(repoDir)
+		// log.Println("MvnCompile ok: ", ok)
+		if ok {
+			MeasureMavenTests(db, repoDir, *commit, measurement)
+			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
+			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+			// for _, file := range listJavaFiles(repoDir) {
+			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			// }
+			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+			// }
+			// } else {
+			// 	MvnInstall(repoDir)
+			// 	ok := MvnCompile(repoDir)
+			// 	if ok {
+			// 		for _, projectPath := range projectModules {
+			// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
+			// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
+			// 			// (db, repoDir, "maven", "maven", measurement.ID)
+			// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+			// 			// for _, file := range listJavaFiles(repoDir) {
+			// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			// 			// }
+			// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+
+			// 		}
+			// 	}
+		} else {
+			log.Println("ERROR:  Compilation failed!")
+		}
+	case "gradle":
+		projectPaths := getProjectPaths(repoDir)
+		if len(projectPaths) == 0 {
+			buildPath := repoDir + string(os.PathSeparator)
+			ok := GradleBuild(buildPath)
 			if ok {
-				MeasureMavenTests(db, repoDir, *commit, measurement)
-				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
-				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-				// for _, file := range listJavaFiles(repoDir) {
-				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+				MeasureGradleTests(db, buildPath, *commit, measurement)
+				// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID, commitID)
+				// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
+				// for _, file := range listJavaFiles(buildPath) {
+				// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
 				// }
-				// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
-				// }
-				// } else {
-				// 	MvnInstall(repoDir)
-				// 	ok := MvnCompile(repoDir)
-				// 	if ok {
-				// 		for _, projectPath := range projectModules {
-				// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
-				// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
-				// 			// (db, repoDir, "maven", "maven", measurement.ID)
-				// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-				// 			// for _, file := range listJavaFiles(repoDir) {
-				// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
-				// 			// }
-				// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
-
-				// 		}
-				// 	}
-			} else {
-				log.Println("ERROR:  Compilation failed!")
+				// JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
 			}
-		case "gradle":
-			projectPaths := getProjectPaths(repoDir)
-			if len(projectPaths) == 0 {
-				buildPath := repoDir + string(os.PathSeparator)
+
+		} else {
+			for _, projectPath := range projectPaths {
+				buildPath := repoDir + string(os.PathSeparator) + projectPath
 				ok := GradleBuild(buildPath)
 				if ok {
 					MeasureGradleTests(db, buildPath, *commit, measurement)
-					// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID, commitID)
+					// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
 					// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
 					// for _, file := range listJavaFiles(buildPath) {
 					// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
 					// }
 					// JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
 				}
-
-			} else {
-				for _, projectPath := range projectPaths {
-					buildPath := repoDir + string(os.PathSeparator) + projectPath
-					ok := GradleBuild(buildPath)
-					if ok {
-						MeasureGradleTests(db, buildPath, *commit, measurement)
-						// JacocoTestCoverage(db, buildPath, "gradle", "gradle", measurement.ID)
-						// gradleClasspath := GetGradleDependenciesClasspath(buildPath)
-						// for _, file := range listJavaFiles(buildPath) {
-						// 	MeasureRandoopTests(db, buildPath, file, "gradle", gradleClasspath, commitID, measurement)
-						// }
-						// JacocoTestCoverage(db, buildPath, "randoop", "gradle", measurement.ID)
-					}
-				}
 			}
-		default:
-			fmt.Println("Error: Build Tool not recognized!")
-			log.Println("Error: Build Tool not recognized!")
-			log.Fatal("Error: Build Tool not recognized!")
 		}
+	default:
+		fmt.Println("Error: Build Tool not recognized!")
+		log.Println("Error: Build Tool not recognized!")
+		log.Fatal("Error: Build Tool not recognized!")
 	}
+	// }
 }
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
 
-	// if ok {
 	projectModules := getProjectModules(repoDir)
 	// fmt.Println("modules: ", projectModules)
 	path := repoDir
@@ -133,8 +132,8 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		minTestTime, _ = strconv.ParseFloat(minTestTimeStr, 32)
 	}
 	for _, module := range projectModules {
-		fmt.Printf("\n*** Module: %s\n\n", module)
-		log.Printf("\n*** Module: %s\n\n", module)
+		// fmt.Printf("\n*** Module: %s\n\n", module)
+		// log.Printf("\n*** Module: %s\n\n", module)
 		if module != "" {
 			path = repoDir + "/" + module
 		}
@@ -155,7 +154,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 			}
 
 			for _, file := range files {
-				log.Println("test file: ", file.Name())
+				// log.Println("test file: ", file.Name())
 				if !file.IsDir() {
 					suites := ParseMavenTestResults(path + "/target/surefire-reports/" + file.Name())
 					// maxGoroutines, err := strconv.Atoi(os.Getenv("threads"))
@@ -167,7 +166,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					// count := -1
 					for _, test := range suites.TestCases {
 						testName := test.ClassName + "#" + test.Name
-						log.Println("testcase:", testName)
+						// log.Println("testcase:", testName)
 						_, ignore := tcignoreMap[testName]
 						if !ignore {
 							if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
@@ -208,20 +207,6 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 			}
 		}
 	}
-	// read testcases
-	//
-	// if module != "" {
-	//
-	// }
-	// path = path + "/target/surefire-reports/"
-	// fmt.Println("surefire results: ", path)
-
-	// } else {
-	// 	log.Println("********************** CRITICAL ERROR ***************")
-	// 	log.Println("successAfter is false measuring maven tests")
-	// 	fmt.Println("********************** CRITICAL ERROR ***************")
-	// 	fmt.Println("successAfter is false measuring maven tests")
-	// }
 }
 
 func MeasureGradleTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {

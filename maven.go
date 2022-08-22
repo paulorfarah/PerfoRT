@@ -142,11 +142,12 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 
 	// coverage needs module, so can't collect coverage in this func
 
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	log.Println("- mvn -fn -Drat.skip=true clean test")
-	fmt.Println("- mvn -fn -Drat.skip=true clean test")
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "test")
+	// log.Println("- mvn -fn -Drat.skip=true test")
+	// fmt.Println("- mvn -fn -Drat.skip=true test")
 
-	fmt.Println("path: ", path)
+	// fmt.Println("path: ", path)
 	cmd.Dir = path
 
 	// output, err = cmd.CombinedOutput()
@@ -245,7 +246,7 @@ func readMavenTestResults(path string) []MvnTestResult {
 func MvnInstall(path string) bool {
 	logfile := "maven-install.log"
 
-	fmt.Println("------------------------------------------------ mvn install")
+	// fmt.Println("------------------------------------------------ mvn install")
 	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "install")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
@@ -256,7 +257,7 @@ func MvnInstall(path string) bool {
 		// fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
-	log.Printf("Compilation out:\n%s\n", string(output))
+	// log.Printf("Compilation out:\n%s\n", string(output))
 	// fmt.Printf("Compilation out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
@@ -511,10 +512,9 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	suite := ParseMavenTestResults(resultsPath)
 	for _, test := range suite.TestCases {
 		if test.Name == tc.Name {
-			fmt.Printf("  %s\n", test.Name)
+			// fmt.Printf("  %s\n", test.Name)
 			// fmt.Printf("time:  %s\n", test.Time)
-			// t, _ := strconv.ParseFloat(test.Time, 32)
-			// fmt.Printf("float: %f\n", t)
+
 			dur, errD := time.ParseDuration(strings.Replace(test.Time, ",", "", -1) + "s")
 			if errD != nil {
 				fmt.Println("ERROR parsing test time to duration: ", errD.Error())
@@ -525,46 +525,8 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			if err != nil {
 				fmt.Println("ERROR saving run: ", err.Error())
 			}
-
-			// if test.Error != nil {
-			// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
-			// } else {
-			// 	fmt.Printf("    %s\n", test.Status)
-			// }
-			// mr.TestCaseTime = test.Duration
-
 		}
 	}
-	// resultsPath := path + "/build/test-results/test/TEST-" + tc.ClassName + ".xml"
-	// // fmt.Println(resultsPath)
-	// suites, err := junit.IngestFile(resultsPath)
-	// if err != nil {
-	// 	fmt.Printf("failed to ingest JUnit xml %v", err)
-	// 	log.Fatalf("failed to ingest JUnit xml %v", err)
-	// }
-	// for _, suite := range suites {
-	// 	// fmt.Println(suite.Name)
-
-	// 	for _, test := range suite.Tests {
-	// 		if test.Name == tc.Name {
-	// 			fmt.Printf("  %s\n", test.Name)
-	// 			mr.TestCaseTime = test.Duration
-	// 			err := models.SaveRun(db, mr)
-	// 			if err != nil {
-	// 				fmt.Println("ERROR saving run: ", err.Error())
-	// 			}
-
-	// 			// if test.Error != nil {
-	// 			// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
-	// 			// } else {
-	// 			// 	fmt.Printf("    %s\n", test.Status)
-	// 			// }
-	// 			// mr.TestCaseTime = test.Duration
-
-	// 		}
-	// 	}
-	// }
-
 }
 
 func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName string) {
@@ -592,18 +554,16 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 
 	mavenClasspath := GetMavenDependenciesClasspath(path)
-	// log.Println("Dependencies: ", mavenClasspath)
-	// log.Println()
-	log.Println("- junit testcase: ", path, className, testName)
-	fmt.Println("- junit testcase: ", path, className, testName)
+	// log.Println("- junit testcase: ", path, className, testName)
+	// fmt.Println("- junit testcase: ", path, className, testName)
 
 	var cmd *exec.Cmd
 
-	log.Println("Number of runs: ", measurement.Runs)
+	// log.Println("Number of runs: ", measurement.Runs)
 
 	finish := make(chan bool)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
-		log.Println("#Run: ", runNumber)
+		// log.Println("#Run: ", runNumber)
 		run := &models.Run{
 			MeasurementID: measurement.ID,
 			TestCaseID:    tc.ID,
@@ -625,40 +585,40 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 			for {
 				select {
 				case pid = <-start:
-					log.Println("+++ start monitoring... ", time.Now())
+					// log.Println("+++ start monitoring... ", time.Now())
 					active = true
 					resources = []models.Resource{}
 					// wg.Done()
 				case <-stop:
-					log.Println("### stop monitoring... ", time.Now())
+					// log.Println("### stop monitoring... ", time.Now())
 					active = false
 					//save
-					log.Println("saving resources: ", len(resources))
+					// log.Println("saving resources: ", len(resources))
 					db.CreateInBatches(resources, 500)
-					log.Println("saved resources...")
+					// log.Println("saved resources...")
 					SaveJFRMetrics(db, run.ID, tc.ID)
-					log.Println("saved jvm...")
+					// log.Println("saved jvm...")
 				case <-ctx.Done():
 					if active {
-						fmt.Println("!!! time out monitoring... ", time.Now())
-						log.Println("!!! time out monitoring... ", time.Now())
+						// fmt.Println("!!! time out monitoring... ", time.Now())
+						// log.Println("!!! time out monitoring... ", time.Now())
 						active = false
 						// errKill := cmd.Process.Kill()
 						// if errKill != nil {
 						// 	fmt.Println("Error killing process: ", errKill)
 						// 	log.Println("Error killing process: ", errKill)
 						// }
-						fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
-						log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
+						// fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
+						// log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
 						db.CreateInBatches(resources, 500)
-						fmt.Println("saved resources...")
+						// fmt.Println("saved resources...")
 						SaveJFRMetrics(db, run.ID, tc.ID)
-						fmt.Println("saved jvm...")
+						// fmt.Println("saved jvm...")
 					}
 
 				case <-finish:
-					fmt.Println(">>> finished monitoring... ", time.Now())
+					// fmt.Println(">>> finished monitoring... ", time.Now())
 					return
 				default:
 					if active {
@@ -679,29 +639,19 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
 		jfrFilename := "/jfr/perfrt" + strconv.Itoa(int(run.ID)) + ".jfr"
-		// log.Println("removing " + localpath + jfrFilename)
-		// e := os.Remove(localpath + jfrFilename)
-		// if e != nil {
-		// 	log.Println("Error removing JFR file: ", e.Error())
-		// }
+
 		localClasspath := ".:target/test-classes/:target/classes:"
 		if module != "" {
 			localClasspath += module + "/target/test-classes/:" + module + "/target/classes/:"
 		}
-		strJunitTC := "java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
-			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
-			" -jar " +
-			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + className + "#" + testName
-		log.Println()
-		log.Println(strJunitTC)
-
-		// cmd = exec.Command(
-		// 	"java", "-javaagent:"+localpath+"/perfrt-profiler-0.0.1-SNAPSHOT.jar="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
-		// 	"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+"/perfrt.jfr,settings="+localpath+"/perfrt.jfc",
-		// 	"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName) //.Output()
+		// strJunitTC := "java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
+		// 	" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
+		// 	" -jar " +
+		// 	localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + className + "#" + testName
+		// log.Println()
+		// log.Println(strJunitTC)
 
 		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
-
 		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/perfrt.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName)
@@ -723,8 +673,8 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		// fmt.Println(ctx.Err())
 		stop <- true
 		if ctx.Err() == context.DeadlineExceeded {
-			log.Println("DeadlineExceeded...")
-			fmt.Println("DeadlineExceeded...")
+			// log.Println("DeadlineExceeded...")
+			// fmt.Println("DeadlineExceeded...")
 			models.SetTestCaseError(db, tc)
 			cancel()
 			// return
@@ -744,59 +694,12 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				}
 			}
 		}
-		log.Println("Testcase out:", outb.String())
-
-		log.Println("Testcase err:", errb.String())
-
-		// done := make(chan error)
-		// fmt.Println("===== started goroutine perfMetric / created channel done =====")
-		// fmt.Printf("===== #Goroutines: %d =====\n\n", runtime.NumGoroutine())
-
-		// select {
-		// case <-timeout:
-		// 	// Timeout happened first, kill the process and print a message.
-		// 	stop <- true
-		// 	cmd.Process.Kill()
-		// 	fmt.Println("Testcase timed out: ", tc.ClassName)
-		// 	log.Println("Testcase timed out", tc.ClassName)
-		// 	models.SetTestCaseError(db, tc)
-		// case err := <-done:
-		// 	// Command completed before timeout. Print output and error if it exists.
-		// 	// fmt.Println("Output:", buf.String())
-		// 	// if err != nil {
-		// 	// 	fmt.Println("Non-zero exit code:", err)
-		// 	// }
-		// 	stop <- true
-		// 	if err != nil {
-		// 		pid = cmd.Process.Pid
-		// 		// fmt.Println(pid)
-		// 		process, err := os.FindProcess(int(pid))
-		// 		if err != nil {
-		// 			log.Printf("Failed to find process: %s\n", err)
-		// 		} else {
-		// 			errPid := process.Signal(syscall.Signal(0))
-		// 			log.Printf("process.Signal on pid %d returned: %v\n", pid, errPid)
-		// 			resPid := fmt.Sprintf("%v", errPid)
-		// 			if resPid != "os: process already finished" {
-		// 				fmt.Printf("junit test failed with %s\n", err.Error())
-		// 				log.Printf("Command finished with error: %s", err.Error())
-		// 			}
-		// 		}
-		// 	}
-		// 	log.Println("out:", outb.String(), "err:", errb.String())
-		// }
-
-		// fmt.Printf("|| #Goroutines: %d n\n", runtime.NumGoroutine())
-		// fmt.Println("  === after select  ")
-
-		// SaveJFRMetrics(db, run.ID, tc.ID)
+		// log.Println("Testcase out:", outb.String())
+		// log.Println("Testcase err:", errb.String())
 	}
 	finish <- true
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)
-	fmt.Println("run GC: ", time.Now())
 	runtime.GC()
-	fmt.Println("ended GC: ", time.Now())
-
 }
 
 func discoverTestFilename(path, className string) string {

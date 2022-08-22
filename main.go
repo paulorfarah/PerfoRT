@@ -28,8 +28,6 @@ import (
 func main() {
 	fmt.Println("starting perfrt")
 
-	// grmon.Start()
-
 	go func() {
 		http.ListenAndServe(":1234", nil)
 	}()
@@ -39,46 +37,19 @@ func main() {
 		log.Fatal(err)
 	}
 	log.SetOutput(logFile)
-	log.Println("starting...")
+	// log.Println("starting...")
 	url, ok := os.LookupEnv("repository")
 
-	// url := "https://github.com/paulorfarah/maven-project"
-	// url := "https://github.com/TooTallNate/Java-WebSocket"
-
-	// url := "https://github.com/paulorfarah/TestProject"
-	// url := "https://github.com/paulorfarah/gradle-project-example"
-	// url := "https://github.com/apache/commons-io" //ok
-	// url := "https://github.com/junit-team/junit4" //ok
-	// url := "https://github.com/igniterealtime/Openfire"//ok
-	// url := "https://github.com/apache/pdfbox"
-	// url := "https://github.com/jenkinsci/jenkins" ok
-
-	// url := "https://github.com/apache/commons-bcel" //ok
-
-	// url := "https://github.com/grpc/grpc-java"
-
-	// url := "https://github.com/apache/kafka" // too slow
-	// url := "https://github.com/ReactiveX/RxJava" //too slow
-	// url := "https://github.com/zxing/zxing" //do not generate test case results report
-	// url := "https://github.com/apache/systemml" //do not generate test case results report
-	// url := "https://github.com/apache/groovy"
-	// url := "https://github.com/google/guava" //error
-
-	fmt.Println("############## url: ", url)
+	// fmt.Println("############## url: ", url)
 	if ok {
 		urlSplit := strings.Split(url, "/")
-		//for k, v := range urlSplit {
-		//	fmt.Printf("%s -> %s\n", k, v)
-		//}
-		//username := urlSplit[3]
 		repoName := urlSplit[4]
 		repoDir := getParentDirectory() + "/repos/" + repoName
-		// repoDir := "/home/farah/go-work/src/github.com/paulorfarah/repos/" + repoName
-		fmt.Println("repoDir: " + repoDir)
-		log.Println("repoDir: " + repoDir)
+		// fmt.Println("repoDir: " + repoDir)
+		// log.Println("repoDir: " + repoDir)
 
 		// fmt.Println("git clone " + url)
-		log.Println("git clone " + url)
+		// log.Println("git clone " + url)
 
 		repo, err := cloneRepository(url, repoDir)
 		if err == nil {
@@ -88,7 +59,7 @@ func main() {
 			// platform
 			platform, err := models.FindPlatformByName(db, "github")
 			if err != nil {
-				log.Println("Create new platform: " + "github")
+				// log.Println("Create new platform: " + "github")
 				platform = &models.Platform{Name: "github"}
 				platformID, err := models.CreatePlatform(db, platform)
 				if err != nil {
@@ -103,7 +74,7 @@ func main() {
 			//save repository in db
 			repository, err := models.FindRepositoryByName(db, repoName)
 			if err != nil {
-				log.Println("create new repo: " + repoName)
+				// log.Println("create new repo: " + repoName)
 				repository = &models.Repository{PlatformID: platform.ID, Name: repoName}
 				models.CreateRepository(db, repository)
 			}
@@ -112,7 +83,7 @@ func main() {
 			// var measurement *models.Measurement
 			measurement := &models.Measurement{RepositoryID: repository.ID}
 			runsEnv, ok := os.LookupEnv("runs")
-			fmt.Println("############## runs: ", runsEnv)
+			// fmt.Println("############## runs: ", runsEnv)
 			runs, err := strconv.Atoi(runsEnv)
 			if err != nil {
 				ok = false
@@ -135,7 +106,7 @@ func main() {
 			} else {
 				log.Println("WARNING: testcase_timeout setting not found, using 1 hour.")
 			}
-			log.Println("monitoring time: ", tcTimeOut)
+			// log.Println("monitoring time: ", tcTimeOut)
 			measurement.TestcaseTimeout = time.Duration(tcTimeOut)
 
 			var monitoringTime time.Duration
@@ -150,7 +121,7 @@ func main() {
 				log.Println("WARNING: environment variable monitoring_time not found, using 1s!")
 				monitoringTime, _ = time.ParseDuration("1s")
 			}
-			log.Println("monitoring time: ", monitoringTime)
+			// log.Println("monitoring time: ", monitoringTime)
 			measurement.MonitoringTime = monitoringTime
 
 			models.CreateMeasurement(db, measurement)
@@ -253,14 +224,14 @@ func main() {
 				//Author
 				author, err := models.FindAccountByEmail(db, cCommit.Author.Email)
 				if err != nil {
-					log.Println("create new author: " + cCommit.Author.Name)
+					// log.Println("create new author: " + cCommit.Author.Name)
 					author = &models.Account{Email: cCommit.Author.Email, Name: cCommit.Author.Name}
 					models.CreateAccount(db, author)
 				}
 				//Committer
 				committer, err := models.FindAccountByEmail(db, cCommit.Committer.Email)
 				if err != nil {
-					log.Println("create new committer: " + cCommit.Committer.Name)
+					// log.Println("create new committer: " + cCommit.Committer.Name)
 					committer = &models.Account{Email: cCommit.Committer.Email, Name: cCommit.Committer.Name}
 					models.CreateAccount(db, committer)
 				}
@@ -269,8 +240,8 @@ func main() {
 				var commitId uint
 				commit, err := models.FindCommitByHash(db, cCommit.Hash.String())
 				if err != nil {
-					log.Println("create new commit: " + cCommit.Hash.String())
-					fmt.Println("#  create new commit: " + cCommit.Hash.String())
+					// log.Println("create new commit: " + cCommit.Hash.String())
+					// fmt.Println("#  create new commit: " + cCommit.Hash.String())
 					// parent, errj := json.Marshal(currCommit.ParentHashes)
 					// if errj != nil {
 					// 	log.Println("Error Marshalling parent hashes: " + errj.Error())
@@ -397,8 +368,8 @@ func main() {
 				// wg.Add(8)
 				Measure(db, *measurement, repoDir, *repository, commit, cCommit)
 				runtime.GC()
-				log.Println("#GoRoutines: ", runtime.NumGoroutine())
-				fmt.Println("#GoRoutines: ", runtime.NumGoroutine())
+				// log.Println("#GoRoutines: ", runtime.NumGoroutine())
+				// fmt.Println("#GoRoutines: ", runtime.NumGoroutine())
 				// fmt.Println("finished Measure")
 				// wg.Wait()
 				// fmt.Println("finished wait group")
@@ -541,7 +512,7 @@ func ReadTCIgnoreMap(filename string) (map[string]struct{}, error) {
 	}
 	defer file.Close()
 
-	var tcignoreMap map[string]struct{}
+	tcignoreMap := make(map[string]struct{})
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		tcignoreMap[scanner.Text()] = struct{}{}
