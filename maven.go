@@ -397,7 +397,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		for {
 			select {
 			case <-stop:
-				db.CreateInBatches(resources, 3000)
+				db.CreateInBatches(resources, 500)
 				return
 			default:
 				resource, err := MonitorProcess(pid, mr.ID)
@@ -575,10 +575,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// read JAVA_HOME
 	profiler := "/perfrt-profiler-1.11.jar"
 	jhome := os.Getenv("JAVA_HOME")
-	if jhome == "" {
-		fmt.Println("ATTENTION: JAVA_HOME environment variable is not defined correctly")
-		log.Println("ATTENTION: JAVA_HOME environment variable is not defined correctly")
-	} else {
+	if jhome != "" {
 		if strings.Contains(jhome, "8") {
 			profiler = "/perfrt-profiler-1.8.jar"
 		}
@@ -637,7 +634,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 					active = false
 					//save
 					log.Println("saving resources: ", len(resources))
-					db.CreateInBatches(resources, 3000)
+					db.CreateInBatches(resources, 500)
 					log.Println("saved resources...")
 					SaveJFRMetrics(db, run.ID, tc.ID)
 					log.Println("saved jvm...")
@@ -654,7 +651,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 						fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
 						log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
-						db.CreateInBatches(resources, 3000)
+						db.CreateInBatches(resources, 500)
 						fmt.Println("saved resources...")
 						SaveJFRMetrics(db, run.ID, tc.ID)
 						fmt.Println("saved jvm...")

@@ -1,5 +1,6 @@
 USE perfrt;
-SELECT repo.name, mea.id AS measurement, c.committer_date, commit_hash, test.name AS test_name, r.id AS run, f.name AS class_name, m.name AS method_name, m.created_at AS method_started_at, m.ended_at AS method_ended_at, m.caller_id, m.own_duration, m.cumulative_duration, 
+SELECT repo.name, mea.id AS measurement, c.committer_date, commit_hash, test.name AS test_name, r.id AS run, f.name AS class_name, 
+m.name AS method_name, m.created_at AS method_started_at, m.ended_at AS method_ended_at, m.caller_id, m.own_duration, m.cumulative_duration, 
 AVG(res.cpu_percent), STD(res.cpu_percent)
 FROM commits AS c
 INNER JOIN files AS f ON f.commit_id=c.id

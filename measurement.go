@@ -148,6 +148,12 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 			fmt.Printf("cannot find surefire results in path: %s - %s\n", path+"/target/surefire-reports/", err.Error())
 		} else {
 
+			// read testcase ignore file
+			tcignoreMap, errIgn := ReadTCIgnoreMap(".tcignore_" + packName)
+			if errIgn != nil {
+				log.Println("Error reading lfist of ignored testcases: ", errIgn)
+			}
+
 			for _, file := range files {
 				log.Println("test file: ", file.Name())
 				if !file.IsDir() {
@@ -158,20 +164,11 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 					// 	maxGoroutines = 1
 					// }
 					// guard := make(chan struct{}, maxGoroutines)
-					count := -1
+					// count := -1
 					for _, test := range suites.TestCases {
 						testName := test.ClassName + "#" + test.Name
 						log.Println("testcase:", testName)
-						ignoredTcs, errIgn := ReadListFromFile(".tcignore_" + packName)
-						if errIgn != nil {
-							log.Println("Error reading lfist of ignored testcases: ", errIgn)
-						}
-						ignore := false
-						for _, tc := range ignoredTcs {
-							if testName == tc {
-								ignore = true
-							}
-						}
+						_, ignore := tcignoreMap[testName]
 						if !ignore {
 							if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {
 								if tcTime >= minTestTime {
@@ -196,7 +193,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 									// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
 									RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName)
 									// <-guard
-									count++
+									// count++
 									// }(count)
 								} else {
 									log.Printf("Testcase %s#%s was not executed because its time %s is lower than the mininum test time threshold (%f).\n", test.ClassName, test.Name, test.Time, minTestTime)
@@ -397,7 +394,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					for i, _ := range resources {
 						resources[i].RunID = rr.ID
 					}
-					db.CreateInBatches(resources, 3000)
+					db.CreateInBatches(resources, 1000)
 
 					// ATTENTION: deprecates perfmetric changed by resources implemented above
 					// for _, perfMetric := range perfMetrics {

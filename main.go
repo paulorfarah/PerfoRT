@@ -518,7 +518,7 @@ func createDirs() {
 }
 
 func ReadListFromFile(filename string) ([]string, error) {
-	// reads file ctignore into memory
+	// reads file tcignore into memory
 	// and returns a slice of testcases to be ignored
 	file, err := os.Open(filename)
 	if err != nil {
@@ -532,4 +532,19 @@ func ReadListFromFile(filename string) ([]string, error) {
 		lines = append(lines, scanner.Text())
 	}
 	return lines, scanner.Err()
+}
+
+func ReadTCIgnoreMap(filename string) (map[string]struct{}, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var tcignoreMap map[string]struct{}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		tcignoreMap[scanner.Text()] = struct{}{}
+	}
+	return tcignoreMap, scanner.Err()
 }
