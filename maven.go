@@ -142,8 +142,8 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 
 	// coverage needs module, so can't collect coverage in this func
 
-	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "test")
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "test")
 	// log.Println("- mvn -fn -Drat.skip=true test")
 	// fmt.Println("- mvn -fn -Drat.skip=true test")
 
@@ -529,38 +529,15 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 }
 
-func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName string) {
+func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string) {
 	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
 	// var wg sync.WaitGroup
-
-	// read JAVA_HOME
-	profiler := "/perfrt-profiler-1.11.jar"
-	jhome := os.Getenv("JAVA_HOME")
-	if jhome != "" {
-		if strings.Contains(jhome, "8") {
-			profiler = "/perfrt-profiler-1.8.jar"
-		}
-	}
-
-	className := tc.ClassName
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
-
-	//set environment variable to activate profiler during testcases execution
-	localpath, errPath := os.Getwd()
-	if errPath != nil {
-		log.Println(errPath)
-		fmt.Println("error getting current path: ", errPath.Error())
-	}
-
-	mavenClasspath := GetMavenDependenciesClasspath(path)
-	// log.Println("- junit testcase: ", path, className, testName)
-	// fmt.Println("- junit testcase: ", path, className, testName)
 
 	var cmd *exec.Cmd
 
 	// log.Println("Number of runs: ", measurement.Runs)
-
 	finish := make(chan bool)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
 		// log.Println("#Run: ", runNumber)
@@ -640,25 +617,21 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 		jfrFilename := "/jfr/perfrt" + strconv.Itoa(int(run.ID)) + ".jfr"
 
-		localClasspath := ".:target/test-classes/:target/classes:"
-		if module != "" {
-			localClasspath += module + "/target/test-classes/:" + module + "/target/classes/:"
-		}
 		// strJunitTC := "java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
 		// 	" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
 		// 	" -jar " +
-		// 	localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + className + "#" + testName
+		// 	localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + tc.ClassName + "#" + testName
 		// log.Println()
 		// log.Println(strJunitTC)
 
 		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
 		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/perfrt.jfc",
-			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", className+"#"+testName)
+			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", tc.ClassName+"#"+testName)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
-		cmd.Dir = path
+		cmd.Dir = repoDir
 		// log.Println("path: ", path)
 		// wg.Wait()
 
@@ -686,7 +659,7 @@ func RunJUnitTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 				fmt.Printf("Failed to find process: %s\n", err)
 			} else {
 				errPid := process.Signal(syscall.Signal(0))
-				fmt.Printf("process.Signal on pid %d returned: %v\n", cmd.Process.Pid, errPid)
+				// fmt.Printf("process.Signal on pid %d returned: %v\n", cmd.Process.Pid, errPid)
 				resPid := fmt.Sprintf("%v", errPid)
 				if resPid != "os: process already finished" {
 					fmt.Printf("junit test failed with %s\n", err.Error())

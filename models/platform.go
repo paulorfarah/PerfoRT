@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -21,7 +19,7 @@ func CreatePlatform(db *gorm.DB, platform *Platform) (uint, error) {
 	if err != nil {
 		return 0, err
 	}
-	fmt.Println("New platform added: " + platform.Name)
+	// fmt.Println("New platform added: " + platform.Name)
 	return platform.ID, nil
 }
 

@@ -39,7 +39,8 @@ func init() {
 
 	strConn := username + ":" + password + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
 	db, err = gorm.Open(mysql.Open(strConn), &gorm.Config{
-		Logger:                                   logger.Default.LogMode(logger.Error),
+		// Logger:                                   logger.Default.LogMode(logger.Error),
+		Logger:                                   logger.Default.LogMode(logger.Silent),
 		DisableForeignKeyConstraintWhenMigrating: true,
 		SkipDefaultTransaction:                   true,
 	})
