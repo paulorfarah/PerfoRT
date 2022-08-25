@@ -95,3 +95,8 @@ ORDER BY repo.name, mea.id, c.committer_date, f.name, m.name, r.id;
 -- TERMINATED BY ';'
 -- ESCAPED BY '"'
 -- LINES TERMINATED BY '\r\n';
+
+
+# read testcases:
+mvn clean verify > maven_build.out
+echo $(( $(cat maven_build.out | grep "Tests run" | grep -v "Time elapsed" | cut -d , -f 1 | cut -d " " -f 4 | tr "\n" "+") 0))
