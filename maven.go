@@ -15,7 +15,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 
@@ -533,7 +532,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string) {
 	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
 
 	var cmd *exec.Cmd
@@ -555,7 +554,7 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, 
 		stop := make(chan bool)
 		ctx, cancel := context.WithTimeout(context.Background(), measurement.TestcaseTimeout*time.Second)
 		defer cancel()
-		wg.Add(1)
+		// wg.Add(1)
 		go func() {
 			active := false
 			var pid int
@@ -566,7 +565,7 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, 
 					// log.Println("+++ start monitoring... ", time.Now())
 					active = true
 					resources = []models.Resource{}
-					wg.Done()
+					// wg.Done()
 				case <-stop:
 					// log.Println("### stop monitoring... ", time.Now())
 					active = false
@@ -634,7 +633,7 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, 
 		cmd.Stderr = &errb
 		cmd.Dir = repoDir
 		// log.Println("path: ", path)
-		wg.Wait()
+		// wg.Wait()
 
 		err := cmd.Start()
 		start <- cmd.Process.Pid
