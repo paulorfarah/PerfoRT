@@ -143,7 +143,7 @@ func main() {
 			// }
 
 			packName := os.Getenv("package")
-			releases, errRel := ReadListFromFile(".releases_" + packName)
+			releases, errRel := ReadListFromFile(".releases/" + packName)
 			if errRel != nil {
 				log.Println("Error reading file of releases: ", errRel)
 			}
