@@ -14,7 +14,7 @@ type Method struct {
 	File               File
 	RunID              uint `gorm:"index;not null"`
 	Run                Run
-	Name               string   `gorm:"not null"`
+	Name               string   `gorm:"not null;size:2048"`
 	CallerID           *uint    `gorm:"index"`
 	Caller             []Method `gorm:"foreignkey:CallerID"`
 	EndedAt            time.Time

@@ -9,9 +9,9 @@ type TestCase struct {
 	Model
 	FileID       uint
 	FileTargetID uint
-	Name         string `gorm:"not null"`
+	Name         string `gorm:"not null;size:2048"`
 	Type         string `gorm:"not null"`
-	ClassName    string `gorm:"not null"`
+	ClassName    string `gorm:"not null;size:2048"`
 	Message      string
 	Error        bool
 }

@@ -16,9 +16,9 @@ type Issue struct {
 	Number           int  `gorm:"not null"` //issue number
 	CreatedViaEmail  bool `gorm:"default:false"`
 	PublishedAt      time.Time
-	Title            string `gorm:"not null"`
+	Title            string `gorm:"not null;size:2048"`
 	Author           uint   `gorm:"not null"`
-	BodyText         string `gorm:"not null"`
+	BodyText         string `gorm:"not null;size:2048"`
 	State            string `gorm:"not null"`
 	Closed           bool   `gorm:"default:false"`
 	ClosedAt         time.Time

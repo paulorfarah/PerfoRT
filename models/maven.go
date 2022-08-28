@@ -11,8 +11,8 @@ type Maven struct {
 	Measurement   Measurement
 	Type          byte `gorm:"not null"`
 	CommitID      uint
-	COmmit        Commit
-	ClassName     string
+	Commit        Commit
+	ClassName     string `gorm:"size:2048"`
 	TestsRun      int
 	Failures      int
 	Errors        int

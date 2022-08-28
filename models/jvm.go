@@ -75,13 +75,13 @@ type ThreadSleep struct {
 }
 
 type ThreadPark struct {
-	ThreadParkDuration     float64
+	ThreadParkDuration     *time.Time
 	ThreadParkOsName       string
 	ThreadParkOsThreadId   float64
 	ThreadParkJavaName     string
 	ThreadParkJavaThreadId float64
 	ThreadParkParkedClass  string
-	ThreadParkTimeout      float64
+	ThreadParkTimeout      *time.Time
 	ThreadParkUntil        *time.Time
 }
 
@@ -115,7 +115,7 @@ type JavaMonitorEnter struct {
 }
 
 type JavaMonitorWait struct {
-	JavaMonitorWaitDuration     float64
+	JavaMonitorWaitDuration     *time.Time
 	JavaMonitorWaitOsName       string
 	JavaMonitorWaitOsThreadId   float64
 	JavaMonitorWaitJavaName     string

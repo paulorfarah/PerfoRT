@@ -153,7 +153,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 	// fmt.Println("- junit testcase: ", path, tc.ClassName, testName)
 
 	// read testcase ignore file
-	tcignoreMap, errIgn := ReadTCIgnoreMap(".tcignore_" + packName)
+	tcignoreMap, errIgn := ReadTCIgnoreMap(".tcignore/" + packName)
 	if errIgn != nil {
 		log.Println("Error reading lfist of ignored testcases: ", errIgn)
 	}

@@ -7,7 +7,7 @@ import (
 type Platform struct {
 	Model
 	Repositories []Repository //`gorm:"foreignkey:PlatformFK"`
-	Name         string       `gorm:"unique_index;not null"`
+	Name         string       `gorm:"unique_index;not null;size:2048"`
 }
 
 func (p *Platform) TableName() string {

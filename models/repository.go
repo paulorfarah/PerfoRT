@@ -12,9 +12,9 @@ type Repository struct {
 	Model
 	PlatformID   uint // `gorm:"unique_index:idx_repository"`
 	Platform     Platform
-	Name         string `gorm:"not null;unique_index:idx_repository"`
-	Description  string
-	IsPrivate    bool `gorm:"not null" sql:"DEFAULT:false"`
+	Name         string `gorm:"not null;unique_index:idx_repository;size:2048"`
+	Description  string `gorm:"size:2048"`
+	IsPrivate    bool   `gorm:"not null" sql:"DEFAULT:false"`
 	Commits      []Commit
 	Measurements []Measurement
 }

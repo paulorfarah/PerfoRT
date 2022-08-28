@@ -12,7 +12,7 @@ type Randoop struct {
 	Type          byte `gorm:"not null"`
 	CommitID      uint
 	Commit        Commit
-	ClassName     string
+	ClassName     string `gorm:"size:2048"`
 	TestsRun      int
 	// Failures    int
 	// Errors      int
