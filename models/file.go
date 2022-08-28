@@ -13,7 +13,7 @@ type File struct {
 	CommitID uint `gorm:"index"`
 	Commit   Commit
 	Hash     string `gorm:"not null"`
-	Name     string `gorm:"index;not null;size:2048"`
+	Name     string `gorm:"index;not null;size:255"`
 	Size     int64
 	// Contents string `gorm:"type:text"`
 	IsBinary bool `gorm:"not null;default: false"`
