@@ -598,7 +598,8 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 										log.Println("Error parsing JavaMonitorWait duration: ", errParse)
 									}
 								} else if strings.Contains(auxDur, "S") {
-									duration, errParse = time.Parse("5.999999999", auxDur)
+									//parsing time                  "0.100194234S": extra text: "S"
+									duration, errParse = time.Parse("5.999999999S", auxDur)
 									if errParse != nil {
 										log.Println("Error parsing JavaMonitorWait duration: ", errParse)
 									}
