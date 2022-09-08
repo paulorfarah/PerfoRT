@@ -33,7 +33,6 @@ type Jvm struct {
 }
 
 type CPULoad struct {
-	// StartTime    time.Time
 	JvmUser      float64
 	JvmSystem    float64
 	MachineTotal float64
@@ -66,27 +65,27 @@ type ThreadEnd struct { //ok
 }
 
 type ThreadSleep struct {
-	ThreadSleepDuration     float64
+	ThreadSleepDuration     time.Duration
 	ThreadSleepOsName       string
 	ThreadSleepOsThreadId   float64
 	ThreadSleepJavaName     string
 	ThreadSleepJavaThreadId float64
-	ThreadSleepTime         float64
+	ThreadSleepTime         time.Duration
 }
 
 type ThreadPark struct {
-	ThreadParkDuration     *time.Time
+	ThreadParkDuration     time.Duration
 	ThreadParkOsName       string
 	ThreadParkOsThreadId   float64
 	ThreadParkJavaName     string
 	ThreadParkJavaThreadId float64
 	ThreadParkParkedClass  string
-	ThreadParkTimeout      *time.Time
-	ThreadParkUntil        *time.Time
+	ThreadParkTimeout      time.Duration
+	ThreadParkUntil        time.Duration
 }
 
 type JavaErrorThrow struct {
-	JavaErrorThrowDuration     float64
+	JavaErrorThrowDuration     time.Duration
 	JavaErrorThrowOsName       string
 	JavaErrorThrowOsThreadId   float64
 	JavaErrorThrowJavaName     string
@@ -96,7 +95,7 @@ type JavaErrorThrow struct {
 }
 
 type JavaExceptionThrow struct {
-	JavaExceptionThrowDuration     float64
+	JavaExceptionThrowDuration     time.Duration
 	JavaExceptionThrowOsName       string
 	JavaExceptionThrowOsThreadId   float64
 	JavaExceptionThrowJavaName     string
@@ -106,7 +105,7 @@ type JavaExceptionThrow struct {
 }
 
 type JavaMonitorEnter struct {
-	JavaMonitorEnterDuration     float64
+	JavaMonitorEnterDuration     time.Duration
 	JavaMonitorEnterOsName       string
 	JavaMonitorEnterOsThreadId   float64
 	JavaMonitorEnterJavaName     string
@@ -115,18 +114,18 @@ type JavaMonitorEnter struct {
 }
 
 type JavaMonitorWait struct {
-	JavaMonitorWaitDuration     *time.Time
+	JavaMonitorWaitDuration     time.Duration
 	JavaMonitorWaitOsName       string
 	JavaMonitorWaitOsThreadId   float64
 	JavaMonitorWaitJavaName     string
 	JavaMonitorWaitJavaThreadId float64
 	JavaMonitorWaitMonitorClass string
-	JavaMonitorWaitTimeout      float64 //	Maximum wait time
-	JavaMonitorWaitTimedOut     bool    //Wait has been timed out
+	JavaMonitorWaitTimeout      time.Duration //	Maximum wait time
+	JavaMonitorWaitTimedOut     bool          //Wait has been timed out
 }
 
 type OldObjectSample struct {
-	OldObjectSampleDuration           float64
+	OldObjectSampleDuration           time.Duration
 	OldObjectSampleOsName             string
 	OldObjectSampleOsThreadId         float64
 	OldObjectSampleJavaName           string
@@ -173,9 +172,9 @@ type GCPhasePause struct {
 	GCPhasePauseOsThreadId   float64
 	GCPhasePauseJavaName     string
 	GCPhasePauseJavaThreadId float64
-	GCPhasePauseDuration     float64 `json:"duration"`
-	GcId                     float64 `json:"gcId"`
-	GCPhasePauseName         string  `json:"name"`
+	GCPhasePauseDuration     time.Duration `json:"duration"`
+	GcId                     float64       `json:"gcId"`
+	GCPhasePauseName         string        `json:"name"`
 }
 
 func (r *Jvm) TableName() string {

@@ -8,12 +8,12 @@ import (
 	"os"
 	"os/exec"
 	"perfrt/models"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/tidwall/gjson"
-	"golang.org/x/exp/maps"
 	"gorm.io/gorm"
 )
 
@@ -168,7 +168,7 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 		cmd := exec.Command("bash", "-c", "jfr print --json "+jfrFilename+" > "+jsonFilename)
 		err := cmd.Run()
 		if err != nil {
-			log.Println("-> Error executing jfr: ", err.Error())
+			log.Println("-> Error converting jfr to json in "+jfrFilename, err.Error())
 		}
 
 		// parse json file
@@ -335,27 +335,65 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 
 						case "jdk.ThreadSleep":
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-							var duration float64
-							if event.Values["duration"] != nil {
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								auxDur = strings.ReplaceAll(auxDur, "S", "")
-								duration, err = strconv.ParseFloat(auxDur, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.ThreadSleep: cannot parse duration value. ", err)
-								}
-							}
+							// var duration time.Time
+							// if event.Values["duration"] != nil {
+							// 	// auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	// auxDur = strings.ReplaceAll(auxDur, "S", "")
+							// 	// duration, err = strconv.ParseFloat(auxDur, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.ThreadSleep: cannot parse duration value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxDur := event.Values["duration"].(string)
+							// 	auxDur = strings.ReplaceAll(auxDur, "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// time := "29M25.974594914"
+							// 		duration, errParse = time.Parse("04M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		// time := "0.05S"
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
 
-							// "time": "PT30S"
-							var tsTime float64
-							if event.Values["time"] != nil {
-								auxTime := strings.ReplaceAll(event.Values["time"].(string), "PT", "")
-								auxTime = strings.ReplaceAll(auxTime, "S", "")
-								tsTime, err = strconv.ParseFloat(auxTime, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.ThreadSleep: cannot parse time value. ", err)
-								}
-							}
+							// // "time": "PT30S"
+							// var tsTime time.Time
+							// if event.Values["time"] != nil {
+							// 	// auxTime := strings.ReplaceAll(event.Values["time"].(string), "PT", "")
+							// 	// auxTime = strings.ReplaceAll(auxTime, "S", "")
+							// 	// tsTime, err = strconv.ParseFloat(auxTime, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.ThreadSleep: cannot parse time value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxT := event.Values["time"].(string)
+							// 	auxT = strings.ReplaceAll(auxT, "PT", "")
+							// 	if strings.Contains(auxT, "M") {
+							// 		// time := "29M25.974594914"
+							// 		tsTime, errParse = time.Parse("04M05.999999999", auxT)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark tsTime: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxT, "S") {
+							// 		// time := "0.05S"
+							// 		tsTime, errParse = time.Parse("5.999999999S", auxT)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark tsTime: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass tsTime: ", auxT)
+							// 	}
+							// }
 
+							duration := ParseDuration(event.Values["duration"].(string))
+							tsTime := ParseDuration(event.Values["time"].(string))
 							threadSleep := &models.ThreadSleep{
 								ThreadSleepDuration:     duration,
 								ThreadSleepOsName:       osName,
@@ -385,78 +423,80 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 							parkedClass := getClass(event, "parkedClass")
-							var duration time.Time
-							var timeOut time.Time
+							// var duration time.Time
+							// var timeOut time.Time
 
-							if event.Values["duration"] != nil {
-								var errParse error
-								auxDur := event.Values["duration"].(string)
-								auxDur = strings.ReplaceAll(auxDur, "PT", "")
-								if strings.Contains(auxDur, "M") {
-									// time := "29M25.974594914"
-									duration, errParse = time.Parse("04M05.999999999", auxDur)
-									if errParse != nil {
-										log.Println("Error parsing ThreadPark duration: ", errParse)
-									}
-								} else if strings.Contains(auxDur, "S") {
-									// time := "0.05S"
-									duration, errParse = time.Parse("5.999999999", auxDur)
-									if errParse != nil {
-										log.Println("Error parsing ThreadPark duration: ", errParse)
-									}
-								} else {
-									log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
-								}
-							}
-							if event.Values["timeout"] != nil {
-								//"timeout": "PT0.05S",
-								// "29M25.974594914"
-								var errParse error
-								auxTO := strings.ReplaceAll(event.Values["timeout"].(string), "PT", "")
-								if strings.Contains(auxTO, "M") {
-									// time := "29M25.974594914"
-									duration, errParse = time.Parse("04M05.999999999", auxTO)
-									if errParse != nil {
-										log.Println("Error parsing ThreadPark timeout: ", errParse)
-									}
-								} else if strings.Contains(auxTO, "S") {
-									// time := "0.05S"
-									duration, errParse = time.Parse("5.999999999", auxTO)
-									if errParse != nil {
-										log.Println("Error parsing ThreadPark timeout: ", errParse)
-									}
-								} else {
-									log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxTO)
-								}
-							}
+							// if event.Values["duration"] != nil {
+							// 	var errParse error
+							// 	auxDur := event.Values["duration"].(string)
+							// 	auxDur = strings.ReplaceAll(auxDur, "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// time := "29M25.974594914"
+							// 		duration, errParse = time.Parse("04M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		// time := "0.05S"
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
+							// if event.Values["timeout"] != nil {
+							// 	//"timeout": "PT0.05S",
+							// 	// "29M25.974594914"
+							// 	var errParse error
+							// 	auxTO := strings.ReplaceAll(event.Values["timeout"].(string), "PT", "")
+							// 	if strings.Contains(auxTO, "M") {
+							// 		// time := "29M25.974594914"
+							// 		duration, errParse = time.Parse("04M05.999999999", auxTO)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark timeout: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxTO, "S") {
+							// 		// time := "0.05S"
+							// 		duration, errParse = time.Parse("5.999999999S", auxTO)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark timeout: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxTO)
+							// 	}
+							// }
+							// var until time.Time
+							// // var errUntil error
+							// if event.Values["until"] != nil {
+							// 	// event.Values["until"].(float64),"until": "-999999999-01-01T00:00+18:00",
 
-							var until time.Time
-							// var errUntil error
-							if event.Values["until"] != nil {
-								// event.Values["until"].(float64),"until": "-999999999-01-01T00:00+18:00",
+							// 	layout := "2006-01-02T15:04:05.000000000-07:00"
+							// 	untilStr, okUntil := event.Values["until"].(string)
 
-								layout := "2006-01-02T15:04:05.000000000-07:00"
-								untilStr, okUntil := event.Values["until"].(string)
+							// 	if okUntil {
+							// 		// until, errUntil = time.Parse(layout, untilStr)
+							// 		until, _ = time.Parse(layout, untilStr)
 
-								if okUntil {
-									// until, errUntil = time.Parse(layout, untilStr)
-									until, _ = time.Parse(layout, untilStr)
+							// 		// if errUntil != nil {
+							// 		// 	log.Println("ERROR parsing ThreadPark.until timestamp: ", errUntil)
+							// 		// }
 
-									// if errUntil != nil {
-									// 	log.Println("ERROR parsing ThreadPark.until timestamp: ", errUntil)
-									// }
-
-								}
-							}
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
+							timeOut := ParseDuration(event.Values["timeout"].(string))
+							until := ParseDuration(event.Values["until"].(string))
 							threadPark := &models.ThreadPark{
-								ThreadParkDuration:     &duration,
+								ThreadParkDuration:     duration,
 								ThreadParkOsName:       osName,
 								ThreadParkOsThreadId:   osThreadId,
 								ThreadParkJavaName:     javaName,
 								ThreadParkJavaThreadId: javaThreadId,
 								ThreadParkParkedClass:  parkedClass,
-								ThreadParkTimeout:      &timeOut,
-								ThreadParkUntil:        &until,
+								ThreadParkTimeout:      timeOut,
+								ThreadParkUntil:        until,
 							}
 							if val, ok := jfrMap[t]; ok {
 								val.ThreadPark = *threadPark
@@ -475,15 +515,34 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 						case "jdk.JavaErrorThrow":
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 							thrownClass := getClass(event, "thrownClass")
-							var duration float64
-							if event.Values["duration"] != nil {
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								auxDur = strings.ReplaceAll(auxDur, "S", "")
-								duration, err = strconv.ParseFloat(auxDur, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.JavaErrorThrow: cannot parse duration value. ", err)
-								}
-							}
+							// var duration time.Time
+							// if event.Values["duration"] != nil {
+							// 	// auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	// auxDur = strings.ReplaceAll(auxDur, "S", "")
+							// 	// duration, err = strconv.ParseFloat(auxDur, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.JavaErrorThrow: cannot parse duration value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxDur := event.Values["duration"].(string)
+							// 	auxDur = strings.ReplaceAll(auxDur, "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// time := "29M25.974594914"
+							// 		duration, errParse = time.Parse("04M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		// time := "0.05S"
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
 
 							message := ""
 							if event.Values["message"] != nil {
@@ -516,15 +575,34 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 						case "jdk.JavaExceptionThrow":
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 							thrownClass := getClass(event, "thrownClass")
-							var duration float64
-							if event.Values["duration"] != nil {
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								auxDur = strings.ReplaceAll(auxDur, "S", "")
-								duration, err = strconv.ParseFloat(auxDur, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.JavaExceptionThrow: cannot parse duration value. ", err)
-								}
-							}
+							// var duration time.Time
+							// if event.Values["duration"] != nil {
+							// 	// auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	// auxDur = strings.ReplaceAll(auxDur, "S", "")
+							// 	// duration, err = strconv.ParseFloat(auxDur, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.JavaExceptionThrow: cannot parse duration value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxDur := event.Values["duration"].(string)
+							// 	auxDur = strings.ReplaceAll(auxDur, "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// time := "29M25.974594914"
+							// 		duration, errParse = time.Parse("04M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		// time := "0.05S"
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
 							javaExceptionThrow := &models.JavaExceptionThrow{
 								JavaExceptionThrowDuration:     duration,
 								JavaExceptionThrowOsName:       osName,
@@ -551,15 +629,16 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 						case "jdk.JavaMonitorEnter":
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 							monitorClass := getClass(event, "monitorClass")
-							var duration float64
-							if event.Values["duration"] != nil {
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								auxDur = strings.ReplaceAll(auxDur, "S", "")
-								duration, err = strconv.ParseFloat(auxDur, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.JavaMonitorEnter: cannot parse duration value. ", err)
-								}
-							}
+							// var duration float64
+							// if event.Values["duration"] != nil {
+							// 	auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	auxDur = strings.ReplaceAll(auxDur, "S", "")
+							// 	duration, err = strconv.ParseFloat(auxDur, 64)
+							// 	if err != nil {
+							// 		log.Println("ERROR in jdk.JavaMonitorEnter: cannot parse duration value. ", err)
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
 							javaMonitorEnter := &models.JavaMonitorEnter{
 								JavaMonitorEnterDuration:     duration,
 								JavaMonitorEnterOsName:       osName,
@@ -588,38 +667,62 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 							monitorClass := getClass(event, "monitorClass")
 
-							var duration time.Time
-							if event.Values["duration"] != nil {
-								var errParse error
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								if strings.Contains(auxDur, "M") {
-									duration, errParse = time.Parse("04M05.999999999", auxDur)
-									if errParse != nil {
-										log.Println("Error parsing JavaMonitorWait duration: ", errParse)
-									}
-								} else if strings.Contains(auxDur, "S") {
-									//parsing time                  "0.100194234S": extra text: "S"
-									duration, errParse = time.Parse("5.999999999S", auxDur)
-									if errParse != nil {
-										log.Println("Error parsing JavaMonitorWait duration: ", errParse)
-									}
-								} else {
-									log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
-								}
-							}
+							// var duration time.Time
+							// if event.Values["duration"] != nil {
+							// 	var errParse error
+							// 	auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// Error parsing JavaMonitorWait duration:  parsing time "1M0.000088702S" as "04M05.999999999": cannot parse "1M0.000088702S" as "04"
+							// 		duration, errParse = time.Parse("94M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing JavaMonitorWait duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		//parsing time                  "0.100194234S": extra text: "S"0.100193907S
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing JavaMonitorWait duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
 
-							var timeOut float64
+							// var timeOut time.Time
+							// if event.Values["timeOut"] != nil {
+							// 	// auxtimeOut := strings.ReplaceAll(event.Values["timeOut"].(string), "PT", "")
+							// 	// auxtimeOut = strings.ReplaceAll(auxtimeOut, "S", "")
+							// 	// timeOut, err = strconv.ParseFloat(auxtimeOut, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.JavaMonitorWait: cannot parse timeOut value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxTO := event.Values["timeOut"].(string)
+							// 	auxTO = strings.ReplaceAll(auxTO, "PT", "")
+							// 	if strings.Contains(auxTO, "M") {
+							// 		// time := "29M25.974594914"
+							// 		timeOut, errParse = time.Parse("04M05.999999999", auxTO)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark timeOut: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxTO, "S") {
+							// 		// time := "0.05S"
+							// 		timeOut, errParse = time.Parse("5.999999999S", auxTO)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing ThreadPark timeOut: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass timeOut: ", auxTO)
+							// 	}
+							// }
+
+							var timeOut time.Duration
 							if event.Values["timeOut"] != nil {
-								auxtimeOut := strings.ReplaceAll(event.Values["timeOut"].(string), "PT", "")
-								auxtimeOut = strings.ReplaceAll(auxtimeOut, "S", "")
-								timeOut, err = strconv.ParseFloat(auxtimeOut, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.JavaMonitorWait: cannot parse timeOut value. ", err)
-								}
+								timeOut = ParseDuration(event.Values["timeOut"].(string))
 							}
-
 							javaMonitorWait := &models.JavaMonitorWait{
-								JavaMonitorWaitDuration:     &duration,
+								JavaMonitorWaitDuration:     duration,
 								JavaMonitorWaitOsName:       osName,
 								JavaMonitorWaitOsThreadId:   osThreadId,
 								JavaMonitorWaitJavaName:     javaName,
@@ -645,15 +748,33 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 						case "jdk.OldObjectSample":
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
 							objectType := getObjectType(event)
-							var duration float64
-							if event.Values["duration"] != nil {
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								auxDur = strings.ReplaceAll(auxDur, "S", "")
-								duration, err = strconv.ParseFloat(auxDur, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.OldObjectSample: cannot parse duration value. ", err)
-								}
-							}
+							// var duration time.Time
+							// if event.Values["duration"] != nil {
+							// 	// auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	// auxDur = strings.ReplaceAll(auxDur, "S", "")
+							// 	// duration, err = strconv.ParseFloat(auxDur, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.OldObjectSample: cannot parse duration value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// Error parsing JavaMonitorWait duration:  parsing time "1M0.000088702S" as "04M05.999999999": cannot parse "1M0.000088702S" as "04"
+							// 		duration, errParse = time.Parse("94M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing JavaMonitorWait duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		//parsing time                  "0.100194234S": extra text: "S"0.100193907S
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing JavaMonitorWait duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
 
 							// Error 1292: Incorrect datetime value: '0000-00-00' for column 'old_object_sample_allocation_time' at row 1
 
@@ -704,6 +825,22 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 
 						case "jdk.ClassLoaderStatistics":
 							name, parent := getClassLoader(event)
+							aCStr := event.Values["anonymousClassCount"]
+							aCSStr := event.Values["anonymousChunkSize"]
+							aBSStr := event.Values["anonymousBlockSize"]
+
+							var aC float64
+							var aCS float64
+							var aBS float64
+							if aCStr != nil {
+								aC = aCStr.(float64)
+							}
+							if aCSStr != nil {
+								aCS = aCSStr.(float64)
+							}
+							if aBSStr != nil {
+								aBS = aBSStr.(float64)
+							}
 							classLoaderStatistics := &models.ClassLoaderStatistics{
 								ClassLoader:         name,
 								ParentClassLoader:   parent,
@@ -711,9 +848,9 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 								ClassCount:          event.Values["classCount"].(float64),
 								ChunkSize:           event.Values["chunkSize"].(float64),
 								BlockSize:           event.Values["blockSize"].(float64),
-								AnonymousClassCount: event.Values["anonymousClassCount"].(float64),
-								AnonymousChunkSize:  event.Values["anonymousChunkSize"].(float64),
-								AnonymousBlockSize:  event.Values["anonymousBlockSize"].(float64),
+								AnonymousClassCount: aC,
+								AnonymousChunkSize:  aCS,
+								AnonymousBlockSize:  aBS,
 							}
 							if val, ok := jfrMap[t]; ok {
 								val.ClassLoaderStatistics = *classLoaderStatistics
@@ -783,15 +920,33 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 
 						case "jdk.GCPhasePause":
 							osName, osThreadId, javaName, javaThreadId := getEventThread(event)
-							var duration float64
-							if event.Values["duration"] != nil {
-								auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
-								auxDur = strings.ReplaceAll(auxDur, "S", "")
-								duration, err = strconv.ParseFloat(auxDur, 64)
-								if err != nil {
-									log.Println("ERROR in jdk.GCPhasePause: cannot parse duration value. ", err)
-								}
-							}
+							// var duration time.Time
+							// if event.Values["duration"] != nil {
+							// 	// auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	// auxDur = strings.ReplaceAll(auxDur, "S", "")
+							// 	// duration, err = strconv.ParseFloat(auxDur, 64)
+							// 	// if err != nil {
+							// 	// 	log.Println("ERROR in jdk.GCPhasePause: cannot parse duration value. ", err)
+							// 	// }
+							// 	var errParse error
+							// 	auxDur := strings.ReplaceAll(event.Values["duration"].(string), "PT", "")
+							// 	if strings.Contains(auxDur, "M") {
+							// 		// Error parsing JavaMonitorWait duration:  parsing time "1M0.000088702S" as "04M05.999999999": cannot parse "1M0.000088702S" as "04"
+							// 		duration, errParse = time.Parse("94M05.999999999", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing JavaMonitorWait duration: ", errParse)
+							// 		}
+							// 	} else if strings.Contains(auxDur, "S") {
+							// 		//parsing time                  "0.100194234S": extra text: "S"0.100193907S
+							// 		duration, errParse = time.Parse("5.999999999S", auxDur)
+							// 		if errParse != nil {
+							// 			log.Println("Error parsing JavaMonitorWait duration: ", errParse)
+							// 		}
+							// 	} else {
+							// 		log.Println("ATTENTION: Cannot parse parkedClass duration: ", auxDur)
+							// 	}
+							// }
+							duration := ParseDuration(event.Values["duration"].(string))
 							gcPhasePause := &models.GCPhasePause{
 								GCPhasePauseDuration:     duration,
 								GCPhasePauseOsName:       osName,
@@ -806,8 +961,7 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 								jfrMap[t] = val
 							} else {
 								jvm := &models.Jvm{
-									RunID: runID,
-									// Run:          models.Run{},
+									RunID:        runID,
 									StartTime:    &t,
 									GCPhasePause: *gcPhasePause,
 								}
@@ -863,14 +1017,28 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 				return true // keep iterating
 			})
 
-			// for _, jvm := range jfrMap {
-			// 	_, err = models.CreateJvm(db, &jvm)
-			// 	if err != nil {
-			// 		log.Printf("Error saving jvm: %s\n", err.Error())
-			// 	}
-			// }
-			jfrValues := maps.Values(jfrMap)
-			db.CreateInBatches(jfrValues, 500)
+			for _, jvm := range jfrMap {
+
+				_, err = models.CreateJvm(db, &jvm)
+				if err != nil {
+					log.Printf("Error saving jvm: %s\n", err.Error())
+					log.Println("jvm.StartTime: ", jvm.StartTime)
+					log.Println("ThreadSleepDuration: ", jvm.ThreadSleepDuration)
+					log.Println("ThreadParkDuration: ", jvm.ThreadParkDuration)
+					log.Println("ThreadParkTimeout: ", jvm.ThreadParkTimeout)
+					log.Println("ThreadParkUntil: ", jvm.ThreadParkUntil)
+					log.Println("JavaErrorThrowDuration: ", jvm.JavaErrorThrowDuration)
+					log.Println("JavaExceptionThrowDuration: ", jvm.JavaExceptionThrowDuration)
+					log.Println("JavaMonitorWaitDuration: ", jvm.JavaMonitorWaitDuration)
+					log.Println("JavaMonitorWaitTimeout: ", jvm.JavaMonitorWaitTimeout)
+					log.Println("OldObjectSampleDuration: ", jvm.OldObjectSampleDuration)
+					log.Println("GCPhasePauseDuration: ", jvm.GCPhasePauseDuration)
+					log.Println("-----")
+				}
+			}
+			// jfrValues := maps.Values(jfrMap)
+			// fmt.Println("jfrValues: ", len(jfrValues))
+			// db.CreateInBatches(jfrValues, 500)
 
 		}
 
@@ -995,4 +1163,32 @@ func getObjectType(event Event) string {
 		}
 	}
 	return name
+}
+
+func ParseDuration(str string) time.Duration {
+	// ParseDuration converts a ISO8601 duration into a time.Duration
+	dur := time.Duration(0)
+
+	var durationRegex = regexp.MustCompile(`P([\d\.]+Y)?([\d\.]+M)?([\d\.]+D)?T?([\d\.]+H)?([\d\.]+M)?([\d\.]+?S)?`)
+	matches := durationRegex.FindStringSubmatch(str)
+	if len(matches) > 0 {
+
+		years := parseDurationPart(matches[1], time.Hour*24*365)
+		months := parseDurationPart(matches[2], time.Hour*24*30)
+		days := parseDurationPart(matches[3], time.Hour*24)
+		hours := parseDurationPart(matches[4], time.Hour)
+		minutes := parseDurationPart(matches[5], time.Second*60)
+		seconds := parseDurationPart(matches[6], time.Second)
+		dur = time.Duration(years + months + days + hours + minutes + seconds)
+	}
+	return dur
+}
+
+func parseDurationPart(value string, unit time.Duration) time.Duration {
+	if len(value) != 0 {
+		if parsed, err := strconv.ParseFloat(value[:len(value)-1], 64); err == nil {
+			return time.Duration(float64(unit) * parsed)
+		}
+	}
+	return 0
 }
