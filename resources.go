@@ -5,6 +5,8 @@ import (
 	"perfrt/models"
 	"time"
 
+	"github.com/shirou/gopsutil/v3/load"
+	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
 )
 
@@ -57,56 +59,80 @@ func MonitorProcess(pid int, runID uint) (models.Resource, error) {
 		return models.Resource{}, err
 	}
 
-	// l, _ := load.Avg()
-	// ct, _ := cpu.Times(false)
-	// vm, _ := mem.VirtualMemory()
+	l, _ := load.Avg()
 
-	// swap, _ := mem.SwapMemory()
-	// sm := &models.SwapMemoryStat{
-	// 	SwapTotal:       swap.Total,
-	// 	SwapUsed:        swap.Used,
-	// 	SwapFree:        swap.Free,
-	// 	SwapUsedPercent: swap.UsedPercent,
-	// 	Sin:             swap.Sin,
-	// 	Sout:            swap.Sout,
-	// 	PgIn:            swap.PgIn,
-	// 	PgOut:           swap.PgOut,
-	// 	PgFault:         swap.PgFault,
-	// 	PgMajFaults:     swap.PgMajFault,
+	vm, _ := mem.VirtualMemory()
+
+	swap, _ := mem.SwapMemory()
+	sm := &models.SwapMemoryStat{
+		SwapTotal:       swap.Total,
+		SwapUsed:        swap.Used,
+		SwapFree:        swap.Free,
+		SwapUsedPercent: swap.UsedPercent,
+		Sin:             swap.Sin,
+		Sout:            swap.Sout,
+		PgIn:            swap.PgIn,
+		PgOut:           swap.PgOut,
+		PgFault:         swap.PgFault,
+		PgMajFaults:     swap.PgMajFault,
+	}
+
+	// var cpusInfo []models.CPUInfo
+	// cpuInfo, _ := cpu.Info()
+
+	// for _, cpuI := range cpuInfo {
+	// 	c := models.CPUInfo{
+	// 		CPU:        cpuI.CPU,
+	// 		VendorID:   cpuI.VendorID,
+	// 		Family:     cpuI.Family,
+	// 		CPUModel:   cpuI.Model,
+	// 		Stepping:   cpuI.Stepping,
+	// 		PhysicalID: cpuI.PhysicalID,
+	// 		CoreID:     cpuI.CoreID,
+	// 		Cores:      cpuI.Cores,
+	// 		ModelName:  cpuI.ModelName,
+	// 		Mhz:        cpuI.Mhz,
+	// 		CacheSize:  cpuI.CacheSize,
+	// 		Flags:      cpuI.Flags,
+	// 		Microcode:  cpuI.Microcode,
+	// 	}
+	// 	cpusInfo = append(cpusInfo, c)
 	// }
 
-	// mem.SwapMemory()
-	// di, _ := disk.IOCounters()
-	// ni, _ := net.IOCounters(false)
-
-	// perfMetrics := &PerfMetrics{
-	// 	Timestamp:     time.Now(),
-	// 	CpuPercent:    cp,
-	// 	MemoryPercent: m,
-	// 	IOCounters:    io,
-	// 	MemoryInfo:    mi,
-	// 	PageFaults:    pf,
-	// 	// Load:           l,
-	// 	// CPUTimes:       ct,
-	// 	// VirtualMemory:  vm,
-	// 	// SwapMemory:     sm,
-	// 	// DiskIOCounters: di,
-	// 	// NetIOCounters:  ni,
+	// var cpusTimes []models.CPUTimes
+	// cpuTimes, _ := cpu.Times(false)
+	// for _, cpuT := range cpuTimes {
+	// 	c := models.CPUTimes{
+	// 		CPU:       cpuT.CPU,
+	// 		User:      cpuT.User,
+	// 		System:    cpuT.System,
+	// 		Idle:      cpuT.Idle,
+	// 		Nice:      cpuT.Nice,
+	// 		Iowait:    cpuT.Iowait,
+	// 		Irq:       cpuT.Irq,
+	// 		Softirq:   cpuT.Softirq,
+	// 		Steal:     cpuT.Steal,
+	// 		Guest:     cpuT.Guest,
+	// 		GuestNice: cpuT.GuestNice,
+	// 	}
+	// 	cpusTimes = append(cpusTimes, c)
 	// }
-	// return *perfMetrics, nil
 
 	resource := &models.Resource{
-		RunID:          runID,
-		Timestamp:      time.Now(),
-		CpuPercent:     cp,
-		MemPercent:     m,
-		MemoryInfoStat: *mi,
-		IOCountersStat: *io,
-		PageFaultsStat: *pf,
-		// load.AvgStat
-		// mem.VirtualMemoryStat
-		// SwapMemoryStat
+		RunID:             runID,
+		Timestamp:         time.Now(),
+		CpuPercent:        cp,
+		MemPercent:        m,
+		MemoryInfoStat:    *mi,
+		IOCountersStat:    *io,
+		PageFaultsStat:    *pf,
+		AvgStat:           *l,
+		VirtualMemoryStat: *vm,
+		SwapMemoryStat:    *sm,
+		// CPUInfo:           cpusInfo,
+		// CPUTimes:          cpusTimes,
 	}
+
 	return *resource, nil
 }
 

@@ -64,9 +64,10 @@ func init() {
 		&Run{},
 		&Resource{},
 		&Coverage{},
-		&CPUTimes{},
-		&DiskIOCounters{},
-		&NetIOCounters{},
+		// &CPUTimes{},
+		// &CPUInfo{},
+		// &DiskIOCounters{},
+		// &NetIOCounters{},
 		&Jvm{},
 	)
 
