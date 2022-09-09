@@ -25,13 +25,16 @@ func cloneRepository(url, directory string) (*git.Repository, error) {
 	urlSplit := strings.Split(url, "/")
 	repoName := urlSplit[4]
 	fmt.Println("git clone " + url + " .." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName)
+	log.Println("git clone " + url + " .." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName)
 	cmd := exec.Command("git", "clone", url, ".."+string(os.PathSeparator)+"repos"+string(os.PathSeparator)+repoName)
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR]: Cannot clone repository: ", err, out)
+		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR]: Cannot clone repository: ", err, out)
 		// return nil, err
 	} else {
 		fmt.Println("\n [>>SUCCESS]: repository cloned successully!")
+		log.Println("\n [>>SUCCESS]: repository cloned successully!")
 		// fmt.Println(out)
 
 	}
@@ -91,6 +94,7 @@ func Checkout(repoName, hash string) error {
 
 func removeContents(dir string) error {
 	fmt.Println("deleting directory: " + dir)
+	log.Println("deleting directory: " + dir)
 	d, err := os.Open(dir)
 	if err != nil {
 		return err

@@ -30,15 +30,17 @@ type MvnTestResult struct {
 	TimeElapsed float64
 }
 
-func GetMavenDependenciesClasspath(path string) string {
+func GetMavenDependenciesClasspath(path, javaVer string) string {
 	logfile := "maven-classpath.log"
 
-	// fmt.Println("mvn dependency:build-classpath")
+	fmt.Println("JAVA_HOME=" + javaVer + " && mvn dependency:build-classpath")
 	cmd := exec.Command("mvn", "dependency:build-classpath")
 	cmd.Dir = path
+	cmd.Env = os.Environ()
+	cmd.Env = append(cmd.Env, "JAVA_HOME="+javaVer)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("cmd.Run() failed with %s\n", err)
+		fmt.Printf("cmd.Run() failed in GetMavenDependenciesClasspath with %s\n", err)
 		fmt.Println(string(output))
 	}
 	// fmt.Printf("combined out:\n%s\n", string(output))
@@ -46,16 +48,6 @@ func GetMavenDependenciesClasspath(path string) string {
 	if err != nil {
 		panic(err)
 	}
-	// if err != nil {
-	// 	fmt.Println("[>>ERROR]: Error getting maven dependencies classpath: ", err.Error())
-	// 	fmt.Println("Dir: " + path + " Command: " + "mvn dependency:build-classpath > " + logfile)
-	// } else {
-	// 	fmt.Println("executed successfully")
-	// }
-	// fmt.Println("------")
-	// fmt.Printf("%s\n", out.String())
-	// fmt.Println("^^^ out ^^^ - vvv error vvv")
-	// fmt.Printf("%s\n", stderr.String())
 
 	return getClasspath(path)
 }
@@ -92,12 +84,12 @@ func getClasspath(path string) string {
 	return classpath
 }
 
-func MvnCompile(path string) bool {
+func MvnCompile(path, javaVer string) bool {
 	logfile := "maven-compiler.log"
 
-	fmt.Println("- mvn compile")
+	// fmt.Println("- mvn compile")xc
 	log.Println("mvn -fn -Drat.skip=true clean compile")
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "compile")
+	cmd := exec.Command("JAVA_HOME="+javaVer, "&&", "mvn", "-fn", "-Drat.skip=true", "clean", "compile")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -122,7 +114,7 @@ func MvnCompile(path string) bool {
 	}
 }
 
-func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
+func MvnTest(db *gorm.DB, path, javaVer string, measurementID, commitID uint) bool {
 
 	ok := true
 	logfile := "maven-test.log"
@@ -143,6 +135,8 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 	// coverage needs module, so can't collect coverage in this func
 
 	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	cmd.Env = os.Environ()
+	cmd.Env = append(cmd.Env, "JAVA_HOME="+javaVer)
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "test")
 	// log.Println("- mvn -fn -Drat.skip=true test")
 	// fmt.Println("- mvn -fn -Drat.skip=true test")
@@ -161,7 +155,7 @@ func MvnTest(db *gorm.DB, path string, measurementID, commitID uint) bool {
 		fmt.Printf("mvn -Drat.skip=true test failed with %s\n", err.Error())
 	}
 
-	// fmt.Printf("Mvn test out:\n%s\n", string(output))
+	fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("Mvn test out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
@@ -529,7 +523,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 }
 
-func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string) {
+func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string) {
 	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/perfrt-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perfrt/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
 	// var wg sync.WaitGroup
@@ -617,15 +611,15 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module string, tc *models.TestCase, 
 
 		jfrFilename := "/jfr/perfrt" + strconv.Itoa(int(run.ID)) + ".jfr"
 
-		// strJunitTC := "java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
-		// 	" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
-		// 	" -jar " +
-		// 	localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + tc.ClassName + "#" + testName
-		// log.Println()
-		// log.Println(strJunitTC)
+		strJunitTC := javaVer + "/bin/java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
+			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perfrt.jfc" +
+			" -jar " +
+			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + tc.ClassName + "#" + testName
+		log.Println()
+		log.Println(strJunitTC)
 
 		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
-		cmd = exec.CommandContext(ctx, "java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+		cmd = exec.CommandContext(ctx, javaVer+"/bin/java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
 			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/perfrt.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", tc.ClassName+"#"+testName)
 		var outb, errb bytes.Buffer

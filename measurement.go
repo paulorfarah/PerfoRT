@@ -121,6 +121,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 
 func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
 
+	javaVer := getMavenJavaVersion(repoDir)
 	projectModules := getProjectModules(repoDir)
 	// fmt.Println("modules: ", projectModules)
 	path := repoDir
@@ -132,11 +133,9 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		minTestTime, _ = strconv.ParseFloat(minTestTimeStr, 32)
 	}
 
-	// read JAVA_HOME
 	profiler := "/perfrt-profiler-1.11.jar"
-	jhome := os.Getenv("JAVA_HOME")
-	if jhome != "" {
-		if strings.Contains(jhome, "8") {
+	if javaVer != "" {
+		if strings.Contains(javaVer, "8") {
 			profiler = "/perfrt-profiler-1.8.jar"
 		}
 	}
@@ -148,7 +147,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 		fmt.Println("error getting current path: ", errPath.Error())
 	}
 
-	mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+	mavenClasspath := GetMavenDependenciesClasspath(repoDir, javaVer)
 	// log.Println("- junit testcase: ", path, tc.ClassName, testName)
 	// fmt.Println("- junit testcase: ", path, tc.ClassName, testName)
 
@@ -165,8 +164,8 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 			path = repoDir + "/" + module
 		}
 
-		MvnTest(db, path, measurement.ID, commit.ID)
-		JacocoTestCoverage(db, path, "maven", "maven", measurement.ID, commit.ID)
+		MvnTest(db, path, javaVer, measurement.ID, commit.ID)
+		JacocoTestCoverage(db, path, javaVer, "maven", "maven", measurement.ID, commit.ID)
 		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {
@@ -216,7 +215,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measur
 										fmt.Println("Error creating test case: ", errTC.Error())
 									}
 									// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
-									RunJUnitTestCase(db, repoDir, module, tc, measurement, commit, packName, profiler, localpath, mavenClasspath, localClasspath)
+									RunJUnitTestCase(db, repoDir, module, javaVer, tc, measurement, commit, packName, profiler, localpath, mavenClasspath, localClasspath)
 									// <-guard
 									// count++
 									// }(count)
@@ -640,7 +639,8 @@ func getProjectModules(repoDir string) []string {
 	pomPath := repoDir + "/pom.xml"
 	parsedPom, err := gopom.Parse(pomPath)
 	if err != nil {
-		fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
+		fmt.Printf("unable to unmarshal pom file. File: %s Reason: %s\n", repoDir+"/pom.xml", err)
+		log.Printf("Unable to unmarshal pom file. File: %s Reason: %s\n", repoDir+"/pom.xml", err)
 	}
 
 	for _, m := range parsedPom.Modules {
@@ -652,6 +652,34 @@ func getProjectModules(repoDir string) []string {
 		}
 	}
 	return includes
+}
+
+func getMavenJavaVersion(repoDir string) string {
+	var version string
+
+	pomPath := repoDir + "/pom.xml"
+	// parsedPom, err := gopom.Parse(pomPath)
+	parsedPom, err := ParsePom(pomPath)
+	if err != nil {
+		fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
+	}
+
+	for k, v := range parsedPom.Properties.Entries {
+		if k == "maven.compiler.source" {
+			version = "java-" + v + ".0-openjdk-amd64"
+		}
+	}
+
+	if version == "" {
+		//search in plugins
+		for _, plug := range parsedPom.Build.BuildBase.Plugins {
+			if plug.ArtifactID == "maven-compiler-plugin" {
+				version = "java-" + plug.Configuration.Source + ".0-openjdk-amd64"
+			}
+		}
+	}
+	fmt.Println("javaVer: /usr/lib/jvm/" + version)
+	return "/usr/lib/jvm/" + version
 }
 
 func getProjectPaths(repoDir string) []string {
@@ -791,6 +819,7 @@ func CopySymLink(source, dest string) error {
 
 func deleteDir(dir string) error {
 	fmt.Println("deleting directory: " + dir)
+	log.Println("deleting directory: " + dir)
 	d, err := os.Open(dir)
 	if err != nil {
 		return err
