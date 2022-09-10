@@ -9,7 +9,7 @@ import (
 
 type JSON []byte
 
-//https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
+// https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type Commit struct {
 	Model
 	RepositoryID       uint `gorm:"index;not null"`
@@ -24,6 +24,7 @@ type Commit struct {
 	CommitterDate      time.Time `gorm:"index;not null"`
 	Subject            string    `gorm:"type:text;not_null"`
 	Branch             string    `gorm:"not_null"`
+	JavaVersion        string
 	// Changes            []Change
 }
 

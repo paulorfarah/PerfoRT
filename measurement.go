@@ -122,6 +122,10 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
 
 	javaVer := getMavenJavaVersion(repoDir)
+	log.Println("Java version: ", javaVer)
+	commit.JavaVersion = javaVer
+	db.Save(commit)
+
 	projectModules := getProjectModules(repoDir)
 	// fmt.Println("modules: ", projectModules)
 	path := repoDir
