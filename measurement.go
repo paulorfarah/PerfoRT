@@ -670,7 +670,7 @@ func getMavenJavaVersion(repoDir string) string {
 	}
 
 	for k, v := range parsedPom.Properties.Entries {
-		if k == "maven.compiler.source" {
+		if k == "maven.compiler.source" || k == "compileSource" {
 			version = "java-" + v + ".0-openjdk-amd64"
 		}
 	}
@@ -684,7 +684,10 @@ func getMavenJavaVersion(repoDir string) string {
 			}
 		}
 	}
-	fmt.Println("javaVer: /usr/lib/jvm/" + version)
+	// fmt.Println("javaVer: /usr/lib/jvm/" + version)
+	if version == "" {
+		version = "java-1.11.0-openjdk-amd64"
+	}
 	return "/usr/lib/jvm/" + version
 }
 
