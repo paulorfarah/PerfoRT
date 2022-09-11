@@ -630,39 +630,39 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 		// wg.Wait()
 
 		err := cmd.Start()
-		start <- cmd.Process.Pid
-		if err != nil {
-			log.Println("Error starting command: ", err.Error())
-			// log.Fatal(err)
-		}
-
-		err = cmd.Wait()
-		// fmt.Println(ctx.Err())
-		stop <- true
-		if ctx.Err() == context.DeadlineExceeded {
-			// log.Println("DeadlineExceeded...")
-			// fmt.Println("DeadlineExceeded...")
-			models.SetTestCaseError(db, tc)
-			cancel()
-			// return
-		}
-
-		if err != nil {
-			process, err := os.FindProcess(int(cmd.Process.Pid))
+		if cmd.Process != nil {
+			start <- cmd.Process.Pid
 			if err != nil {
-				fmt.Printf("Failed to find process: %s\n", err)
-			} else {
-				errPid := process.Signal(syscall.Signal(0))
-				// fmt.Printf("process.Signal on pid %d returned: %v\n", cmd.Process.Pid, errPid)
-				resPid := fmt.Sprintf("%v", errPid)
-				if resPid != "os: process already finished" {
-					fmt.Printf("junit test failed with %s\n", err.Error())
-					log.Printf("Command finished with error: %s", err.Error())
+				log.Println("Error setting JUnit process id: ", err)
+				// log.Fatal(err)
+			}
+
+			err = cmd.Wait()
+			// fmt.Println(ctx.Err())
+			stop <- true
+			if ctx.Err() == context.DeadlineExceeded {
+				// log.Println("DeadlineExceeded...")
+				// fmt.Println("DeadlineExceeded...")
+				models.SetTestCaseError(db, tc)
+				cancel()
+				// return
+			}
+
+			if err != nil {
+				process, err := os.FindProcess(int(cmd.Process.Pid))
+				if err != nil {
+					fmt.Printf("Failed to find process: %s\n", err)
+				} else {
+					errPid := process.Signal(syscall.Signal(0))
+					// fmt.Printf("process.Signal on pid %d returned: %v\n", cmd.Process.Pid, errPid)
+					resPid := fmt.Sprintf("%v", errPid)
+					if resPid != "os: process already finished" {
+						fmt.Printf("junit test failed with %s\n", err.Error())
+						log.Printf("Command finished with error: %s", err.Error())
+					}
 				}
 			}
 		}
-		// log.Println("Testcase out:", outb.String())
-		// log.Println("Testcase err:", errb.String())
 	}
 	finish <- true
 	db.Model(&models.Method{}).Where("Finished = ?", false).Update("Finished", true)

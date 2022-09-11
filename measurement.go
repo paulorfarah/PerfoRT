@@ -662,6 +662,7 @@ func getMavenJavaVersion(repoDir string) string {
 	var version string
 
 	pomPath := repoDir + "/pom.xml"
+	fmt.Println("pomPath: ", pomPath)
 	// parsedPom, err := gopom.Parse(pomPath)
 	parsedPom, err := ParsePom(pomPath)
 	if err != nil {
@@ -677,6 +678,7 @@ func getMavenJavaVersion(repoDir string) string {
 	if version == "" {
 		//search in plugins
 		for _, plug := range parsedPom.Build.BuildBase.Plugins {
+			fmt.Println(plug.ArtifactID)
 			if plug.ArtifactID == "maven-compiler-plugin" {
 				version = "java-" + plug.Configuration.Source + ".0-openjdk-amd64"
 			}

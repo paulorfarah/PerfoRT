@@ -337,10 +337,10 @@ type ActivationFile struct {
 }
 
 func ParsePom(file string) (Project, error) {
-	fmt.Println("pom.xml parser..")
+	// fmt.Println("pom.xml parser..")
 
 	// Open our xmlFile
-	xmlFile, err := os.Open("pom.xml")
+	xmlFile, err := os.Open(file)
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
