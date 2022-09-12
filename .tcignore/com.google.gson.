@@ -2,3 +2,6 @@ com.google.gson.JsonParserTest#testParseDeeplyNestedArrays
 com.google.gson.JsonParserTest#testParseDeeplyNestedObjects
 com.google.gson.ObjectTypeAdapterTest#testDeserializeDeeplyNestedArrays
 com.google.gson.ObjectTypeAdapterTest#testDeserializeDeeplyNestedObjects
+com.google.gson.functional.CircularReferenceTest#testCircularSerialization
+com.google.gson.functional.CircularReferenceTest#testSelfReferenceCustomHandlerSerialization
+com.google.gson.functional.CircularReferenceTest#testSelfReferenceArrayFieldSerialization
