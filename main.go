@@ -12,7 +12,7 @@ import (
 	"time"
 
 	// grmon "github.com/bcicen/grmon/agent"
-	"net/http"
+
 	_ "net/http/pprof"
 
 	// grmon "github.com/bcicen/grmon/agent"
@@ -28,9 +28,9 @@ import (
 func main() {
 	fmt.Println("starting perfrt")
 
-	go func() {
-		http.ListenAndServe(":1234", nil)
-	}()
+	// go func() {
+	// 	http.ListenAndServe(":1234", nil)
+	// }()
 
 	logFile, err := os.OpenFile("perfrt.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
