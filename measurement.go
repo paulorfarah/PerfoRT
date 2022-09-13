@@ -405,7 +405,7 @@ func MeasureRandoopTests(db *gorm.DB, repoDir, file, buildTool, buildToolClasspa
 					}
 					models.CreateRun(db, rr)
 
-					for i, _ := range resources {
+					for i := range resources {
 						resources[i].RunID = rr.ID
 					}
 					db.CreateInBatches(resources, 1000)

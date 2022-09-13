@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/tidwall/gjson"
+	"golang.org/x/exp/maps"
 	"gorm.io/gorm"
 )
 
@@ -1017,28 +1018,28 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 				return true // keep iterating
 			})
 
-			for _, jvm := range jfrMap {
+			// for _, jvm := range jfrMap {
 
-				_, err = models.CreateJvm(db, &jvm)
-				if err != nil {
-					log.Printf("Error saving jvm: %s\n", err.Error())
-					log.Println("jvm.StartTime: ", jvm.StartTime)
-					log.Println("ThreadSleepDuration: ", jvm.ThreadSleepDuration)
-					log.Println("ThreadParkDuration: ", jvm.ThreadParkDuration)
-					log.Println("ThreadParkTimeout: ", jvm.ThreadParkTimeout)
-					log.Println("ThreadParkUntil: ", jvm.ThreadParkUntil)
-					log.Println("JavaErrorThrowDuration: ", jvm.JavaErrorThrowDuration)
-					log.Println("JavaExceptionThrowDuration: ", jvm.JavaExceptionThrowDuration)
-					log.Println("JavaMonitorWaitDuration: ", jvm.JavaMonitorWaitDuration)
-					log.Println("JavaMonitorWaitTimeout: ", jvm.JavaMonitorWaitTimeout)
-					log.Println("OldObjectSampleDuration: ", jvm.OldObjectSampleDuration)
-					log.Println("GCPhasePauseDuration: ", jvm.GCPhasePauseDuration)
-					log.Println("-----")
-				}
-			}
-			// jfrValues := maps.Values(jfrMap)
+			// 	_, err = models.CreateJvm(db, &jvm)
+			// 	if err != nil {
+			// 		log.Printf("Error saving jvm: %s\n", err.Error())
+			// 		log.Println("jvm.StartTime: ", jvm.StartTime)
+			// 		log.Println("ThreadSleepDuration: ", jvm.ThreadSleepDuration)
+			// 		log.Println("ThreadParkDuration: ", jvm.ThreadParkDuration)
+			// 		log.Println("ThreadParkTimeout: ", jvm.ThreadParkTimeout)
+			// 		log.Println("ThreadParkUntil: ", jvm.ThreadParkUntil)
+			// 		log.Println("JavaErrorThrowDuration: ", jvm.JavaErrorThrowDuration)
+			// 		log.Println("JavaExceptionThrowDuration: ", jvm.JavaExceptionThrowDuration)
+			// 		log.Println("JavaMonitorWaitDuration: ", jvm.JavaMonitorWaitDuration)
+			// 		log.Println("JavaMonitorWaitTimeout: ", jvm.JavaMonitorWaitTimeout)
+			// 		log.Println("OldObjectSampleDuration: ", jvm.OldObjectSampleDuration)
+			// 		log.Println("GCPhasePauseDuration: ", jvm.GCPhasePauseDuration)
+			// 		log.Println("-----")
+			// 	}
+			// }
+			jfrValues := maps.Values(jfrMap)
 			// fmt.Println("jfrValues: ", len(jfrValues))
-			// db.CreateInBatches(jfrValues, 500)
+			db.CreateInBatches(jfrValues, 500)
 
 		}
 
