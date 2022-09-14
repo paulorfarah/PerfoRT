@@ -661,26 +661,29 @@ func getProjectModules(repoDir string) []string {
 func getMavenJavaVersion(repoDir string) string {
 	var version string
 
+	// Java version:  /usr/lib/jvm/java-${java.version}.0-openjdk-amd64
+
 	pomPath := repoDir + "/pom.xml"
-	fmt.Println("pomPath: ", pomPath)
+	// fmt.Println("pomPath: ", pomPath)
 	// parsedPom, err := gopom.Parse(pomPath)
 	parsedPom, err := ParsePom(pomPath)
 	if err != nil {
-		fmt.Printf("unable to unmarshal pom file. Reason: %s\n", err)
+		log.Printf("unable to unmarshal pom file. Reason: %s\n", err)
 	}
 
 	for k, v := range parsedPom.Properties.Entries {
-		if k == "maven.compiler.source" || k == "compileSource" {
+		if k == "maven.compiler.source" || k == "compileSource" || k == "java.version" {
 			version = "java-" + v + ".0-openjdk-amd64"
+			break
 		}
 	}
 
 	if version == "" {
 		//search in plugins
 		for _, plug := range parsedPom.Build.BuildBase.Plugins {
-			fmt.Println(plug.ArtifactID)
 			if plug.ArtifactID == "maven-compiler-plugin" {
 				version = "java-" + plug.Configuration.Source + ".0-openjdk-amd64"
+				break
 			}
 		}
 	}
