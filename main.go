@@ -143,9 +143,9 @@ func main() {
 			// }
 
 			packName := os.Getenv("package")
-			releases, errRel := ReadListFromFile(".releases/" + packName)
+			versions, errRel := ReadListFromFile(".versions/" + packName)
 			if errRel != nil {
-				log.Println("Error reading file of releases: ", errRel)
+				log.Println("Error reading file of versions: ", errRel)
 			}
 
 			//branches
@@ -191,17 +191,21 @@ func main() {
 			// 	fmt.Println("ERROR retrieving the commit being pointed by HEAD")
 			// }
 
-			for _, release := range releases {
-				cCommit, err := repo.CommitObject(plumbing.NewHash(release))
+			for _, version := range versions {
+
+				ver := &models.Version{MeasurementID: measurement.ID, Version: version}
+				models.CreateVersion(db, ver)
+
+				cCommit, err := repo.CommitObject(plumbing.NewHash(version))
 				if err != nil {
-					log.Println("ERROR retrieving commit: ", release, " (", err, ")")
-					fmt.Println("ERROR retrieving commit: ", release, " (", err, ")")
+					log.Println("ERROR retrieving commit: ", version, " (", err, ")")
+					fmt.Println("ERROR retrieving commit: ", version, " (", err, ")")
 					return
 				}
 				cTree, err := cCommit.Tree()
 				if err != nil {
-					log.Println("ERROR retrieving Tree: ", release, " (", err, ")")
-					fmt.Println("ERROR retrieving Tree: ", release, " (", err, ")")
+					log.Println("ERROR retrieving Tree: ", version, " (", err, ")")
+					fmt.Println("ERROR retrieving Tree: ", version, " (", err, ")")
 					return
 				}
 				// fmt.Println("*********************************************************************commDate: ", commDate)
@@ -405,15 +409,15 @@ func main() {
 	}
 }
 
-func isRelease(releases []string, hash string) bool {
-	isRelease := false
-	for _, release := range releases {
-		if hash == release {
-			isRelease = true
+func isVersion(versions []string, hash string) bool {
+	isVersion := false
+	for _, version := range versions {
+		if hash == version {
+			isVersion = true
 			break
 		}
 	}
-	return isRelease
+	return isVersion
 }
 
 func substr(s string, pos, length int) string {
