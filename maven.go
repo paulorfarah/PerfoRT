@@ -35,8 +35,10 @@ type MvnTestResult struct {
 func GetMavenDependenciesClasspath(path, javaVer string) string {
 	logfile := "maven-classpath.log"
 
-	fmt.Println("JAVA_HOME=" + javaVer + " && mvn dependency:build-classpath")
-	cmd := exec.Command("mvn", "dependency:build-classpath")
+	compiler_params := os.Getenv("compiler_params")
+
+	fmt.Println("JAVA_HOME=" + javaVer + " && mvn " + compiler_params + " dependency:build-classpath")
+	cmd := exec.Command("mvn", compiler_params, "dependency:build-classpath")
 	cmd.Dir = path
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "JAVA_HOME="+javaVer)
@@ -89,9 +91,9 @@ func getClasspath(path string) string {
 func MvnCompile(path, javaVer string) bool {
 	logfile := "maven-compiler.log"
 
-	// fmt.Println("- mvn compile")xc
-	log.Println("mvn -fn -Drat.skip=true clean compile")
-	cmd := exec.Command("JAVA_HOME="+javaVer, "&&", "mvn", "-fn", "-Drat.skip=true", "clean", "compile")
+	compiler_params := os.Getenv("compiler_params")
+	log.Println("mvn -fn -Drat.skip=true " + compiler_params + " clean compile")
+	cmd := exec.Command("JAVA_HOME="+javaVer, "&&", "mvn", "-fn", "-Drat.skip=true", compiler_params, "clean", "compile")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -101,7 +103,7 @@ func MvnCompile(path, javaVer string) bool {
 		// fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
-	log.Printf("Compilation out:\n%s\n", string(output))
+	// log.Printf("Compilation out:\n%s\n", string(output))
 	// fmt.Printf("Compilation out:\n%s\n", string(output))
 	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
@@ -136,7 +138,8 @@ func MvnTest(db *gorm.DB, path, javaVer string, measurementID, commitID uint) bo
 
 	// coverage needs module, so can't collect coverage in this func
 
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
+	compiler_params := os.Getenv("compiler_params")
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", compiler_params, "clean", "test")
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "JAVA_HOME="+javaVer)
 	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "test")
@@ -239,28 +242,23 @@ func readMavenTestResults(path string) []MvnTestResult {
 	return tests
 }
 
-func MvnInstall(path string) bool {
-	logfile := "maven-install.log"
-
-	// fmt.Println("------------------------------------------------ mvn install")
-	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "install")
+func MvnInstall(path, javaVer string) bool {
+	compiler_params := os.Getenv("compiler_params")
+	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", compiler_params, "clean", "install")
+	cmd.Env = os.Environ()
+	cmd.Env = append(cmd.Env, "JAVA_HOME="+javaVer)
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("mvn -fn -Drat.skip=true clean install failed with %s\n", err)
+		log.Printf("mvn -fn -Drat.skip=true clean "+compiler_params+" install failed with %s\n", err)
 		fmt.Printf("mvn -fn -Drat.skip=true clean install failed with %s\n", err)
 		log.Printf("Compilation out:\n%s\n", string(output))
 		// fmt.Printf("Compilation out:\n%s\n", string(output))
 		return false
 	}
-	// log.Printf("Compilation out:\n%s\n", string(output))
+	log.Println("mvn -fn -Drat.skip=true clean " + compiler_params + " install failed")
+	log.Printf("Compilation out:\n%s\n", string(output))
 	// fmt.Printf("Compilation out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
-	if err != nil {
-		log.Printf(err.Error())
-		fmt.Printf(err.Error())
-		return false
-	}
 	if strings.Contains(string(output), "BUILD SUCCESS") {
 		return true
 	} else {
@@ -313,7 +311,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// “mvn  -Dtest=TestSurefire#testcaseFirst test“ (-pl module)
 	// This command will execute only single test case method i.e. testcaseFirst().
 
-	logfile := "maven-test.log"
+	// logfile := "maven-test.log"
 	resultsPath := path
 
 	className := tc.ClassName[strings.LastIndex(tc.ClassName, ".")+1:]
@@ -336,17 +334,18 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	// 	return
 	// }
 
-	log.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
-	fmt.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
+	// log.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
+	// fmt.Println(">>>------------------------------------------------ maven testcase", path, className, testName)
 
 	var cmd *exec.Cmd
 	var cmdStr string
 	// fmt.Println(path)
+	// compiler_params := os.Getenv("compiler_params")
 	param := "-Dtest=" + className + "#" + testName
 	if module != "" {
 		cmdStr = "mvn -Drat.skip=true test  -pl " + module + " " + param
-		fmt.Println(cmdStr)
-		log.Println(cmdStr)
+		// fmt.Println(cmdStr)
+		// log.Println(cmdStr)
 
 		cmd = exec.Command("mvn", "-Drat.skip=true", "test", "-pl", module, param)
 		resultsPath += "/" + module
@@ -365,7 +364,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	cmd.Dir = path
 	// fmt.Println("path: ", path)
 
-	var output []byte
+	// var output []byte
 	var err error
 
 	mr := &models.Run{
@@ -498,13 +497,13 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
-	if err != nil {
-		// ok = false
-		fmt.Println("ERROR writing logfile: ", err.Error())
-		log.Println("ERROR writing logfile: ", err.Error())
-		// panic(err)
-	}
+	// err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	// if err != nil {
+	// 	// ok = false
+	// 	fmt.Println("ERROR writing logfile: ", err.Error())
+	// 	log.Println("ERROR writing logfile: ", err.Error())
+	// 	// panic(err)
+	// }
 	suite := ParseMavenTestResults(resultsPath)
 	for _, test := range suite.TestCases {
 		if test.Name == tc.Name {

@@ -49,38 +49,43 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 			// projectModules := getProjectModules(repoDir)
 			// if len(projectModules) == 0 {
 			// buildPath := repoDir + string(os.PathSeparator)
+			javaVer := getMavenJavaVersion(repoDir)
+			log.Println("Java version: ", javaVer)
+			commit.JavaVersion = javaVer
+			db.Save(commit)
 
-			ok := MvnInstall(repoDir)
+			// ok := MvnInstall(repoDir, javaVer)
+			MvnInstall(repoDir, javaVer)
 			// ok := MvnCompile(repoDir)
 			// log.Println("MvnCompile ok: ", ok)
-			if ok {
-				MeasureMavenTests(db, repoDir, *commit, measurement)
-				// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
-				// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-				// for _, file := range listJavaFiles(repoDir) {
-				// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
-				// }
-				// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
-				// }
-				// } else {
-				// 	MvnInstall(repoDir)
-				// 	ok := MvnCompile(repoDir)
-				// 	if ok {
-				// 		for _, projectPath := range projectModules {
-				// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
-				// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
-				// 			// (db, repoDir, "maven", "maven", measurement.ID)
-				// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
-				// 			// for _, file := range listJavaFiles(repoDir) {
-				// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
-				// 			// }
-				// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+			// if ok {
+			MeasureMavenTests(db, repoDir, javaVer, *commit, measurement)
+			// JacocoTestCoverage(db, repoDir, "maven", "maven", measurement.ID, commit.ID)
+			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+			// for _, file := range listJavaFiles(repoDir) {
+			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			// }
+			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
+			// }
+			// } else {
+			// 	MvnInstall(repoDir)
+			// 	ok := MvnCompile(repoDir)
+			// 	if ok {
+			// 		for _, projectPath := range projectModules {
+			// 			// buildPath := repoDir + string(os.PathSeparator) + projectPath
+			// 			MeasureMavenTests(db, repoDir, projectPath, commitID, measurement)
+			// 			// (db, repoDir, "maven", "maven", measurement.ID)
+			// 			// mavenClasspath := GetMavenDependenciesClasspath(repoDir)
+			// 			// for _, file := range listJavaFiles(repoDir) {
+			// 			// 	MeasureRandoopTests(db, repoDir, file, "maven", mavenClasspath, commitID, measurement)
+			// 			// }
+			// 			// JacocoTestCoverage(db, repoDir, "randoop", "maven", measurement.ID)
 
-				// 		}
-				// 	}
-			} else {
-				log.Println("ERROR:  Compilation failed!")
-			}
+			// 		}
+			// 	}
+			// } else {
+			// 	log.Println("ERROR:  Compilation failed!")
+			// }
 		case "gradle":
 			projectPaths := getProjectPaths(repoDir)
 			if len(projectPaths) == 0 {
@@ -119,12 +124,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 	}
 }
 
-func MeasureMavenTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
-
-	javaVer := getMavenJavaVersion(repoDir)
-	log.Println("Java version: ", javaVer)
-	commit.JavaVersion = javaVer
-	db.Save(commit)
+func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commit, measurement models.Measurement) {
 
 	projectModules := getProjectModules(repoDir)
 	// fmt.Println("modules: ", projectModules)
