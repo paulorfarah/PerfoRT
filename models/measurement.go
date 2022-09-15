@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-//https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
+// https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type Measurement struct {
 	Model
 	RepositoryID uint //   `gorm:"not null"`
