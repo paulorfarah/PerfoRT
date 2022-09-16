@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"perfrt/models"
 	"time"
 
@@ -34,7 +33,7 @@ func MonitorProcess(pid int, runID uint) (models.Resource, error) {
 
 	p, err := process.NewProcess(int32(pid))
 	if err != nil {
-		log.Println("Error CPU Percent: ", err.Error())
+		// log.Println("Error CPU Percent: ", err.Error())
 		return models.Resource{}, err
 	}
 	cp, err := p.CPUPercent()
