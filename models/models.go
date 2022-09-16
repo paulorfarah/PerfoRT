@@ -69,6 +69,7 @@ func init() {
 		// &DiskIOCounters{},
 		// &NetIOCounters{},
 		&Jvm{},
+		&Version{},
 	)
 
 	// db.Model(&Repository{}).AddForeignKey("platform_id", "platforms(id)", "RESTRICT", "RESTRICT")
