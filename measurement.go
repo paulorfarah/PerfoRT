@@ -672,7 +672,7 @@ func getMavenJavaVersion(repoDir string) string {
 	}
 
 	for k, v := range parsedPom.Properties.Entries {
-		if k == "maven.compiler.source" || k == "compileSource" || k == "java.version" {
+		if k == "maven.compiler.source" || k == "compileSource" || k == "java.version" || k == "java_source_version" {
 			version = "java-" + v + ".0-openjdk-amd64"
 			break
 		}
