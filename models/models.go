@@ -43,6 +43,7 @@ func init() {
 		Logger:                                   logger.Default.LogMode(logger.Silent),
 		DisableForeignKeyConstraintWhenMigrating: true,
 		SkipDefaultTransaction:                   true,
+		CreateBatchSize:                          1000,
 	})
 
 	if err != nil {

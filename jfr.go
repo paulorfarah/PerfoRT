@@ -911,7 +911,7 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 			// }
 			jfrValues := maps.Values(jfrMap)
 			// fmt.Println("jfrValues: ", len(jfrValues))
-			db.CreateInBatches(jfrValues, 500)
+			db.CreateInBatches(jfrValues, 1000)
 
 		}
 

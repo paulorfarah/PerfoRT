@@ -55,18 +55,18 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 					resources = []models.Resource{}
 					// wg.Done()
 				case <-stop:
-					// log.Println("### stop monitoring... ", time.Now())
+					log.Println("### stop monitoring... ", time.Now())
 					active = false
 					//save
 					// log.Println("saving resources: ", len(resources))
-					db.CreateInBatches(resources, 500)
-					// log.Println("saved resources...")
+					db.CreateInBatches(resources, 1000)
+					log.Println("saved resources... ", len(resources))
 					SaveJFRMetrics(db, run.ID, tc.ID)
 					// log.Println("saved jvm...")
 				case <-ctx.Done():
 					if active {
 						// fmt.Println("!!! time out monitoring... ", time.Now())
-						// log.Println("!!! time out monitoring... ", time.Now())
+						log.Println("!!! time out monitoring... ", time.Now())
 						active = false
 						// errKill := cmd.Process.Kill()
 						// if errKill != nil {
@@ -76,8 +76,8 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 						// fmt.Println("Testcase monitoring timed out: ", tc.ClassName, "#", tc.Name)
 						// log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
-						db.CreateInBatches(resources, 500)
-						// fmt.Println("saved resources...")
+						db.CreateInBatches(resources, 1000)
+						fmt.Println("saved resources... ", len(resources))
 						SaveJFRMetrics(db, run.ID, tc.ID)
 						// fmt.Println("saved jvm...")
 					}

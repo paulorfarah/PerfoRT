@@ -388,7 +388,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 		for {
 			select {
 			case <-stop:
-				db.CreateInBatches(resources, 500)
+				db.CreateInBatches(resources, 1000)
 				return
 			default:
 				resource, err := MonitorProcess(pid, mr.ID)
