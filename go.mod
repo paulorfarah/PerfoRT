@@ -1,4 +1,4 @@
-module perfrt
+module perform
 
 go 1.19
 

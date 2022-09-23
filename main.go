@@ -22,17 +22,17 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"perfrt/models"
+	"perform/models"
 )
 
 func main() {
-	fmt.Println("starting perfrt")
+	fmt.Println("starting perform...")
 
 	// go func() {
 	// 	http.ListenAndServe(":1234", nil)
 	// }()
 
-	logFile, err := os.OpenFile("perfrt.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logFile, err := os.OpenFile("perform.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}

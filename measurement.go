@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"perfrt/models"
+	"perform/models"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -137,10 +137,10 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 		minTestTime, _ = strconv.ParseFloat(minTestTimeStr, 32)
 	}
 
-	profiler := "/perfrt-profiler-1.11.jar"
+	profiler := "/perform-tracer-1.11.jar"
 	if javaVer != "" {
 		if strings.Contains(javaVer, "8") {
-			profiler = "/perfrt-profiler-1.8.jar"
+			profiler = "/perform-tracer-1.8.jar"
 		}
 	}
 

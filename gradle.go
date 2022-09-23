@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"perfrt/models"
+	"perform/models"
 	"regexp"
 	"strconv"
 	"strings"
@@ -352,41 +352,19 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 	stop := make(chan bool)
 	go func() {
 		defer close(stop)
-		// LOG_FILE := "/tmp/perfrt_log"
-		// // open log file
-		// logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-		// if err != nil {
-		// 	log.Panic(err)
-		// 	return
-		// }
-		// defer logFile.Close()
-		// log.SetOutput(logFile)
 
-		// optional: log date-time, filename, and line number
-		// log.SetFlags(log.Lshortfile | log.LstdFlags)
-
-		// log.Println("measurementID: ", measurementID)
-
-		// perfMetrics := []PerfMetrics{}
 		resources := []models.Resource{}
 		for {
 			select {
 			case <-stop:
-				// //save
-				// for _, perfMetric := range perfMetrics {
-				// 	saveMetrics(db, mr.ID, perfMetric)
-				// }
+
 				db.CreateInBatches(resources, 1000)
 				return
 			default:
-				// perfMetric, err := MonitorProcess(pid)
 				resource, err := MonitorProcess(pid, mr.ID)
 				if err == nil {
-					// perfMetrics = append(perfMetrics, perfMetric)
 					resources = append(resources, resource)
 				}
-				// log.Println(perfMetric)
-
 			}
 		}
 	}()

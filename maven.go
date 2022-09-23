@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"perfrt/models"
+	"perform/models"
 	"regexp"
 
 	// "runtime"
@@ -124,7 +124,7 @@ func MvnTest(db *gorm.DB, path, javaVer string, measurementID, commitID uint) bo
 
 	// ATTENTION ABOUT JACOCO:
 	//
-	// 1) configure export MAVEN_OPTS="-javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perfrt/jacoco-0.8.6/jacocoagent.jar"
+	// 1) configure export MAVEN_OPTS="-javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perform/jacoco-0.8.6/jacocoagent.jar"
 	//    It will generate jacoco.exec in the application folder
 	// deprecated:
 	// jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
