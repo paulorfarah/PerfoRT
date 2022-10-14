@@ -266,8 +266,9 @@ type Plugin struct {
 }
 
 type Configuration struct {
-	Source string `xml:"source"`
-	Target string `xml:"target"`
+	Encoding string `xml:"encoding"`
+	Source   string `xml:"source"`
+	Target   string `xml:"target"`
 }
 
 type PluginExecution struct {
