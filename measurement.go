@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -682,19 +683,12 @@ func getMavenJavaVersion(repoDir string) string {
 	}
 
 	if version == "" {
-		//search in plugins
-		// var pomPath2 string = repoDir + "/pom.xml"
-		// parsedPom2, err := 	.Parse(pomPath2)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
 		for _, plug := range parsedPom.Build.BuildBase.Plugins {
 			// fmt.Println(plug.ArtifactID)
 			// fmt.Println(plug.Configuration.Source)
 			// fmt.Println(plug.Configuration.Target)
 			if plug.ArtifactID == "maven-compiler-plugin" {
-				// fmt.Println("maven-compiler-plugin: ", plug.Version)
-				version = strings.Replace(plug.Version, "1.", "", 1)
+				version = strings.Replace(plug.Configuration.Source, "1.", "", 1)
 				break
 			}
 		}
@@ -706,8 +700,15 @@ func getMavenJavaVersion(repoDir string) string {
 		}
 
 		str := string(b)
-		vnum := between(str, "<source>", "</source>")
-		version = strings.Replace(vnum, "1.", "", 1)
+		type VNum struct {
+			Source string `xml:"build>pluginManagement>plugins>plugin>configuration>source"`
+			Target string `xml:"build>pluginManagement>plugins>plugin>configuration>target"`
+		}
+
+		vnum := VNum{}
+		if err = xml.Unmarshal([]byte(str), &vnum); err != nil {
+			version = strings.Replace(vnum.Source, "1.", "", 1)
+		}
 	}
 
 	if version == "" {
