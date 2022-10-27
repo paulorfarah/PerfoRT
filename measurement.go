@@ -700,6 +700,7 @@ func getMavenJavaVersion(repoDir string) string {
 		}
 
 		str := string(b)
+
 		type VNum struct {
 			Source string `xml:"build>pluginManagement>plugins>plugin>configuration>source"`
 			Target string `xml:"build>pluginManagement>plugins>plugin>configuration>target"`
