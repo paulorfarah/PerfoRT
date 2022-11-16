@@ -3,6 +3,7 @@ package main
 import (
 	"PerfoRT/models"
 	"bufio"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -18,7 +19,6 @@ import (
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/joshdk/go-junit"
-	"github.com/vifraa/gopom"
 	"gorm.io/gorm"
 )
 
@@ -641,7 +641,11 @@ func getProjectModules(repoDir string) []string {
 
 	includes = append(includes, "")
 	pomPath := repoDir + "/pom.xml"
-	parsedPom, err := gopom.Parse(pomPath)
+	// parsedPom, err := gopom.Parse(pomPath)
+	parsedPom, err := ParsePom(pomPath)
+	if err != nil {
+		log.Printf("unable to unmarshal pom file. Reason: %s\n", err)
+	}
 	if err != nil {
 		fmt.Printf("unable to unmarshal pom file. File: %s Reason: %s\n", repoDir+"/pom.xml", err)
 		log.Printf("Unable to unmarshal pom file. File: %s Reason: %s\n", repoDir+"/pom.xml", err)
@@ -673,25 +677,47 @@ func getMavenJavaVersion(repoDir string) string {
 
 	for k, v := range parsedPom.Properties.Entries {
 		if k == "maven.compiler.source" || k == "compileSource" || k == "java.version" || k == "java_source_version" {
-			version = "java-" + v + ".0-openjdk-amd64"
+			version = strings.Replace(v, "1.", "", 1)
 			break
 		}
 	}
 
 	if version == "" {
-		//search in plugins
 		for _, plug := range parsedPom.Build.BuildBase.Plugins {
+			// fmt.Println(plug.ArtifactID)
+			// fmt.Println(plug.Configuration.Source)
+			// fmt.Println(plug.Configuration.Target)
 			if plug.ArtifactID == "maven-compiler-plugin" {
-				version = "java-" + plug.Configuration.Source + ".0-openjdk-amd64"
+				version = strings.Replace(plug.Configuration.Source, "1.", "", 1)
 				break
 			}
 		}
 	}
-	// fmt.Println("javaVer: /usr/lib/jvm/" + version)
 	if version == "" {
-		version = "java-1.11.0-openjdk-amd64"
+		b, err := os.ReadFile(pomPath)
+		if err != nil {
+			fmt.Print(err)
+		}
+
+		str := string(b)
+
+		type VNum struct {
+			Source string `xml:"build>pluginManagement>plugins>plugin>configuration>source"`
+			Target string `xml:"build>pluginManagement>plugins>plugin>configuration>target"`
+		}
+
+		vnum := VNum{}
+		if err = xml.Unmarshal([]byte(str), &vnum); err != nil {
+			version = strings.Replace(vnum.Source, "1.", "", 1)
+		}
 	}
-	return "/usr/lib/jvm/" + version
+
+	if version == "" {
+		version = "11"
+	}
+	fmt.Println("JAVA: ", version)
+	version = "/usr/lib/jvm/java-" + version + "-openjdk-amd64"
+	return version
 }
 
 func getProjectPaths(repoDir string) []string {
@@ -848,4 +874,21 @@ func deleteDir(dir string) error {
 		}
 	}
 	return nil
+}
+
+func between(value string, a string, b string) string {
+	// Get substring between two strings.
+	posFirst := strings.Index(value, a)
+	if posFirst == -1 {
+		return ""
+	}
+	posLast := strings.Index(value, b)
+	if posLast == -1 {
+		return ""
+	}
+	posFirstAdjusted := posFirst + len(a)
+	if posFirstAdjusted >= posLast {
+		return ""
+	}
+	return value[posFirstAdjusted:posLast]
 }

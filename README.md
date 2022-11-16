@@ -35,6 +35,16 @@ wget https://raw.githubusercontent.com/major/MySQLTuner-perl/master/basic_passwo
 wget https://raw.githubusercontent.com/major/MySQLTuner-perl/master/vulnerabilities.csv -O vulnerabilities.csv
 
 
+# Mysql export files
+SHOW VARIABLES LIKE "secure_file_priv";
+
+sudo chown -R mysql:mysql /mnt/sda4/mysql-files
+sudo chmod -R 700 /mnt/sda4/mysql-files/
+
+sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+secure-file-priv="/mnt/sda4/mysql-files/"
+tmpdir="/mnt/sda4/mysql-tmp"
+
 <!-- 2) download jacoco
 - $ wget https://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.8.6/jacoco-0.8.6.zip
 - $ unzip jacoco-0.8.6.zip /path/to/PerfoRT
