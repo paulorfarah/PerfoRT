@@ -1,7 +1,7 @@
 package main
 
 import (
-	"perform/models"
+	"PerfoRT/models"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/load"

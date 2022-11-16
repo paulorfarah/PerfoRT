@@ -1,13 +1,13 @@
 package main
 
 import (
+	"PerfoRT/models"
 	"bytes"
 	"context"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"perform/models"
 	"runtime"
 	"strconv"
 	"strings"
@@ -18,7 +18,7 @@ import (
 )
 
 func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string) {
-	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perform/perform-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/perform/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
+	//java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/PerfoRT/PerfoRT-profiler-0.0.1-SNAPSHOT.jar=com.github.paulorfarah.mavenproject.,8df83daaa39f3e341f4057f4ae329edd425a2c7b,181 -jar /home/usuario/go-work/src/github.com/paulorfarah/PerfoRT/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
 	// var wg sync.WaitGroup
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
@@ -97,16 +97,16 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 			}
 		}()
 
-		//    java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/perform/perform-tracer-0.0.1-SNAPSHOT.jar=
+		//    java -javaagent:/home/usuario/go-work/src/github.com/paulorfarah/PerfoRT/PerfoRT-tracer-0.0.1-SNAPSHOT.jar=
 		//    com.github.paulorfarah.mavenproject.,f07a8a880ab962572ff8fb013958afd55e4f282a,11
 		//    -XX:StartFlightRecording:maxsize=200M,name=sized,dumponexit=true,filename=/home/usuario/teste5.jfr,
-		// settings=/home/usuario/Downloads/perform.jfc
-		// -jar /home/usuario/go-work/src/github.com/paulorfarah/perform/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
+		// settings=/home/usuario/Downloads/PerfoRT.jfc
+		// -jar /home/usuario/go-work/src/github.com/paulorfarah/PerfoRT/junit-platform-console-standalone-1.8.2.jar -cp .:target/test-classes/:target/classes -m com.github.paulorfarah.mavenproject.AppTest#testAppHasAGreeting
 
-		jfrFilename := "/jfr/perform" + strconv.Itoa(int(run.ID)) + ".jfr"
+		jfrFilename := "/jfr/PerfoRT" + strconv.Itoa(int(run.ID)) + ".jfr"
 
 		strJunitTC := javaVer + "/bin/java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
-			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/perform.jfc" +
+			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/PerfoRT.jfc" +
 			" -jar " +
 			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + tc.ClassName + "#" + testName
 		log.Println()
@@ -114,7 +114,7 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 
 		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
 		cmd = exec.CommandContext(ctx, javaVer+"/bin/java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
-			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/perform.jfc",
+			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/PerfoRT.jfc",
 			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", tc.ClassName+"#"+testName)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb

@@ -1,4 +1,4 @@
-# perform  - performance regression measurer
+# PerfoRT  - PerfoRTance regression measurer
 
 requirements:
 - java
@@ -8,7 +8,7 @@ requirements:
 
 ~/.profile:
 export PATH=$PATH:/mnt/sda4/go/bin:/mnt/sda4/apache-maven-3.8.6/bin
-export MAVEN_OPTS="-javaagent:/mnt/sda4/go-work/src/github.com/paulorfarah/perform/jacoco-0.8.6/jacocoagent.jar"
+export MAVEN_OPTS="-javaagent:/mnt/sda4/go-work/src/github.com/paulorfarah/PerfoRT/jacoco-0.8.6/jacocoagent.jar"
 export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
 
 mysql configurations
@@ -37,7 +37,7 @@ wget https://raw.githubusercontent.com/major/MySQLTuner-perl/master/vulnerabilit
 
 <!-- 2) download jacoco
 - $ wget https://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.8.6/jacoco-0.8.6.zip
-- $ unzip jacoco-0.8.6.zip /path/to/perform
+- $ unzip jacoco-0.8.6.zip /path/to/PerfoRT
 
 3) download and configure async-profiler: 
 - $ wget https://github.com/jvm-profiling-tools/async-profiler/releases/download/v2.6/async-profiler-2.6-linux-x64.tar.gz
@@ -61,16 +61,16 @@ Setting Files
 
 
 2) .releases
-Contains the list of hashes of commits of the target system to be measured by perform. The .releases file should have the name .releases plus character "_" (underline) and the package name configured in the .env file.
+Contains the list of hashes of commits of the target system to be measured by PerfoRT. The .releases file should have the name .releases plus character "_" (underline) and the package name configured in the .env file.
 For example, for the target system apache commons-bcel, the package name is "org.apache.bcel.", so the releases file should be named as ".releases_org.apache.bcel.".
 
 3) .tcignore
-There are some testcases that runs without ending. To deal with this situation add the testcase in a .tcignore file. A .tcignore file is a list of testcases to be ignored during the performance measurement of the target system. The .tcignore file should have the name .tcignore plus character "_" (underline) and the package name configured in the .env file.
+There are some testcases that runs without ending. To deal with this situation add the testcase in a .tcignore file. A .tcignore file is a list of testcases to be ignored during the PerfoRTance measurement of the target system. The .tcignore file should have the name .tcignore plus character "_" (underline) and the package name configured in the .env file.
 For example, for the target system apache commons-bcel, the package name is "org.apache.bcel.", so the testcase ignore list file should be named as ".tcignore_org.apache.bcel.".
 
-If the testcase to be ignored is not listed in the ignore file, perform will stablish a timeout, also can be configured in the testcase_timeout of the .env file. However, ignore them is better because do not take extra time and use extra resources neither.
+If the testcase to be ignored is not listed in the ignore file, PerfoRT will stablish a timeout, also can be configured in the testcase_timeout of the .env file. However, ignore them is better because do not take extra time and use extra resources neither.
 
-SELECT c.committer_date, commit_hash, r.id, f.name AS classname, m.name AS methodName, jvm.object_allocation_in_new_tlab_tlab_size   FROM perform.commits AS c INNER JOIN perform.files AS f ON f.commit_id=c.id INNER JOIN perform.methods AS m ON m.file_id=f.id INNER JOIN perform.runs AS r ON m.run_id = r.id INNER JOIN perform.jvms jvm ON jvm.run_id = r.id ORDER BY c.committer_date, f.name; 
+SELECT c.committer_date, commit_hash, r.id, f.name AS classname, m.name AS methodName, jvm.object_allocation_in_new_tlab_tlab_size   FROM PerfoRT.commits AS c INNER JOIN PerfoRT.files AS f ON f.commit_id=c.id INNER JOIN PerfoRT.methods AS m ON m.file_id=f.id INNER JOIN PerfoRT.runs AS r ON m.run_id = r.id INNER JOIN PerfoRT.jvms jvm ON jvm.run_id = r.id ORDER BY c.committer_date, f.name; 
 
 
 
@@ -82,7 +82,7 @@ INTO OUTFILE '/var/lib/mysql-files/jvm2.csv'
 
           
 
-mysql perform -u root -p  < jvms.sql > openfire.tsv
+mysql PerfoRT -u root -p  < jvms.sql > openfire.tsv
 
 
 
@@ -109,7 +109,7 @@ ORDER BY repo.name, mea.id, c.committer_date, f.name, m.name, r.id;
 -- LINES TERMINATED BY '\r\n';
 
 ---
-USE perform;
+USE PerfoRT;
 SELECT c.committer_date, commit_hash, -- test.name AS test_name, 
 r.id AS run, f.name AS class_name, 
 m.name AS method_name, m.created_at AS method_started_at, m.ended_at AS method_ended_at, m.caller_id, m.own_duration, m.cumulative_duration, 
@@ -131,7 +131,7 @@ ORDER BY c.committer_date, f.name, m.name, r.id;
 ----
 
 # Count the number of resources by method
-USE perform;
+USE PerfoRT;
 SELECT c.committer_date, commit_hash, r.id AS run, f.name AS class_name, 
 m.name AS method_name,
 COUNT(res.id) AS no_resources 

@@ -1,13 +1,13 @@
 package main
 
 import (
+	"PerfoRT/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-	"perform/models"
 	"regexp"
 	"strconv"
 	"strings"
@@ -33,10 +33,10 @@ type Event struct {
 func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 	// log.Println("****************** SaveJFRMetrics", time.Now())
 	// generate json
-	jfrFilename := "jfr/perform" + strconv.Itoa(int(runID)) + ".jfr"
-	jsonFilename := "jfr/perform" + strconv.Itoa(int(runID)) + ".json"
+	jfrFilename := "jfr/PerfoRT" + strconv.Itoa(int(runID)) + ".jfr"
+	jsonFilename := "jfr/PerfoRT" + strconv.Itoa(int(runID)) + ".json"
 	if _, err := os.Stat(jfrFilename); err == nil {
-		// file perform.jfr exists
+		// file PerfoRT.jfr exists
 		// log.Println("- jfr print --json " + jfrFilename + " > " + jsonFilename)
 		cmd := exec.Command("bash", "-c", "jfr print --json "+jfrFilename+" > "+jsonFilename)
 		err := cmd.Run()
@@ -54,7 +54,7 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 			log.Println("-> Error opening jfr json file: ", err.Error())
 		} else {
 			defer jsonFile.Close()
-			// fmt.Println("Successfully Opened perform.json")
+			// fmt.Println("Successfully Opened PerfoRT.json")
 
 			// read our opened jsonFile as a byte array.
 			jsonJFR, _ := ioutil.ReadAll(jsonFile)
