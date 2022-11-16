@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"perform/models"
 	"strconv"
 	"strings"
 	"time"
 
 	"gorm.io/gorm"
+
+	"PerfoRT/models"
 )
 
 func ParseProfilingClock(db *gorm.DB, commit models.Commit, testcase models.TestCase, output string) {
