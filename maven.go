@@ -122,19 +122,6 @@ func MvnTest(db *gorm.DB, path, javaVer string, measurementID, commitID uint) bo
 	var output []byte
 	var err error
 
-	// ATTENTION ABOUT JACOCO:
-	//
-	// 1) configure export MAVEN_OPTS="-javaagent:/home/usuario/go-work/src/github.com/paulorfarah/PerfoRT/jacoco-0.8.6/jacocoagent.jar"
-	//    It will generate jacoco.exec in the application folder
-	// deprecated:
-	// jacoco_exec := localpath + "/coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
-	// testStr := "- mvn -fn -Drat.skip=true -Djacoco.destFile=" + jacoco_exec + " clean org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent test"
-	// log.Println(testStr)
-	// fmt.Println(testStr)
-	// cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "-Djacoco.destFile="+jacoco_exec, "clean", "org.jacoco:jacoco-maven-plugin:0.8.7:prepare-agent", "test")
-
-	// coverage needs module, so can't collect coverage in this func
-
 	cmd := exec.Command("mvn", "-fn", "-Drat.skip=true", "clean", "test")
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "JAVA_HOME="+javaVer)
@@ -428,43 +415,6 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 	}
 
 	profiler_output += className + "_" + testName //+ ".jfr"
-
-	// jcmd 56822 JFR.start filename=teste.jfr
-
-	// strPid := fmt.Sprintf("%s", pid)
-	// cmdJCMD := exec.Command("jcmd", strPid, "JFR.start", "filename=/home/farah/go-work/src/github.com/paulorfarah/go-repo-downloader/profiler/test.jfr") //+profiler_output)
-
-	// if err := cmdJCMD.Run(); err != nil {
-	// 	log.Printf("Failed to start cmd: %v", err)
-	// 	return
-	// }
-
-	// stop2 := make(chan bool)
-	// go func() {
-
-	// 	for {
-	// 		select {
-	// 		case <-stop2:
-	// 			strPid := fmt.Sprintf("%s", pid)
-	// 			cmd := exec.Command("jcmd", fmt.Sprintf("%s", strPid), "JFR.stop")
-
-	// 			if err := cmd.Run(); err != nil {
-	// 				log.Printf("Failed to stop cmd: %v", err)
-	// 				return
-	// 			}
-	// 			return
-	// 		default:
-	// 			// jcmd 7060 JFR.start name=MyRecording settings=profile delay=20s duration=2m filename=C:\TEMP\myrecording.jfr
-	// 			strPid := fmt.Sprintf("%s", pid)
-	// 			cmd := exec.Command("jcmd", strPid, "JFR.start", "name=teste", "settings=profile", "delay=1s", "filename=/home/farah/go-work/src/github.com/paulorfarah/go-repo-downloader/profiler/test.jfr") //+profiler_output)
-
-	// 			if err := cmd.Run(); err != nil {
-	// 				log.Printf("Failed to start cmd: %v", err)
-	// 				return
-	// 			}
-	// 		}
-	// 	}
-	// }()
 
 	// err2 := cmd.Wait()
 

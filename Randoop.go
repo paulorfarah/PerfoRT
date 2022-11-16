@@ -113,9 +113,6 @@ import (
 func generateRandoopTests(db *gorm.DB, dir, classpath, cpSep, randoopJar, envRandoopJar, className string, measurement models.Measurement, commitID uint) bool {
 	log.Println("------------------------------------------------ generating Randoop tests for " + className + "...")
 
-	// fmt.Println("dir: ", dir)
-	// dir:  /home/farah/go-work/src/github.com/paulorfarah/repos/gradle-project-example/app/
-
 	randoopStr := "java -classpath " + classpath + cpSep + randoopJar + cpSep + envRandoopJar + " randoop.main.Main gentests --testclass=" + className + " --time-limit=5 > " + getDirectory() + "/gentest/" + className + ".txt"
 	log.Println(randoopStr)
 	fmt.Println(randoopStr)

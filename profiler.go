@@ -317,7 +317,6 @@ func ParseProfilingAlloc(db *gorm.DB, commit models.Commit, testcase models.Test
 }
 
 func ParseJfrFile() {
-	///home/farah/Downloads/jdk1.8.0_202/jre/bin/java -Dfile.encoding=UTF-8 -classpath /home/farah/eclipse-workspace/async-parser/bin:/home/farah/Downloads/async-profiler-2.5.1-linux-x64/build/async-profiler.jar:/home/farah/Downloads/async-profiler-2.5.1-linux-x64/build/converter.jar JfrParser /home/farah/go-work/src/github.com/paulorfarah/go-repo-downloader/profiler/13__AppTest_testAppHasAGreeting.jfr /home/farah/go-work/src/github.com/paulorfarah/go-repo-downloader/profiler/13__AppTest_testAppHasAGreeting-PARSED.txt
 	fmt.Println("TODO")
 }
 

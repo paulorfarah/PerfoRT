@@ -8,7 +8,7 @@ requirements:
 
 ~/.profile:
 export PATH=$PATH:/mnt/sda4/go/bin:/mnt/sda4/apache-maven-3.8.6/bin
-export MAVEN_OPTS="-javaagent:/mnt/sda4/go-work/src/github.com/paulorfarah/PerfoRT/jacoco-0.8.6/jacocoagent.jar"
+export MAVEN_OPTS="-javaagent:/<path>/<to>/PerfoRT/jacoco-0.8.6/jacocoagent.jar"
 export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
 
 mysql configurations
@@ -28,12 +28,6 @@ show variables like 'max_connections';
 show variables like 'sql_mode';
 show variables like 'innodb_buffer_pool_size';
 show variables like 'innodb_log_file_size';
-
-# Mysql Tuning
-wget http://mysqltuner.pl/ -O mysqltuner.pl
-wget https://raw.githubusercontent.com/major/MySQLTuner-perl/master/basic_passwords.txt -O basic_passwords.txt
-wget https://raw.githubusercontent.com/major/MySQLTuner-perl/master/vulnerabilities.csv -O vulnerabilities.csv
-
 
 # Mysql export files
 SHOW VARIABLES LIKE "secure_file_priv";

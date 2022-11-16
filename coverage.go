@@ -15,18 +15,9 @@ import (
 )
 
 func JacocoTestCoverage(db *gorm.DB, repoDir, javaVer, testtype, buildTool string, measurementID, commitID uint) error {
-	// log.Println("- test coverage")
-	// fmt.Println("- test coverage")
-	//java -jar jacoco-0.8.6/jacococli.jar report coverage/jacoco-1.exec --classfiles /home/farah/go-work/src/github.com/paulorfarah/repos/junit4/target/classes --sourcefiles /home/farah/go-work/src/github.com/paulorfarah/repos/junit4 --csv coverage/cobertura.csv
-
 	filename := "coverage/" + strings.ReplaceAll(repoDir, "/", "_") + "-" + strconv.Itoa(int(commitID)) + ".csv"
 
-	// classpath := repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
 	classpath := ""
-	// cpSep := ":"
-	// if runtime.GOOS == "windows" {
-	// 	cpSep = ";"
-	// }
 	switch buildTool {
 	case "maven":
 		classpath += repoDir + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
@@ -34,24 +25,10 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, javaVer, testtype, buildTool strin
 		classpath += repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" //+ cpSep + repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes" + string(os.PathSeparator) + "java" + string(os.PathSeparator) + "main"
 	}
 
-	// folderInfo, errf := os.Stat("classpath")
-	// if os.IsNotExist(errf) {
-	// 	switch buildTool {
-	// 	case "maven":
-	// 		classpath = repoDir + string(os.PathSeparator) + "core" + string(os.PathSeparator) + "target" + string(os.PathSeparator) + "classes"
-	// 	case "gradle":
-	// 		classpath = repoDir + string(os.PathSeparator) + "build" + string(os.PathSeparator) + "classes"
-
-	// 	}
-	// }
-	// log.Println(folderInfo)
-	// jacoco_exec := "coverage/jacoco-" + strconv.Itoa(int(commitID)) + ".exec"
 	jacoco_exec := repoDir + "/jacoco.exec"
 
 	jacocoStr := javaVer + "/bin/java -jar jacoco-0.8.6/jacococli.jar report " + jacoco_exec + " --classfiles " + classpath + " --sourcefiles " + repoDir + " --csv " + filename
 
-	// log.Println("- ", jacocoStr)
-	// fmt.Println("- ", jacocoStr)
 	cmd := exec.Command("bash", "-c", jacocoStr)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
@@ -79,9 +56,6 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, javaVer, testtype, buildTool strin
 }
 
 func saveCoverage(db *gorm.DB, filename string, testType string, measurementID, commitID uint) error {
-
-	// Open CSV file
-	// log.Println("saveCoverage: ", filename)
 	f, err := os.Open(filename)
 	if err != nil {
 		return err
