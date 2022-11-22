@@ -678,6 +678,7 @@ func getMavenJavaVersion(repoDir string) string {
 	for k, v := range parsedPom.Properties.Entries {
 		if k == "maven.compiler.source" || k == "compileSource" || k == "java.version" || k == "java_source_version" {
 			version = strings.Replace(v, "1.", "", 1)
+			fmt.Println("properties")
 			break
 		}
 	}
@@ -689,6 +690,7 @@ func getMavenJavaVersion(repoDir string) string {
 			// fmt.Println(plug.Configuration.Target)
 			if plug.ArtifactID == "maven-compiler-plugin" {
 				version = strings.Replace(plug.Configuration.Source, "1.", "", 1)
+				fmt.Println("plug.Configuration.Source")
 				break
 			}
 		}
@@ -709,11 +711,13 @@ func getMavenJavaVersion(repoDir string) string {
 		vnum := VNum{}
 		if err = xml.Unmarshal([]byte(str), &vnum); err != nil {
 			version = strings.Replace(vnum.Source, "1.", "", 1)
+			fmt.Println("xml")
 		}
 	}
 
 	if version == "" {
 		version = "11"
+		fmt.Println("11")
 	}
 	fmt.Println("JAVA: ", version)
 	version = "/usr/lib/jvm/java-" + version + "-openjdk-amd64"
