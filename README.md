@@ -56,8 +56,11 @@ There are some testcases that runs without ending. To deal with this situation a
 
 If the testcase to be ignored is not listed in the ignore file, PerfoRT will stablish a timeout, also can be configured in the testcase_timeout of the .env file. However, ignore them is better because do not take extra time and use extra resources neither.
 
+#### How to contribute?
+  Just submit a PR.
   
-#### Bibtex
+#### How to cite?
+  Please, use the following entry to cite PerfoRT:
 ```bibtex
 @InProceedings{farahvergilio2023perfort,,
    title      = {PerfoRT: A Tool for Software Performance Regression},
@@ -68,5 +71,6 @@ If the testcase to be ignored is not listed in the ignore file, PerfoRT will sta
  }
 ```
 
-Please, make sure to reference us if you use *acviz* in your research.
+ 
+  
 
