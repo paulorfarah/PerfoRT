@@ -66,6 +66,7 @@ If the testcase to be ignored is not listed in the ignore file, PerfoRT will sta
   https://youtu.be/73IS_yqKkbU
   
 ## Files
+https://github.com/paulorfarah/PerfoRT-Tracer
 https://drive.google.com/file/d/1sucy7lFECozBqTTnUTC4VxjwUsR9bws0/view?usp=share_link  
   
 #### How to contribute?
@@ -74,7 +75,7 @@ https://drive.google.com/file/d/1sucy7lFECozBqTTnUTC4VxjwUsR9bws0/view?usp=share
 #### How to cite?
   Please, use the following entry to cite PerfoRT:
 ```bibtex
-@InProceedings{farahvergilio2023perfort,,
+@InProceedings{farahvergilio2023perfort,
    title      = {PerfoRT: A Tool for Software Performance Regression},
    author     = {Paulo Roberto Farah and Silvia Regina Vergilio},
    booktitle    = {ACM/SPEC International Conference on Performance Engineering},
