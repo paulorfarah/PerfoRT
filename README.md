@@ -66,8 +66,8 @@ If the testcase to be ignored is not listed in the ignore file, PerfoRT will sta
   https://youtu.be/73IS_yqKkbU
   
 ## Files
-https://github.com/paulorfarah/PerfoRT-Tracer
-https://drive.google.com/file/d/1sucy7lFECozBqTTnUTC4VxjwUsR9bws0/view?usp=share_link  
+- https://github.com/paulorfarah/PerfoRT-Tracer
+- https://drive.google.com/file/d/1sucy7lFECozBqTTnUTC4VxjwUsR9bws0/view?usp=share_link  
   
 #### How to contribute?
   Just submit a PR.
