@@ -76,12 +76,12 @@ If the testcase to be ignored is not listed in the ignore file, PerfoRT will sta
   Please, use the following entry to cite PerfoRT:
 ```bibtex
 @InProceedings{farahvergilio2023perfort,
-   title      = {PerfoRT: A Tool for Software Performance Regression},
-   author     = {Paulo Roberto Farah and Silvia Regina Vergilio},
-   booktitle    = {ACM/SPEC International Conference on Performance Engineering},
-   year    = 2023,
-   doi    = {10.1145/3578245.3584928},
-   note       = {Available on https://github.com/paulorfarah/perfort}
+   title     = {PerfoRT: A Tool for Software Performance Regression},
+   author    = {Paulo Roberto Farah and Silvia Regina Vergilio},
+   booktitle = {ACM/SPEC International Conference on Performance Engineering},
+   year      = 2023,
+   doi       = {10.1145/3578245.3584928},
+   note      = {Available on https://github.com/paulorfarah/perfort}
  }
 ```
 
