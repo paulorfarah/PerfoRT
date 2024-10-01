@@ -6,11 +6,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"time"
 
 	billy "github.com/go-git/go-billy/v5"
-	memfs "github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
 	memory "github.com/go-git/go-git/v5/storage/memory"
 )
@@ -18,43 +16,27 @@ import (
 var storer *memory.Storage
 var fs billy.Filesystem
 
-func cloneRepository(url, directory string) (*git.Repository, error) {
+func cloneRepository(url, dstDir string) (*git.Repository, error) {
 	// Clone the given repository to the given directory
 
-	removeContents(directory)
+	removeContents(dstDir)
 
-	urlSplit := strings.Split(url, "/")
-	repoName := urlSplit[4]
-	fmt.Println("git clone " + url + " .." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName)
-	log.Println("git clone " + url + " .." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName)
-	cmd := exec.Command("git", "clone", url, ".."+string(os.PathSeparator)+"repos"+string(os.PathSeparator)+repoName)
-	out, err := cmd.Output()
-	if err != nil {
-		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR]: Cannot clone repository: ", err, out)
-		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR]: Cannot clone repository: ", err, out)
-		// return nil, err
-	} else {
-		fmt.Println("\n [>>SUCCESS]: repository cloned successully!")
-		log.Println("\n [>>SUCCESS]: repository cloned successully!")
-		// fmt.Println(out)
-
-	}
-
-	// r, err := git.Clone(memory.NewStorage(), nil, &git.CloneOptions{
-	// 	URL: url,
-	// })
-
-	storer = memory.NewStorage()
-	fs = memfs.New()
-	r, err := git.Clone(storer, fs, &git.CloneOptions{
-		URL: url,
+	//urlSplit := strings.Split(url, "/")
+	//repoName := urlSplit[4]
+	//fmt.Println("git clone " + url + " .." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName)
+	//log.Println("git clone " + url + " .." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName)
+	//cmd := exec.Command("git", "clone", url, ".."+string(os.PathSeparator)+"repos"+string(os.PathSeparator)+repoName)
+	// Clone the repository
+	repo, err := git.PlainClone(dstDir, false, &git.CloneOptions{
+		URL:      url,
+		Progress: os.Stdout,
 	})
 	if err != nil {
-		fmt.Printf("%v", err)
+		log.Fatalf("Failed to clone repository: %v", err)
 	}
 
-	fmt.Println("Repository cloned to: " + directory)
-	return r, err
+	fmt.Println("Repository cloned to: " + dstDir)
+	return repo, err
 }
 
 func Checkout(repoName, hash string) error {

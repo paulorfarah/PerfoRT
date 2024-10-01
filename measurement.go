@@ -170,7 +170,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 
 		MvnTest(db, path, javaVer, measurement.ID, commit.ID)
 		JacocoTestCoverage(db, path, javaVer, "maven", "maven", measurement.ID, commit.ID)
-		files, err := ioutil.ReadDir(path + "/target/surefire-reports/")
+		files, err := os.ReadDir(path + "/target/surefire-reports/")
 
 		if err != nil {
 			log.Printf("cannot find surefire results in path: %s - %s\n", path+"/target/surefire-reports/", err.Error())

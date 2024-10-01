@@ -37,7 +37,7 @@ func GetGradleDependenciesClasspath(path string) string {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
 	// fmt.Printf("combined out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -104,7 +104,7 @@ func GradleBuild(path string) bool {
 	log.Printf("gradle build Compilation out:\n%s\n", string(output))
 	fmt.Printf("gradle build Compilation out:\n%s\n", string(output))
 	// fmt.Printf("Compilation out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		log.Printf(err.Error())
 		fmt.Printf(err.Error())
@@ -240,7 +240,7 @@ func GradleTest(db *gorm.DB, path string, measurementID uint) bool {
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	log.Printf("gradle test out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		ok = false
 		panic(err)
@@ -380,7 +380,7 @@ func RunGradleTestCase(db *gorm.DB, path string, tc *models.TestCase, measuremen
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		// ok = false
 		panic(err)
@@ -439,7 +439,7 @@ func addIgnoreTestErrosGradle() {
 		lines = append(lines, "test {\nignore tst fault\n}")
 	}
 	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile("build.gradle", []byte(output), 0644)
+	err = os.WriteFile("build.gradle", []byte(output), 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}

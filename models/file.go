@@ -10,7 +10,7 @@ import (
 // https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 type File struct {
 	Model
-	CommitID uint `gorm:"index"`
+	CommitID uint //`gorm:"index"`
 	Commit   Commit
 	Hash     string `gorm:"not null"`
 	Name     string `gorm:"index;not null;size:255"`

@@ -46,7 +46,7 @@ func GetMavenDependenciesClasspath(path, javaVer string) string {
 		fmt.Println(string(output))
 	}
 	// fmt.Printf("combined out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -102,7 +102,7 @@ func MvnCompile(path, javaVer string) bool {
 	}
 	// log.Printf("Compilation out:\n%s\n", string(output))
 	// fmt.Printf("Compilation out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		log.Printf(err.Error())
 		fmt.Printf(err.Error())
@@ -145,7 +145,7 @@ func MvnTest(db *gorm.DB, path, javaVer string, measurementID, commitID uint) bo
 
 	fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("Mvn test out:\n%s\n", string(output))
-	err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	if err != nil {
 		ok = false
 		// panic(err)
@@ -442,7 +442,7 @@ func RunMavenTestCase(db *gorm.DB, path, module string, tc *models.TestCase, mea
 
 	// fmt.Printf("Mvn test out:\n%s\n", string(output))
 	// log.Printf("gradle test out:\n%s\n", string(output))
-	// err = ioutil.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
+	// err = os.WriteFile(path+string(os.PathSeparator)+logfile, []byte(output), 0644)
 	// if err != nil {
 	// 	// ok = false
 	// 	fmt.Println("ERROR writing logfile: ", err.Error())

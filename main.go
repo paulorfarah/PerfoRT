@@ -27,6 +27,14 @@ import (
 
 func main() {
 	fmt.Println("starting PerfoRT...")
+	// Verifica se o caminho do diretório foi passado como argumento
+	if len(os.Args) < 2 {
+		fmt.Println("Use: go run PerfoRT <base_path_to_repos>")
+		return
+	}
+
+	// Pega o caminho do diretório a partir dos argumentos
+	baseDir := os.Args[1]
 
 	// go func() {
 	// 	http.ListenAndServe(":1234", nil)
@@ -37,15 +45,13 @@ func main() {
 		log.Fatal(err)
 	}
 	log.SetOutput(logFile)
-	// log.Println("starting...")
 	url, ok := os.LookupEnv("repository")
 
-	// fmt.Println("############## url: ", url)
 	if ok {
 		urlSplit := strings.Split(url, "/")
 		repoName := urlSplit[4]
-		repoDir := getParentDirectory() + "/repos/" + repoName
-		// fmt.Println("repoDir: " + repoDir)
+		repoDir := baseDir + "/repos/" + repoName
+		fmt.Println("repoDir: " + repoDir)
 		// log.Println("repoDir: " + repoDir)
 
 		// fmt.Println("git clone " + url)
@@ -58,6 +64,7 @@ func main() {
 
 			// platform
 			platform, err := models.FindPlatformByName(db, "github")
+
 			if err != nil {
 				// log.Println("Create new platform: " + "github")
 				platform = &models.Platform{Name: "github"}
@@ -143,7 +150,13 @@ func main() {
 			// }
 
 			packName := os.Getenv("package")
+			last := len(packName) - 1
+			if packName[last] == '.' {
+				packName = packName[:last]
+			}
+			fmt.Println(packName)
 			versions, errRel := ReadListFromFile(".versions/" + packName)
+			fmt.Println(versions)
 			if errRel != nil {
 				log.Println("Error reading file of versions: ", errRel)
 			}
@@ -192,6 +205,7 @@ func main() {
 			// }
 
 			for _, version := range versions {
+				fmt.Println(version)
 
 				ver := &models.Version{MeasurementID: measurement.ID, Version: version}
 				models.CreateVersion(db, ver)
@@ -201,6 +215,8 @@ func main() {
 					log.Println("ERROR retrieving commit: ", version, " (", err, ")")
 					fmt.Println("ERROR retrieving commit: ", version, " (", err, ")")
 					return
+				} else {
+					fmt.Println("Read commit successfully: ", cCommit.Hash.String())
 				}
 				cTree, err := cCommit.Tree()
 				if err != nil {
@@ -430,7 +446,7 @@ func substr(s string, pos, length int) string {
 }
 
 func getParentDirectory() string {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir, err := filepath.Abs(filepath.Dir(os.Args[1]))
 	if err != nil {
 		fmt.Printf("ERROR: cannot get local directory: %s\n", err.Error())
 		log.Fatal("ERROR: cannot get local directory: ", err.Error())
@@ -439,7 +455,7 @@ func getParentDirectory() string {
 	dir = strings.Replace(dir, "\\", "/", -1)
 	// fmt.Println(dir)
 	dir = substr(dir, 0, strings.LastIndex(dir, "/"))
-	// fmt.Println(dir)
+	fmt.Println(dir)
 	return dir
 }
 
@@ -489,6 +505,8 @@ func createDirs() {
 			log.Fatal("ERROR: cannot create directory profiler: ", err.Error())
 		}
 	}
+
+	fmt.Println("Folders created successfully...")
 
 }
 

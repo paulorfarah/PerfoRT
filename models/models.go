@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
+var once sync.Once
 var err error
 
 type Model struct {
@@ -34,12 +36,23 @@ func init() {
 	dbHost := os.Getenv("db_host")
 	dbPort := os.Getenv("db_port")
 
-	msql := mysql.Config{}
-	log.Println(msql)
+	/*
+		msql := mysql.Config{}
+		log.Println(msql)
 
-	strConn := username + ":" + password + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
-	db, err = gorm.Open(mysql.Open(strConn), &gorm.Config{
-		// Logger:                                   logger.Default.LogMode(logger.Error),
+		strConn := username + ":" + password + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
+		db, err = gorm.Open(mysql.Open(strConn), &gorm.Config{
+			// Logger:                                   logger.Default.LogMode(logger.Error),
+			Logger:                                   logger.Default.LogMode(logger.Silent),
+			DisableForeignKeyConstraintWhenMigrating: true,
+			SkipDefaultTransaction:                   true,
+			CreateBatchSize:                          1000,
+		})
+
+	*/
+	dsn := "host=" + dbHost + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + dbPort + " sslmode=disable TimeZone=America/Sao_Paulo"
+
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true,
 		Logger:                                   logger.Default.LogMode(logger.Silent),
 		DisableForeignKeyConstraintWhenMigrating: true,
 		SkipDefaultTransaction:                   true,
@@ -50,7 +63,8 @@ func init() {
 		fmt.Println(err)
 	}
 
-	db.Debug().Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
+	//db.Debug().Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
+	db.Debug().AutoMigrate(
 		&Account{},
 		&Platform{},
 		&Repository{},
