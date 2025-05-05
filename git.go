@@ -39,14 +39,15 @@ func cloneRepository(url, dstDir string) (*git.Repository, error) {
 	return repo, err
 }
 
-func Checkout(repoName, hash string) error {
+func Checkout(repoName, hash, repoDir string) error {
 	dt := time.Now()
 	log.Println()
 	log.Println("################################################ git checkout -f " + hash + " " + dt.String())
 	fmt.Println()
 	fmt.Println("################################################ checkout " + hash + " " + dt.String())
 
-	dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
+	//dir := ".." + string(os.PathSeparator) + "repos" + string(os.PathSeparator) + repoName
+	dir := repoDir
 	cmd := exec.Command("git", "checkout", "-f", hash)
 	cmd.Dir = dir
 	err := cmd.Start()

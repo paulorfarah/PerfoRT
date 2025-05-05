@@ -37,9 +37,11 @@ func JacocoTestCoverage(db *gorm.DB, repoDir, javaVer, testtype, buildTool strin
 	err := cmd.Run()
 	if err != nil {
 		log.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR]: Cannot execute JaCoCo coverage (" + err.Error() + "): " + stderr.String())
+		log.Print(jacocoStr)
 		log.Println(out.String())
 
 		fmt.Println("\n[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR]: Cannot execute JaCoCo coverage (" + err.Error() + "): " + stderr.String())
+		fmt.Print(jacocoStr)
 		fmt.Println(out.String())
 	}
 

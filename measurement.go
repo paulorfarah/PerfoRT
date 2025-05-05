@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/joshdk/go-junit"
@@ -36,7 +35,7 @@ func Measure(db *gorm.DB, measurement models.Measurement, repoDir string, reposi
 	// 	log.Println("Error copying commit directory: ", err.Error())
 	// }
 
-	err := Checkout(repository.Name, currCommit.Hash.String())
+	err := Checkout(repository.Name, currCommit.Hash.String(), repoDir)
 	if err != nil {
 		fmt.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
 		log.Println("Error checkout commit " + currCommit.Hash.String() + " " + err.Error())
@@ -137,19 +136,22 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 		minTestTime, _ = strconv.ParseFloat(minTestTimeStr, 32)
 	}
 
-	profiler := "/PerfoRT-Tracer-1.11.jar"
-	if javaVer != "" {
-		if strings.Contains(javaVer, "8") {
-			profiler = "/PerfoRT-Tracer-1.8.jar"
-		}
-	}
-
 	//set environment variable to activate profiler during testcases execution
 	localpath, errPath := os.Getwd()
 	if errPath != nil {
 		log.Println(errPath)
 		fmt.Println("error getting current path: ", errPath.Error())
 	}
+
+	profiler := "PerfoRTTracer-1-java11.jar"
+	tracerClasspath := GetTracerClasspath("11", localpath)
+	if javaVer != "" {
+		if strings.Contains(javaVer, "8") {
+			profiler = "PerfoRTTracer-1-java8.jar"
+			tracerClasspath = GetTracerClasspath("8", localpath)
+		}
+	}
+	profiler = localpath + string(os.PathSeparator) + profiler
 
 	mavenClasspath := GetMavenDependenciesClasspath(repoDir, javaVer)
 	// log.Println("- junit testcase: ", path, tc.ClassName, testName)
@@ -177,7 +179,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 			fmt.Printf("cannot find surefire results in path: %s - %s\n", path+"/target/surefire-reports/", err.Error())
 		} else {
 
-			localClasspath := ".:target/test-classes/:target/classes:"
+			localClasspath := ".:" + repoDir + "/target/test-classes/:" + repoDir + "/target/classes:"
 			if module != "" {
 				localClasspath += module + "/target/test-classes/:" + module + "/target/classes/:"
 			}
@@ -219,7 +221,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 										fmt.Println("Error creating test case: ", errTC.Error())
 									}
 									// RunMavenTestCase(db, repoDir, module, tc, measurement.ID, commit)
-									RunJUnitTestCase(db, repoDir, module, javaVer, tc, measurement, commit, packName, profiler, localpath, mavenClasspath, localClasspath)
+									RunJUnitTestCase(db, repoDir, module, javaVer, tc, measurement, commit, packName, profiler, localpath, mavenClasspath, localClasspath, tracerClasspath)
 									// <-guard
 									// count++
 									// }(count)
@@ -238,6 +240,24 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 	}
 }
 
+func GetTracerClasspath(javaVer, localpath string) string {
+
+	tracerClasspath := localpath + string(os.PathSeparator) + "javaee-api-6.0.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "aspectjrt-1.9.22.1.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "aspectjtools-1.9.20.1.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "aspectjweaver-1.9.24.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "slf4j-api-2.0.13.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "slf4j-simple-2.0.13.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "postgresql-42.7.3.jar"
+	tracerClasspath += ":" + localpath + string(os.PathSeparator) + "checker-qual-3.42.0.jar"
+	if javaVer == "8" {
+		tracerClasspath += ":" + localpath + string(os.PathSeparator) + "HikariCP-4.0.3.jar"
+	} else {
+		tracerClasspath += ":" + localpath + string(os.PathSeparator) + "HikariCP-6.3.0.jar"
+	}
+	return tracerClasspath
+}
+
 func MeasureGradleTests(db *gorm.DB, repoDir string, commit models.Commit, measurement models.Measurement) {
 	ok := GradleTest(db, repoDir, measurement.ID)
 	if ok {
@@ -254,8 +274,8 @@ func MeasureGradleTests(db *gorm.DB, repoDir string, commit models.Commit, measu
 			// fmt.Printf("%s\n", suite.Tests)
 			for _, test := range suite.Tests {
 				// fmt.Println(test.Classname + ".java")
-				dt := time.Now()
-				fmt.Printf("  %s %s\n", test.Name, dt.String())
+				// dt := time.Now()
+				// fmt.Printf("  %s %s\n", test.Name, dt.String())
 				// if test.Error != nil {
 				// 	fmt.Printf("    %s: %s\n", test.Status, test.Error.Error())
 				// } else {
@@ -678,7 +698,7 @@ func getMavenJavaVersion(repoDir string) string {
 	for k, v := range parsedPom.Properties.Entries {
 		if k == "maven.compiler.source" || k == "compileSource" || k == "java.version" || k == "java_source_version" {
 			version = strings.Replace(v, "1.", "", 1)
-			fmt.Println("properties")
+			// fmt.Println("properties")
 			break
 		}
 	}
@@ -690,7 +710,7 @@ func getMavenJavaVersion(repoDir string) string {
 			// fmt.Println(plug.Configuration.Target)
 			if plug.ArtifactID == "maven-compiler-plugin" {
 				version = strings.Replace(plug.Configuration.Source, "1.", "", 1)
-				fmt.Println("plug.Configuration.Source")
+				// fmt.Println("plug.Configuration.Source")
 				break
 			}
 		}
@@ -711,13 +731,13 @@ func getMavenJavaVersion(repoDir string) string {
 		vnum := VNum{}
 		if err = xml.Unmarshal([]byte(str), &vnum); err != nil {
 			version = strings.Replace(vnum.Source, "1.", "", 1)
-			fmt.Println("xml")
+			// fmt.Println("xml")
 		}
 	}
 
 	if version == "" {
 		version = "11"
-		fmt.Println("11")
+		// fmt.Println("11")
 	}
 	fmt.Println("JAVA: ", version)
 	version = "/usr/lib/jvm/java-" + version + "-openjdk-amd64"
@@ -756,9 +776,9 @@ func getProjectPaths(repoDir string) []string {
 
 func CopyDirectory(srcDir, dest string) error {
 	deleteDir(dest)
-	fmt.Println("Copying directory")
-	fmt.Println(srcDir)
-	fmt.Println(dest)
+	// fmt.Println("Copying directory")
+	// fmt.Println(srcDir)
+	// fmt.Println(dest)
 	entries, err := ioutil.ReadDir(srcDir)
 	if err != nil {
 		return err

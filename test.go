@@ -17,8 +17,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string) {
+func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaHome string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string, tracerClasspath string) {
 	// var wg sync.WaitGroup
+
+	// fmt.Println("######## " + tc.Name)
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
 
 	var cmd *exec.Cmd
@@ -75,7 +77,7 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 						// log.Println("Testcase monitoring timed out", tc.ClassName, "#", tc.Name)
 
 						db.CreateInBatches(resources, 1000)
-						fmt.Println("saved resources... ", len(resources))
+						// fmt.Println("saved resources... ", len(resources))
 						SaveJFRMetrics(db, run.ID, tc.ID)
 						// fmt.Println("saved jvm...")
 					}
@@ -97,23 +99,110 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaVer string, tc *models.T
 
 		jfrFilename := "/jfr/PerfoRT" + strconv.Itoa(int(run.ID)) + ".jfr"
 
-		strJunitTC := javaVer + "/bin/java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
-			" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/PerfoRT.jfc" +
-			" -jar " +
-			localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + tc.ClassName + "#" + testName
-		log.Println()
-		log.Println(strJunitTC)
+		// // strJunitTC := javaHome + "/bin/java -javaagent:" + localpath + profiler + "=" + packageName + "," + commit.CommitHash + "," + strconv.Itoa(int(run.ID)) +
+		// // 	" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/PerfoRT.jfc" +
+		// // 	" -jar " +
+		// // 	localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + " -m " + tc.ClassName + "#" + testName
 
-		// https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
-		cmd = exec.CommandContext(ctx, javaVer+"/bin/java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
-			"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/PerfoRT.jfc",
-			"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", tc.ClassName+"#"+testName)
+		// strJunitTC := javaHome + "/bin/java -javaagent:" + localpath + "/aspectjweaver-1.9.24.jar -Dpackage.name=" + packageName + " -Dhash=" + commit.CommitHash + " -Drun_id=" + strconv.Itoa(int(run.ID)) +
+		// 	" -XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename=" + localpath + jfrFilename + ",settings=" + localpath + "/jfr/PerfoRT.jfc" +
+		// 	" -cp .:/home/farah/eclipse-workspace/method-timing-agent-maven/target/method-timing-agent-1.0-SNAPSHOT.jar" +
+		// 	" -jar " +
+		// 	localpath + "/junit-platform-console-standalone-1.8.2.jar -cp " + localClasspath + mavenClasspath + ":/home/farah/eclipse-workspace/method-timing-agent-maven/target/method-timing-agent-1.0-SNAPSHOT.jar -m " + tc.ClassName + "#" + testName
+
+		// log.Println()
+		// log.Println(strJunitTC)
+
+		// // https://medium.com/@vCabbage/go-timeout-commands-with-os-exec-commandcontext-ba0c861ed738
+		// // cmd = exec.CommandContext(ctx, javaHome+"/bin/java", "-javaagent:"+localpath+profiler+"="+packageName+","+commit.CommitHash+","+strconv.Itoa(int(run.ID)),
+		// // 	"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/PerfoRT.jfc",
+		// // 	"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath, "-m", tc.ClassName+"#"+testName)
+
+		// cmd = exec.CommandContext(ctx, javaHome+"/bin/java", "-javaagent:"+localpath+"/aspectjweaver-1.9.24.jar", "-Dpackage.name="+packageName, "-Dhash="+commit.CommitHash, "-Drun_id="+strconv.Itoa(int(run.ID)),
+		// 	"-XX:StartFlightRecording:maxsize=200M,dumponexit=true,filename="+localpath+jfrFilename+",settings="+localpath+"/jfr/PerfoRT.jfc",
+		// 	"-jar", localpath+"/junit-platform-console-standalone-1.8.2.jar", "-cp", localClasspath+mavenClasspath+":/home/farah/eclipse-workspace/method-timing-agent-maven/target/method-timing-agent-1.0-SNAPSHOT.jar", "-m", tc.ClassName+"#"+testName)
+
+		// var outb, errb bytes.Buffer
+		// cmd.Stdout = &outb
+		// cmd.Stderr = &errb
+		// cmd.Dir = repoDir
+		// // log.Println("path: ", path)
+		// // wg.Wait()
+
+		//
+		// Config vars
+		javaAgent := localpath + "/aspectjweaver-1.9.24.jar"
+		junitPlatform := localpath + "/junit-platform-console-standalone-1.12.2.jar"
+		jfrSettings := localpath + "/jfr/PerfoRT.jfc"
+		jfrFilename = localpath + jfrFilename
+
+		runID := strconv.Itoa(int(run.ID))
+
+		// Build classpath
+		classpath := fmt.Sprintf(".:"+repoDir+"/target/test-classes:"+repoDir+"/target/classes:%s:%s:%s:%s",
+			profiler, junitPlatform, mavenClasspath, tracerClasspath)
+
+		// Build the full Java command
+		cmdArgs := []string{
+			"-javaagent:" + javaAgent,
+			"-Dpackage.name=" + packageName,
+			"-Dhash=" + commit.CommitHash,
+			"-Drun_id=" + runID,
+			"-XX:StartFlightRecording=maxsize=200M,filename=" + jfrFilename + ",settings=" + jfrSettings,
+			"-cp", classpath,
+			"org.junit.platform.console.ConsoleLauncher",
+			"--select-method=" + tc.ClassName + "#" + testName,
+		}
+
+		// Print command (for debugging)
+		log.Println("Running:", javaHome+"/bin/java", cmdArgs)
+
+		//////////////////////////////
+		// Build the full Java command string
+		cmdStr := fmt.Sprintf(`%s/bin/java -javaagent:%s -Dpackage.name=%s -Dhash=%s -Drun_id=%s -XX:StartFlightRecording=maxsize=200M,filename=%s,settings=%s -cp "%s" org.junit.platform.console.ConsoleLauncher --select-method=%s#%s`,
+			javaHome, javaAgent, packageName, commit.CommitHash, runID, jfrFilename, jfrSettings, classpath, tc.ClassName, testName)
+
+		// Path do script
+		scriptPath := repoDir + "/" + ".sh"
+
+		// Criar script .sh
+		scriptContent := fmt.Sprintf("#!/bin/bash\n\n%s\n", cmdStr)
+		err2 := os.WriteFile(scriptPath, []byte(scriptContent), 0755)
+		if err2 != nil {
+			log.Fatalf("Erro ao criar script: %v", err2)
+		}
+
+		// Executar script via bash
 		var outb, errb bytes.Buffer
+		cmd2 := exec.CommandContext(ctx, "bash", scriptPath)
+		cmd2.Stdout = &outb
+		cmd2.Stderr = &errb
+		cmd2.Dir = repoDir
+
+		err2 = cmd2.Run()
+		if err2 != nil {
+			log.Printf("Erro ao executar script: %v", err2)
+		}
+
+		// Exibir outputs
+		log.Println("STDOUT:", outb.String())
+		log.Println("STDERR:", errb.String())
+		////////////////////////////////////////////
+
+		// Run command
+		// cmd := exec.Command(javaHome+"/bin/java", cmdArgs...)
+		// cmd.Stdout = os.Stdout
+		// cmd.Stderr = os.Stderr
+
+		// Set working directory if needed
+		// cmd.Dir = "/home/farah/eclipse-workspace/method-timing-agent-maven"
+		// cmd.Dir = repoDir
+
+		// var outb, errb bytes.Buffer
+		cmd = exec.CommandContext(ctx, javaHome+"/bin/java", cmdArgs...)
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Dir = repoDir
-		// log.Println("path: ", path)
-		// wg.Wait()
 
 		err := cmd.Start()
 		if cmd.Process != nil {

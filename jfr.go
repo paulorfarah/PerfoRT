@@ -916,7 +916,7 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 		}
 
 	} else {
-		log.Println("ATTENTION!!!!!!! JFR file not found!!!")
+		log.Println("ATTENTION!!!!!!! JFR file not found: " + jfrFilename + "!!!")
 	}
 
 }

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: Maven JAR Plugin 3.3.0
+Build-Jdk-Spec: 11
+Class-Path: aspectjrt-1.9.22.1.jar aspectjtools-1.9.20.1.jar aspectjweav
+ er-1.9.24.jar HikariCP-4.0.3.jar slf4j-api-2.0.13.jar postgresql-42.7.3
+ .jar checker-qual-3.42.0.jar
+Can-Redefine-Classes: true
+Premain-Class: agent.TimingAgent
+

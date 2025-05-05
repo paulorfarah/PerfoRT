@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -34,7 +35,7 @@ func main() {
 	}
 
 	// Pega o caminho do diretório a partir dos argumentos
-	baseDir := os.Args[1]
+	baseDir := removeTrailingSlash(os.Args[1])
 
 	// go func() {
 	// 	http.ListenAndServe(":1234", nil)
@@ -60,6 +61,8 @@ func main() {
 		repo, err := cloneRepository(url, repoDir)
 		if err == nil {
 			createDirs()
+			copyFile(".env", repoDir+"/.env")
+
 			db := models.GetDB()
 
 			// platform
@@ -154,9 +157,9 @@ func main() {
 			if packName[last] == '.' {
 				packName = packName[:last]
 			}
-			fmt.Println(packName)
+			// fmt.Println(packName)
 			versions, errRel := ReadListFromFile(".versions/" + packName)
-			fmt.Println(versions)
+			// fmt.Println(versions)
 			if errRel != nil {
 				log.Println("Error reading file of versions: ", errRel)
 			}
@@ -205,7 +208,7 @@ func main() {
 			// }
 
 			for _, version := range versions {
-				fmt.Println(version)
+				// fmt.Println(version)
 
 				ver := &models.Version{MeasurementID: measurement.ID, Version: version}
 				models.CreateVersion(db, ver)
@@ -455,7 +458,7 @@ func getParentDirectory() string {
 	dir = strings.Replace(dir, "\\", "/", -1)
 	// fmt.Println(dir)
 	dir = substr(dir, 0, strings.LastIndex(dir, "/"))
-	fmt.Println(dir)
+	// fmt.Println(dir)
 	return dir
 }
 
@@ -506,8 +509,38 @@ func createDirs() {
 		}
 	}
 
-	fmt.Println("Folders created successfully...")
+	// fmt.Println("Folders created successfully...")
 
+}
+
+func copyFile(srcPath, dstPath string) error {
+	// Abre o arquivo de origem
+	srcFile, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	// Cria o arquivo de destino
+	dstFile, err := os.Create(dstPath)
+	if err != nil {
+		return err
+	}
+	defer dstFile.Close()
+
+	// Copia o conteúdo de src para dst
+	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return err
+	}
+
+	// Força o flush no arquivo de destino
+	err = dstFile.Sync()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func ReadListFromFile(filename string) ([]string, error) {
@@ -540,4 +573,11 @@ func ReadTCIgnoreMap(filename string) (map[string]struct{}, error) {
 		tcignoreMap[scanner.Text()] = struct{}{}
 	}
 	return tcignoreMap, scanner.Err()
+}
+
+func removeTrailingSlash(s string) string {
+	if strings.HasSuffix(s, "/") {
+		return s[:len(s)-1]
+	}
+	return s
 }
