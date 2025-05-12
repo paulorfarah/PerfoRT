@@ -91,7 +91,19 @@ func SaveJFRMetrics(db *gorm.DB, runID uint, tcID uint) {
 					layout := "2006-01-02T15:04:05.000000000-07:00"
 					startTimeStr, ok := event.Values["startTime"].(string)
 					if ok {
-						indStartTime := strings.Index(startTimeStr[20:29], "-")
+
+						inicio := 20
+						fim := 29
+						if len(startTimeStr) < inicio {
+							fmt.Println("String menor que o índice de início")
+							return false
+						}
+						if len(startTimeStr) < fim {
+							fim = len(startTimeStr) - 1
+						}
+
+						// Pegar a substring
+						indStartTime := strings.Index(startTimeStr[inicio:fim], "-")
 
 						if indStartTime != -1 {
 							// fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> starttime1: ", str)
