@@ -20,15 +20,17 @@ import (
 func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaHome string, tc *models.TestCase, measurement models.Measurement, commit models.Commit, packageName, profiler, localpath, mavenClasspath, localClasspath string, tracerClasspath string) {
 	// var wg sync.WaitGroup
 
-	// fmt.Println("######## " + tc.Name)
+	fmt.Println("######## " + tc.Name)
 	testName := tc.Name[strings.LastIndex(tc.Name, ".")+1:]
 
 	var cmd *exec.Cmd
 
 	// log.Println("Number of runs: ", measurement.Runs)
+	// fmt.Println("Number of runs: ", measurement.Runs)
 	finish := make(chan bool)
 	for runNumber := 0; runNumber < measurement.Runs; runNumber++ {
 		// log.Println("#Run: ", runNumber)
+		// fmt.Println("#Run: ", runNumber)
 		run := &models.Run{
 			MeasurementID: measurement.ID,
 			TestCaseID:    tc.ID,
@@ -60,7 +62,7 @@ func RunJUnitTestCase(db *gorm.DB, repoDir, module, javaHome string, tc *models.
 					//save
 					// log.Println("saving resources: ", len(resources))
 					db.CreateInBatches(resources, 1000)
-					log.Println("saved resources... ", len(resources))
+					// log.Println("saved resources... ", len(resources))
 					SaveJFRMetrics(db, run.ID, tc.ID)
 					// log.Println("saved jvm...")
 				case <-ctx.Done():

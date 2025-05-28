@@ -160,7 +160,7 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 	// read testcase ignore file
 	tcignoreMap, errIgn := ReadTCIgnoreMap(".tcignore/" + packName)
 	if errIgn != nil {
-		log.Println("Error reading lfist of ignored testcases: ", errIgn)
+		log.Println("***> ERROR reading list of ignored testcases: ", errIgn)
 	}
 
 	for _, module := range projectModules {
@@ -197,7 +197,11 @@ func MeasureMavenTests(db *gorm.DB, repoDir, javaVer string, commit models.Commi
 					// count := -1
 					for _, test := range suites.TestCases {
 						testName := test.ClassName + "#" + test.Name
-						// log.Println("testcase:", testName)
+						// fmt.Println("testcase:", testName)
+						// for chave, valor := range tcignoreMap {
+						// 	fmt.Printf("Chave: %s, Valor: %d\n", chave, valor)
+						// }
+
 						_, ignore := tcignoreMap[testName]
 						if !ignore {
 							if tcTime, err := strconv.ParseFloat(test.Time, 32); err == nil {

@@ -389,8 +389,10 @@ func main() {
 				// }
 				// var wg sync.WaitGroup
 				// wg.Add(8)
+
 				Measure(db, *measurement, repoDir, *repository, commit, cCommit)
 				runtime.GC()
+
 				// log.Println("#GoRoutines: ", runtime.NumGoroutine())
 				// fmt.Println("#GoRoutines: ", runtime.NumGoroutine())
 				// fmt.Println("finished Measure")
